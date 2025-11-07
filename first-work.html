@@ -357,10 +357,43 @@ display: none;
 <h2>Descriptive plot to get to know data</h2>
 <div id="tomb-parameter" class="section level3">
 <h3>Tomb parameter</h3>
-<pre class="r"><code>library(readxl)
-tomb_parameter &lt;-  read_excel(&quot;Data/raw/Statistics project LMU_tomb parameters_Irene Högner_new.xlsx&quot;, range = &quot;A2:N12&quot;)</code></pre>
+<p>Clean the data: - delete single entries for T46, T56, T62 - create
+entries for them as 1 tomb but with difference MNIs (as project partner
+wants)</p>
+<pre class="r"><code>tomb_parameter &lt;- read_excel(&quot;Data/raw/Statistics project LMU_tomb parameters_Irene Hoegner_new.xlsx&quot;, range = &quot;A2:N12&quot;)</code></pre>
 <pre><code>## New names:
 ## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>combined_tombs &lt;- tomb_parameter |&gt; slice(rep(10, 4)) |&gt; mutate(
+  &quot;MNI (minimum number of individuals)&quot; = c(250, 300, 350, 400),
+  &quot;percentage of successful samples&quot; = `TWIST capture samples included in kinship analysis` / `MNI (minimum number of individuals)`,
+  `...1` = paste(&quot;Elateia 46,56,62 MNI&quot;, c(250, 300, 350, 400)))
+tomb_parameter &lt;- rbind(tomb_parameter, combined_tombs)
+tomb_parameter &lt;- tomb_parameter |&gt; rename(Tomb = 1) |&gt; slice(-c(4, 7, 9, 10))
+tomb_parameter</code></pre>
+<pre><code>## # A tibble: 10 × 14
+##    Tomb     MNI (minimum number …¹ original number of s…² same individual samp…³
+##    &lt;chr&gt;    &lt;chr&gt;                                   &lt;dbl&gt;                  &lt;dbl&gt;
+##  1 Amfissa… 110                                       165                      2
+##  2 Elateia… 26                                         21                      0
+##  3 Elateia… 48                                         33                      0
+##  4 Elateia… 13                                         20                      0
+##  5 Elateia… 64                                         77                      1
+##  6 Elateia… 134                                       130                      5
+##  7 Elateia… 250                                       337                      9
+##  8 Elateia… 300                                       337                      9
+##  9 Elateia… 350                                       337                      9
+## 10 Elateia… 400                                       337                      9
+## # ℹ abbreviated names: ¹​`MNI (minimum number of individuals)`,
+## #   ²​`original number of samples`, ³​`same individual sampled twice`
+## # ℹ 10 more variables: `max number of individuals` &lt;dbl&gt;,
+## #   `petrous bones` &lt;dbl&gt;, teeth &lt;dbl&gt;, `talus/phalanx` &lt;dbl&gt;, other &lt;dbl&gt;,
+## #   control &lt;lgl&gt;, `TWIST capture samples included in kinship analysis` &lt;dbl&gt;,
+## #   `after merging samples from same individual` &lt;dbl&gt;,
+## #   `length of use of tomb` &lt;chr&gt;, `percentage of successful samples` &lt;dbl&gt;</code></pre>
+<p>The important info in this dataset: “MNI” and “after merging samples
+from same individual” (<strong>minimum # individuals</strong> vs
+<strong>actual successful # individual</strong>), since if we don’t
+consider the ratio between them, the result could be bias.</p>
 </div>
 </div>
 

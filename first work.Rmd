@@ -6,6 +6,7 @@ output: html_document
 library(readxl)
 library(ggplot2)
 library(dplyr)
+library(tidyr)
 ```
 
 ## Descriptive plot to get to know data
@@ -16,16 +17,25 @@ Clean the data:
 
 ``` {r tp}
 tomb_parameter <- read_excel("Data/raw/Statistics project LMU_tomb parameters_Irene Hoegner_new.xlsx", range = "A2:N12")
-combined_tombs <- 
-tomb_parameter |> rename(Tomb = 1) |> 
-  slice(-c(4, 7, 9, 10)) |>
-  
-
+combined_tombs <- tomb_parameter |> slice(rep(10, 4)) |> mutate(
+  "MNI (minimum number of individuals)" = c(250, 300, 350, 400),
+  "percentage of successful samples" = `TWIST capture samples included in kinship analysis` / `MNI (minimum number of individuals)`,
+  `...1` = paste("Elateia T 46,56,62 (MNI ", c(250, 300, 350, 400), ")", sep = ""))
+tomb_parameter <- rbind(tomb_parameter, combined_tombs)
+tomb_parameter <- tomb_parameter |> rename(Tomb = 1, MNI = 2, `analysed individuals` = 12) |>
+  slice(-c(4, 7, 9, 10)) |> mutate(MNI = as.integer(MNI))
+tomb_parameter
 ```
 
-The important info in this dataset: "MNI" and "after merging samples from same individual" (**minimum # individuals** vs **actual successful # individual**), since if we don't consider the ratio between them, the result could be bias.
+The important info in this dataset: "MNI" and "after merging samples from same individual" (**minimum # individuals** vs **actual successful analysed # individual**), since if we don't consider the ratio between them, the result could be bias.
+
+Therefore I create plots of absolute and relative relation of those numbers for every tombs:
 
 ``` {r plot tp}
-
+# Absolute plot
+df_long <- pivot_longer(tomb_parameter, cols = c(MNI, `analysed individuals`),
+                        names_to = "Type", values_to = "Count")
+ggplot(df_long, aes(x = Tomb, y = Count, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge")
 
 ```
