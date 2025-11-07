@@ -2,5 +2,30 @@
 title: "first work"
 output: html_document
 ---
+``` {r setup, include=FALSE}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+```
 
-stuff test git
+## Descriptive plot to get to know data
+### Tomb parameter
+Clean the data: 
+- delete single entries for T46, T56, T62
+- create entries for them as 1 tomb but with difference MNIs (as project partner wants)
+
+``` {r tp}
+tomb_parameter <- read_excel("Data/raw/Statistics project LMU_tomb parameters_Irene Hoegner_new.xlsx", range = "A2:N12")
+combined_tombs <- 
+tomb_parameter |> rename(Tomb = 1) |> 
+  slice(-c(4, 7, 9, 10)) |>
+  
+
+```
+
+The important info in this dataset: "MNI" and "after merging samples from same individual" (**minimum # individuals** vs **actual successful # individual**), since if we don't consider the ratio between them, the result could be bias.
+
+``` {r plot tp}
+
+
+```
