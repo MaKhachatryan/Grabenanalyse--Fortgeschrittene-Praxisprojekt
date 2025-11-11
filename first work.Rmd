@@ -1,0 +1,341 @@
+---
+title: "first work"
+output: html_document
+---
+``` {r setup, include=FALSE}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(igraph)
+library(ggraph)
+```
+
+## Descriptive plot to get to know data
+### Tomb parameter
+Clean the data: 
+
+- delete single entries for T46, T56, T62
+- create entries for them as 1 tomb but with difference MNIs (as project partner wants)
+- delete irrelevant tombs (only Amfissa, and Elateia T31, T36, T46, T50, T56, T62, T67)
+- impute MNI 20 for T67 as project partner estimated
+
+``` {r tp}
+tomb_parameter <- read_excel("Data/raw/Statistics project LMU_tomb parameters_Irene Hoegner_new.xlsx", range = "A2:N12")
+combined_tombs <- tomb_parameter |> slice(rep(10, 4)) |> mutate(
+  "MNI (minimum number of individuals)" = c(250, 300, 350, 400),
+  "percentage of successful samples" = `TWIST capture samples included in kinship analysis` / `MNI (minimum number of individuals)`,
+  `...1` = paste("Elateia T 46,56,62 (MNI ", c(250, 300, 350, 400), ")", sep = ""))
+tomb_parameter <- rbind(tomb_parameter, combined_tombs)
+tomb_parameter <- tomb_parameter |> rename(Tomb = 1, MNI = 2, `analysed individuals` = 12) |>
+  slice(-c(4, 5, 7, 8, 10)) |> mutate(MNI = as.integer(MNI))
+tomb_parameter$MNI[5] <- 20
+```
+
+The important info in this dataset: "MNI" and "after merging samples from same individual" (**minimum # individuals** vs **actual successful analysed # individual**), since if we don't consider the ratio between them, the result could be bias.
+
+Therefore I create plots of absolute and relative relation of those numbers for every tombs:
+
+``` {r plot tp}
+# Absolute plot
+df_long <- pivot_longer(tomb_parameter, cols = c(MNI, `analysed individuals`),
+                        names_to = "Type", values_to = "Count")
+ggplot(df_long, aes(x = Tomb, y = Count, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip()
+
+
+tomb_parameter |>
+  mutate(`not analysed` = MNI - `analysed individuals`) |>
+  pivot_longer(cols = c(`not analysed`, `analysed individuals`),
+               names_to = "Type", values_to = "Count") |>
+  ggplot(aes(x = Tomb, y = Count, fill = Type)) +
+  geom_bar(stat = "identity", position = "fill") +
+  ylab("Proportion of MNI") +
+  scale_y_continuous(labels = scales::percent) +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  coord_flip()
+
+```
+
+Comment:
+
+- Amfissa, Elateia T47 got the most successful analysed ratio
+- Based on the absolute plot we get the idea of how big/crowded each tomb is
+
+### Individual metadata
+Basic descriptive plots for basic information
+
+Note: filter out Lapoutsi, filter out irrelevant tombs, treating 46 56 62 as one.
+
+#### Sex 
+
+``` {r im 1}
+individual_metadata <- read_excel("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx")
+individual_metadata <- individual_metadata |> 
+  filter(Site != "Lapoutsi", Tomb %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) |>
+  mutate(Tomb = ifelse(Tomb %in% c("Tomb 46", "Tomb 56", "Tomb 62"), "Tomb 46 56 62", Tomb))
+  
+individual_metadata |> ggplot(mapping = aes(x = Sex, fill = Sex, y = after_stat(prop))) + 
+  geom_bar(aes(y = after_stat(count / sum(count))), width = 0.5) +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent)
+
+
+individual_metadata |>
+  count(Tomb, Sex) |>
+  group_by(Tomb) |>
+  mutate(prop = n / sum(n)) |>
+  ggplot(aes(x = Tomb, y = prop, fill = Sex)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  ylab("Proportion of Sex") +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  coord_flip()
+```
+
+Comment:
+
+- Overall there are more analysed male then female
+- Different ratio of male and female in each tomb separately
+- Just a hypothesis: some tombs might represent family (balanced sex ratio, more related), some tombs use for male dominated group like warrior,... (more male, less related)? (but maybe its not our job to give out specific comment like this)
+
+#### Skeletal element
+``` {r im 2}
+individual_metadata |>
+  count(Tomb, `Skeletal element`) |>
+  group_by(Tomb) |>
+  mutate(prop = n / sum(n)) |>
+  ggplot(aes(x = `Skeletal element`, y = prop, fill = `Skeletal element`)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Tomb) +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none") +
+  ylab("Proportion of Skeletal Elements") +
+  xlab("Skeletal Element")
+
+
+
+```
+
+Comment:
+
+- As explained, petrous bone yields the best preservation of aDNA. Therefore tombs with many petrous bone sample may appear more related solely because of the good aDNA preservation. Some might appear less related just because we have less data / less qualified preservation of aDNA.
+- **For further improvement**: clean data so that the skeletal element counts every piece of bone seperately. Eg. instead of **1 talus+tooth** we have **1 talus and 1 tooth**. So that the information dont overlapp.
+
+#### Age estimation
+``` {r im 3}
+individual_metadata |>
+  count(Tomb, `Age estimation`) |>
+  group_by(Tomb) |>
+  mutate(prop = n / sum(n)) |>
+  ggplot(aes(x = `Age estimation`, y = prop, fill = `Age estimation`)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Tomb) +
+  scale_y_continuous(labels = scales::percent) +
+  theme(legend.position = "none") +
+  scale_x_discrete(labels = label_wrap(7)) + 
+  ylab("Proportion of Age") +
+  xlab("Age estimation")
+
+
+
+```
+
+Comment:
+
+- "adult or undefined" is very confusing?? is it high because they are adult or because we dont know??
+- adult is more likely to die and get buried (obviously)
+- subadult????????
+- we could consider it because "age" may correlate with DNA preservation? juveniles may have more fragile bones and therefore could not be analysed, not because they were not buried there?
+
+
+### Kinship result
+Clean data:
+
+- Re-label relationship under threshold
+- Extract Individual ID to merge
+- Merge together with (original) "Individual metadata" to get the tomb
+- Filter out Lapoutsi
+- Delete irrelevant tombs + group tombs
+
+
+``` {r kr 1}
+kinship_result <- read_excel("Data/raw/Statistics project LMU_READv2 kinship results_Irene Hoegner.xlsx")
+og_individual_metadata <- read_excel("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx")
+
+kinship_result <- kinship_result |>
+  mutate(Rel = case_when(
+    Rel == "First Degree"  & OverlapNSNPs < 500   ~ "Uncertain",
+    Rel == "Second Degree" & OverlapNSNPs < 2000  ~ "Uncertain",
+    Rel == "Third Degree"  & OverlapNSNPs < 15000 ~ "Uncertain",
+    TRUE ~ Rel
+  ),
+  "Individual1 ID" = substr(Ind1, 1, 6),
+  "Individual2 ID" = substr(Ind2, 1, 6)) |>
+  left_join(og_individual_metadata, by = c("Individual1 ID" = "Individual ID")) |>
+  rename(Tomb1 = Tomb) |>
+  left_join(og_individual_metadata, by = c("Individual2 ID" = "Individual ID")) |>
+  rename(Tomb2 = Tomb) |> 
+  select(names(kinship_result), Tomb1, Tomb2) |>
+  mutate(
+    "Individual1 ID" = substr(Ind1, 1, 6),
+    "Individual2 ID" = substr(Ind2, 1, 6)
+  ) |>
+  filter(!startsWith(`Ind1`, "LPS") & !startsWith(`Ind2`, "LPS"),
+         Tomb1 %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67"),
+         Tomb2 %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) |>
+  mutate(
+    Tomb1 = ifelse(Tomb1 %in% c("Tomb 46", "Tomb 56", "Tomb 62"), "Tomb 46 56 62", Tomb1),
+    Tomb2 = ifelse(Tomb2 %in% c("Tomb 46", "Tomb 56", "Tomb 62"), "Tomb 46 56 62", Tomb2)
+  )
+
+# COUNT PAIRS
+count_pairs <- kinship_result |> group_by(Tomb1, Tomb2, Rel) |> summarize(num_pairs = n())
+internal_relation <- count_pairs[count_pairs$Tomb1 == count_pairs$Tomb2, ]  # 2 Inds inside same tomb
+internal_relation
+external_relation <- count_pairs[count_pairs$Tomb1 != count_pairs$Tomb2, ]  # 2 Inds inside different tomb
+external_relation
+
+internal_relation |>
+  group_by(Tomb1) |>
+  mutate(prop = num_pairs / sum(num_pairs)) |>
+  ggplot(aes(x = Rel, y = prop, fill = Rel)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Tomb1) +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = scales::percent) +
+  ylab("Proportion of Pairs") +
+  xlab("Relationship")
+
+
+```
+
+Comment:
+
+- Very low related ratio
+- Improvement: Devide binary into "Related" and "Not related"
+
+
+``` {r kr 2}
+binary_kr <- internal_relation |>
+  mutate(Rel_group = case_when(
+    Rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree") ~ "Related",
+    Rel == "Uncertain" ~ "Uncertain",
+    Rel %in% c("Unrelated", "Unrelated/Consistent with Third Degree") ~ "Unrelated"
+  ))
+
+binary_kr |>
+  group_by(Tomb1) |>
+  mutate(prop = num_pairs / sum(num_pairs)) |>
+  ggplot(aes(x = Rel_group, y = prop, fill = Rel_group)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Tomb1) +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent) +
+  ylab("Proportion of Pairs") +
+  xlab("Relationship")
+
+
+
+# TEST NETWORK VISUALIZATION
+network_kr <- kinship_result %>% 
+  mutate(
+    Related = case_when(
+      Rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree") ~ TRUE,
+      Rel == "Uncertain" ~ FALSE,
+      Rel %in% c("Unrelated", "Unrelated/Consistent with Third Degree") ~ NA
+    )
+  ) %>% 
+  filter(Related == TRUE)
+
+edges <- network_kr %>% 
+  select(`Individual1 ID`, `Individual2 ID`, Tomb1, Tomb2)
+
+# Create nodes using both columns and their tombs
+nodes <- edges %>%
+  transmute(name = `Individual1 ID`, Tomb = Tomb1) %>%
+  bind_rows(edges %>% transmute(name = `Individual2 ID`, Tomb = Tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+# Create graph
+g <- graph_from_data_frame(d = edges, vertices = nodes, directed = FALSE)
+
+# Plot
+ggraph(g, layout = "fr") + 
+  geom_edge_link(color = "grey70") +
+  geom_node_point(aes(color = Tomb), size = 3) +
+  geom_node_text(aes(label = name), vjust = -1, size = 2) +
+  theme_void() +
+  scale_color_brewer(palette = "Set2")
+  
+```
+
+Comment:
+
+- Maybe unnecessary 
+
+
+## Model
+### Research question 1
+Develop and validate statistical models to predict the difference between observed and potential relatedness, using tomb parameters (length of use, estimated number of burials, sample success rate) as predictor variables, while accounting for potential confounding factors.
+
+
+Core idea: ratio model. Model the number of related individuals out of estimated burials (proportion of related individuals):
+
+- Use tomb_parameter, merging the number of related pairs
+- Predictors: length of use, proportion of analysed individual 
+- confounder: skeletal element (use proportion to eliminating bias causing by absolute number)
+
+
+``` {r rs1}
+related_pairs <- binary_kr |> group_by(Tomb1, Rel_group) |> summarize(sum(num_pairs)) |>
+  filter(Rel_group == "Related")
+related_pairs
+
+# Now I merge the # related pairs manually
+rs1 <- tomb_parameter |> mutate(related_pairs = c(81, 1, 18, 13, 1, rep(82, 4)))
+# Create relative number for skeletal element and # analysed individual
+rs1 <- rs1 |> mutate(
+  prop_petrousbones = `petrous bones` / (`petrous bones` + teeth + `talus/phalanx` + `other`),
+  prop_teeth = teeth / (`petrous bones` + teeth + `talus/phalanx` + `other`),
+  prop_talus = `talus/phalanx` / (`petrous bones` + teeth + `talus/phalanx` + `other`),
+  prop_other = other / (`petrous bones` + teeth + `talus/phalanx` + `other`),
+  prop_analysedind = `analysed individuals` / MNI
+)
+rs1
+
+# Modelling
+model1 <- glm(cbind(related_pairs, MNI - related_pairs) ~ `length of use of tomb` + prop_analysedind + prop_petrousbones + prop_teeth + prop_talus + prop_other,
+    family = binomial(link = "logit"), data = rs1)
+summary(model1)
+
+```
+
+
+### Research question 2
+Build predictive models to estimate relatedness patterns using individual-level covariates (sex, age and skeletal element of sample), considering that some of these factors may be confounded with DNA preservation quality and sampling success
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
