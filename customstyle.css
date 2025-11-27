@@ -1,0 +1,38 @@
+/* ------------------ */
+/* TITLE SLIDE ONLY   */
+/* ------------------ */
+.reveal h1.title {
+  font-size: 1.6em !important;
+}
+
+.reveal .quarto-title-author {
+  font-size: 0.65em !important;   
+}
+
+.reveal .quarto-title-affiliation {
+  font-size: 0.8em !important;
+}
+
+.reveal .quarto-title-institute {
+  font-size: 0.8em !important;
+}
+
+/* ------------------ */
+/* OTHER SLIDES       */
+/* ------------------ */
+.reveal section:not(.title-slide) h1 {
+  font-size: 1.2em !important;
+}
+
+.reveal section:not(.title-slide) h2 {
+  font-size: 1em !important;
+}
+
+.reveal section:not(.title-slide) h3 {
+  font-size: 0.9em !important;
+}
+
+.reveal section:not(.title-slide) p,
+.reveal section:not(.title-slide) li {
+  font-size: 0.8em !important;
+}
