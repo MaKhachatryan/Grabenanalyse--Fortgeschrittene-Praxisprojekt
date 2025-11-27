@@ -36,3 +36,29 @@
 .reveal section:not(.title-slide) li {
   font-size: 0.8em !important;
 }
+
+
+/*-- scss:defaults --*/
+
+/*-- scss:rules --*/
+
+/* Slide number styles */
+html .reveal.has-logo .slide-number{
+  top: initial !important;
+  right: 8px !important;
+  bottom: 8px !important;
+}
+
+/* Logo style */
+html .reveal .slide-logo{
+  display : block !important;
+  position: fixed !important;
+  bottom: initial !important;
+  right: 12px !important;
+  max-height: 3rem !important;
+  height: 100% !important;
+  width: auto !important;
+  z-index: 2 !important;
+}
+
+
