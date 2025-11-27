@@ -79,7 +79,9 @@ Note: filter out Lapoutsi, adding Tombs 46 56 62 as a group
 ``` {r im 1}
 individual_metadata <- read_excel("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx")
 individual_metadata <- individual_metadata |> 
-  filter(Site != "Lapoutsi", Tomb %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) 
+  filter(Site != "Lapoutsi", Tomb %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) |>
+  mutate(`Age estimation` = if_else(`Age estimation` == "subadult?", "subadult", `Age estimation`),
+         `Age estimation` = if_else(`Age estimation` == "adolescent or young adult", "adult or undefined", `Age estimation`))
 
 tomb_group_rows <- individual_metadata |>
   filter(Tomb %in% c("Tomb 46", "Tomb 56", "Tomb 62")) |>
@@ -112,6 +114,7 @@ Comment:
 - Just a hypothesis: some tombs might represent family (balanced sex ratio, more related), some tombs use for male dominated group like warrior,... (more male, less related)? (but maybe its not our job to give out specific comment like this)
 
 #### Skeletal element
+**Absolute number of skeletal element in every tomb**
 ``` {r im 2}
 individual_metadata |>
   count(Tomb, `Skeletal element`) |>
@@ -126,7 +129,6 @@ individual_metadata |>
   ylab("Proportion of Skeletal Elements") +
   xlab("Skeletal Element")
 ```
-
 Comment:
 
 - As explained, petrous bone yields the best preservation of aDNA. Therefore tombs with many petrous bone sample may appear more related solely because of the good DNA preservation. Some might appear less related just because we have less data / less qualified preservation of aDNA.
