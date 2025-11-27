@@ -1,0 +1,385 @@
+---
+title: "Denominator + Nonsensical covariates combination + Network"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(igraph)
+library(ggraph)
+library(purrr)
+```
+## Denominator
+**Question:** MNI cannot be interpreted as the population unless sampling was random, but it wasn’t. So what should be the denominator (First selection layer)?
+
+**Before:** Using MNI to calculate the maximum number of pairs.
+
+Problem: 
+
+- Numerator = # observed related pairs only come from the **analysed individuals**
+- Using MNI creates sample selection bias, since we assume the population (MNI) have the similar kinship patterns with the analysed subset (the analysed subset is not randomly selected)
+
+$\Rightarrow$ **# Analysed individuals** as denominator *(= "after merging samples from same individual", column L in tomb_parameter)*
+
+
+## Nonsensical covariate combinations
+**Question:** Check for nonsensical covariate combinations to see if they are "even modelable" before running models.
+
+### Check for nonsensical covariate combinations
+
+
+``` {r p, echo=FALSE} 
+# Pre-processing data
+individual_metadata <- read_excel("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx")
+individual_metadata <- individual_metadata |> 
+  filter(Site != "Lapoutsi", Tomb %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) |>
+  mutate(`Age estimation` = if_else(`Age estimation` == "subadult?", "subadult", `Age estimation`),
+         `Age estimation` = if_else(`Age estimation` == "adolescent or young adult", "adult or undefined", `Age estimation`))
+
+tomb_group_rows <- individual_metadata |>
+  filter(Tomb %in% c("Tomb 46", "Tomb 56", "Tomb 62")) |>
+  mutate(Tomb = "Tomb 46 56 62")
+
+individual_metadata <- bind_rows(individual_metadata, tomb_group_rows)
+```
+
+#### Skeletal element
+**Absolute number of skeletal element in every tomb**
+``` {r 1, echo=FALSE}
+individual_metadata |>
+  count(Tomb, `Skeletal element`) |>
+  group_by(Tomb) |>
+  mutate(prop = n / sum(n)) |>
+  ggplot(aes(x = `Skeletal element`, y = prop, fill = `Skeletal element`)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Tomb) +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none") +
+  ylab("Proportion of Skeletal Elements") +
+  xlab("Skeletal Element")
+```
+
+**Absolute number of skeletal element as Sex in every tomb**
+``` {r 2, echo=FALSE}
+individual_metadata |>
+  count(Tomb, `Skeletal element`, Sex) |>
+  ggplot(aes(x = `Skeletal element`, y = n, fill = Sex)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ Tomb) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylab("Count") +
+  xlab("Skeletal Element")
+```
+
+**Relative number of skeletal element as Sex in every tomb**
+``` {r 3, echo=FALSE}
+individual_metadata |>
+  count(Tomb, `Skeletal element`, Sex) |>
+  group_by(Tomb, `Skeletal element`) |>
+  mutate(prop = n / sum(n)) |>
+  ggplot(aes(x = `Skeletal element`, y = prop, fill = Sex)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ Tomb) +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylab("Proportion of Sex within Skeletal Element") +
+  xlab("Skeletal Element")
+```
+
+
+**Absolute number of skeletal element as Age in every tomb**
+``` {r 4, echo=FALSE}
+individual_metadata |>
+  count(Tomb, `Skeletal element`, `Age estimation`) |>
+  ggplot(aes(x = `Skeletal element`, y = n, fill = `Age estimation`)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ Tomb) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylab("Count") +
+  xlab("Skeletal Element")
+```
+
+**Relative number of skeletal element as Age in every tomb**
+``` {r 5, echo=FALSE}
+individual_metadata |>
+  count(Tomb, `Skeletal element`, `Age estimation`) |>
+  group_by(Tomb, `Skeletal element`) |>
+  mutate(prop = n / sum(n)) |>
+  ggplot(aes(x = `Skeletal element`, y = prop, fill = `Age estimation`)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ Tomb) +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylab("Proportion of Sex within Skeletal Element") +
+  xlab("Skeletal Element")
+```
+
+
+
+**Absolute and Relative number of Sex as Age in every tomb**
+
+``` {r 6, echo=FALSE}
+individual_metadata |>
+  count(Tomb, `Age estimation`, Sex) |>
+  ggplot(aes(x = `Age estimation`, y = n, fill = Sex)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ Tomb) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylab("Count") +
+  xlab("Age Estimation")
+
+
+individual_metadata |>
+  count(Tomb, `Age estimation`, Sex) |>
+  group_by(Tomb) |>
+  mutate(prop = n / sum(n)) |>
+  ggplot(aes(x = `Age estimation`, y = prop, fill = Sex)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ Tomb) +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylab("Proportion of Sex") +
+  xlab("Age Estimation")
+
+```
+
+
+#### Problems:
+Sparse data. In some tombs:
+
+- lack certain skeletal elements
+- some skeletal elements only appear in one sex or age
+
+$\Rightarrow$ Problem: 
+
+- Unstable model, effect of the missing skeletal element can not be estimated for that tomb
+- Collinearity: eg. Tomb 67 has only female phalanx $\Rightarrow$ perfect collinearity between skeletal element & sex?
+
+Previous problem with the GLM logistic model:
+
+- With-in tomb correlation (same preservation environment,...)
+- Too many parameters with too few observation (tomb-level data set)
+
+**Solution: ** Mixed logistic modelling on individual-level data. Especially GLMM can handle categorical predictors with some levels missing in some cluster. It also assumes MAR, which is very realistic in our case.
+
+Source:
+
+https://stats.stackexchange.com/questions/626546/how-does-lme4-handle-participants-who-only-have-data-for-only-one-level-of-a-cat
+
+https://www.sciencedirect.com/science/article/pii/S0015028224002371
+
+
+
+## Network visualization
+### All tombs together
+``` {r kr 2, echo=FALSE}
+kinship_result <- read_excel("Data/raw/Statistics project LMU_READv2 kinship results_Irene Hoegner_corr.xlsx")
+og_individual_metadata <- read_excel("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx")
+
+kinship_result <- kinship_result |>
+  mutate(Rel = if_else(Low_data == "yes", "Uncertain", Rel, missing = Rel),
+  "Individual1 ID" = substr(Ind1, 1, 6),
+  "Individual2 ID" = substr(Ind2, 1, 6)) |>
+  left_join(og_individual_metadata, by = c("Individual1 ID" = "Individual ID")) |>
+  rename(Tomb1 = Tomb) |>
+  left_join(og_individual_metadata, by = c("Individual2 ID" = "Individual ID")) |>
+  rename(Tomb2 = Tomb) |> 
+  select(names(kinship_result), Tomb1, Tomb2) |>
+  mutate(
+    "Individual1 ID" = substr(Ind1, 1, 6),
+    "Individual2 ID" = substr(Ind2, 1, 6)
+  ) |>
+  filter(!startsWith(`Ind1`, "LPS") & !startsWith(`Ind2`, "LPS"),
+         Tomb1 %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67"),
+         Tomb2 %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) 
+
+grouped_tombs <- c("Tomb 46", "Tomb 56", "Tomb 62")
+group_name <- "Tomb 46 56 62"
+
+kinship_group_pairs <- kinship_result |>
+  filter(Tomb1 %in% grouped_tombs | Tomb2 %in% grouped_tombs) |>
+  
+  # Rename the Tomb columns in the DUPLICATE rows to reflect the new group
+  mutate(
+    Tomb1 = ifelse(Tomb1 %in% grouped_tombs, group_name, Tomb1),
+    Tomb2 = ifelse(Tomb2 %in% grouped_tombs, group_name, Tomb2)
+  )
+
+kinship_result <- bind_rows(kinship_result, kinship_group_pairs)
+
+# COUNT PAIRS
+count_pairs <- kinship_result |> group_by(Tomb1, Tomb2, Rel) |> summarize(num_pairs = n())
+internal_relation <- count_pairs[count_pairs$Tomb1 == count_pairs$Tomb2, ]  # 2 Inds inside same tomb
+
+
+
+# TEST NETWORK VISUALIZATION
+network_kr <- kinship_result %>% 
+  mutate(
+    Related = case_when(
+      Rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree") ~ TRUE,
+      Rel == "Uncertain" ~ FALSE,
+      Rel %in% c("Unrelated", "Unrelated/Consistent with Third Degree") ~ NA
+    )
+  ) %>% 
+  filter(Related == TRUE)
+
+edges <- network_kr %>% 
+  select(`Individual1 ID`, `Individual2 ID`, Tomb1, Tomb2)
+
+# Create nodes using both columns and their tombs
+nodes <- edges %>%
+  transmute(name = `Individual1 ID`, Tomb = Tomb1) %>%
+  bind_rows(edges %>% transmute(name = `Individual2 ID`, Tomb = Tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+# Create graph
+g <- graph_from_data_frame(d = edges, vertices = nodes, directed = FALSE)
+
+# Plot
+ggraph(g, layout = "fr") + 
+  geom_edge_link(color = "grey70") +
+  geom_node_point(aes(color = Tomb), size = 3) +
+  geom_node_text(aes(label = name), vjust = -1, size = 2) +
+  theme_void() +
+  scale_color_brewer(palette = "Set2")
+```
+
+
+### Separated tombs
+``` {r sep, echo=FALSE}
+tombs <- unique(nodes$Tomb)
+
+plots <- map(tombs, function(t) {
+  
+  # select edges where either individual belongs to tomb t
+  edges_t <- edges %>%
+    filter(Tomb1 == t | Tomb2 == t)
+  
+  # nodes involved
+  nodes_t <- nodes %>%
+    filter(name %in% unique(c(edges_t$`Individual1 ID`, edges_t$`Individual2 ID`)))
+  
+  # graph
+  g_t <- graph_from_data_frame(d = edges_t, vertices = nodes_t, directed = FALSE)
+  
+  # plot
+  ggraph(g_t, layout = "fr") + 
+    geom_edge_link(color = "grey70") +
+    geom_node_point(aes(color = Tomb), size = 3) +
+    geom_node_text(aes(label = name), vjust = -1, size = 2) +
+    theme_void() +
+    ggtitle(paste(t)) +
+    scale_color_brewer(palette = "Set2")
+})
+
+
+for(p in plots) print(p)
+
+
+```
+
+
+
+#### Grouped tomb 46 56 62 version
+``` {r 3 tombs, echo=FALSE}
+kinship_result_grouped <- kinship_result %>%
+  mutate(
+    Tomb1 = ifelse(Tomb1 %in% grouped_tombs, group_name, Tomb1),
+    Tomb2 = ifelse(Tomb2 %in% grouped_tombs, group_name, Tomb2)
+  )
+
+network_grouped <- kinship_result_grouped %>%
+  mutate(
+    Related = case_when(
+      Rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree") ~ TRUE,
+      Rel == "Uncertain" ~ FALSE,
+      TRUE ~ NA
+    )
+  ) %>%
+  filter(Related == TRUE)
+
+edges_g <- network_grouped %>%
+  select(`Individual1 ID`, `Individual2 ID`, Tomb1, Tomb2)
+
+nodes_g <- edges_g %>%
+  transmute(name = `Individual1 ID`, Tomb = Tomb1) %>%
+  bind_rows(edges_g %>% transmute(name = `Individual2 ID`, Tomb = Tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+nodes_g$Tomb <- droplevels(factor(nodes_g$Tomb))
+
+g_g <- graph_from_data_frame(d = edges_g, vertices = nodes_g, directed = FALSE)
+
+ggraph(g_g, layout = "fr") +
+  geom_edge_link(color = "grey70") +
+  geom_node_point(aes(color = Tomb), size = 3) +
+  geom_node_text(aes(label = name), vjust = -1, size = 2) +
+  theme_void() +
+  ggtitle("All tombs with grouped Tomb 46 56 62") +
+  scale_color_brewer(palette = "Set2")
+```
+
+#### Tomb 46 56 62 only
+
+``` {r only, echo=FALSE}
+group_name <- "Tomb 46 56 62"
+
+network_grouped <- kinship_result_grouped %>%
+  # keep only pairs where at least one side is the grouped tomb
+  filter(Tomb1 == group_name | Tomb2 == group_name) %>%
+  
+  mutate(
+    Related = case_when(
+      Rel %in% c("First Degree", "IdenticalTwins/SameIndividual", 
+                 "Second Degree", "Third Degree") ~ TRUE,
+      Rel == "Uncertain" ~ FALSE,
+      TRUE ~ NA
+    )
+  ) %>%
+  filter(Related == TRUE)
+
+edges_g <- network_grouped %>%
+  select(`Individual1 ID`, `Individual2 ID`, Tomb1, Tomb2)
+
+nodes_g <- edges_g %>%
+  transmute(name = `Individual1 ID`, Tomb = Tomb1) %>%
+  bind_rows(edges_g %>% transmute(name = `Individual2 ID`, Tomb = Tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+nodes_g$Tomb <- droplevels(factor(nodes_g$Tomb))
+
+g_g <- graph_from_data_frame(d = edges_g, vertices = nodes_g, directed = FALSE)
+
+ggraph(g_g, layout = "fr") +
+  geom_edge_link(color = "grey70") +
+  geom_node_point(aes(color = Tomb), size = 3) +
+  geom_node_text(aes(label = name), vjust = -1, size = 2) +
+  theme_void() +
+  ggtitle("Network: Only pairs involving grouped Tomb 46 56 62") +
+  scale_color_brewer(palette = "Set2")
+
+```
+
+
+**Comment:**
+
+- Different ratio in whether the related pairs or in the same tombs or in different tombs
+- But just by looking, some tombs really point out that they tends to have internal relatedness more than random relatedness to different tombs.
+
+
+
+
+
+
+
+
+
+
+
