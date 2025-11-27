@@ -1,0 +1,62 @@
+---
+title: "Grave Analysis Project"
+subtitle: "Fortgeschrittenes Praxisprojekt - WS 25/26"
+author:
+  - name: "Arsine Chinaryan, Anh Hoang Minh Dang, Felicia Francis Immanuel, Margarita Khachatryan"
+    affiliation: "Project partners: Irene Högner, Alissa Mittnik"
+institute: "Lmu München"
+
+format: 
+  revealjs:
+    css: customstyle.css
+    embed-resources: true
+    slide-number: c
+editor: visual
+---
+
+## Outline
+
+**1. Overview & Terminology**
+
+-   Grave Analysis Project\
+-   Description of data sets\
+-   Research questions
+
+**2. Data Analysis**
+
+**3. Discussion**
+
+## Outline
+
+**1. Overview & Terminology**
+
+-   Grave Analysis Project\
+-   Description of data sets\
+-   Research questions
+
+[**2. Data Analysis**]{style="color:lightgray;"}\
+
+[**3. Discussion**]{style="color:lightgray;"}\
+
+## Overview of the Project
+
+**Grave Analysis**: How do different factors influence the ratio of relatedness and unrelatedness in a collective tomb from Mycenaean times?
+
+**Research Background**: The project investigates who was buried together in Mycenaean collective tombs using genetic and osteological data. The dataset provides initial insights into multi-generational burial organization and social belonging.
+
+<div style="text-align: center;">
+  <img src="tombs.png" style="width: 60%;"/>
+</div>
+
+## Description of data sets
+
+- **Survey**: Retrospective cross-sectional analysis with temporal parameters  
+- **Two burial sites**
+  - Amfissa (tholos)
+  - Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67  
+- **Note**: T46, T56, and T62 are also grouped into one fictitious tomb
+- **Analyzed data**
+  - **Tomb parameters:** estimated individuals, sampling success, length of use …
+  - **Individual metadata:** individual ID, tomb, skeletal element, age …
+  - **Kinship results:** relationship type, kinship coefficient, SNP overlap …
+
