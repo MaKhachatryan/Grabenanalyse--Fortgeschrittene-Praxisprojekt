@@ -5,6 +5,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(here)
+source(here::here("environmentSetUp.R"))
 library(readxl)
 library(ggplot2)
 library(dplyr)
@@ -35,8 +37,7 @@ $\Rightarrow$ **# Analysed individuals** as denominator *(= "after merging sampl
 
 ``` {r p, echo=FALSE} 
 # Pre-processing data
-individual_metadata <- read_excel("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx")
-individual_metadata <- individual_metadata |> 
+individual_metadata <- og_individual_metadata |> 
   filter(Site != "Lapoutsi", Tomb %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) |>
   mutate(`Age estimation` = if_else(`Age estimation` == "subadult?", "subadult", `Age estimation`),
          `Age estimation` = if_else(`Age estimation` == "adolescent or young adult", "adult or undefined", `Age estimation`))
