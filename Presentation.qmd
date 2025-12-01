@@ -24,7 +24,7 @@ editor: visual
 -   Description of data sets\
 -   Research questions
 
-**2. Data Analysis**
+**2. Data Analysis & Statistical Modelling**
 
 **3. Discussion**
 
@@ -36,7 +36,7 @@ editor: visual
 -   Description of data sets\
 -   Research questions
 
-[**2. Data Analysis**]{style="color:lightgray;"}\
+[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}\
 
 [**3. Discussion**]{style="color:lightgray;"}\
 
@@ -52,12 +52,210 @@ editor: visual
 
 ## Description of data sets
 
--   **Survey**: Retrospective cross-sectional analysis with temporal parameters\
 -   **Two burial sites**
+
     -   Amfissa (tholos)
     -   Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67\
+
 -   **Note**: T46, T56, and T62 are also grouped into one fictitious tomb
+
 -   **Analyzed data**
+
     -   **Tomb parameters:** estimated individuals, sampling success, length of use …
     -   **Individual metadata:** individual ID, tomb, skeletal element, age …
     -   **Kinship results:** relationship type, kinship coefficient, SNP overlap …
+
+## Analyzed data
+
+### Tomb parameters
+
+-   **Estimated number of burials**: MNI (Minimum number of individuals)
+-   **Sample numbers**: Original number of samples, Same individual sampled twice, Max number of individuals
+-   **Skeletal element of samples**: Petrous bones, Teeth, Talus/Phalanx, other, control
+-   **Genetic Analyses**: TWIST capture samples included in kinship analyses, after merging samples from same individuals
+-   **Length of use tomb**
+-   **Percentage of successful samples**
+
+## Analyzed data
+
+### Individual metadata
+
+-   Analysis ID, Individual ID, Site, 1240k SNPs, Sex, Tomb, Skeletal Element, Age Estimation
+
+### Kinship results
+
+-   PairIndividuals, Rel, Zup, Zdown, P0_mean, Nonnormalized_P0, Nonnormalized_P0_serr, 1st_Type, Perc_Win_1stdeg_P0, OverlapNSNPs, NSNPsXNorm, KinshipCoefficient, KinshipCoefficient_95percCI\[min,max\], Low_data, Ind1, Ind2, KinshipCoefficient_min, KinshipCoefficient_max
+
+## Research Questions
+
+1.  Develop and validate statistical models to predict the difference between observed and potential relatedness, using tomb parameters (length of use, estimated number of burials, sample success rate) as predictor variables, while accounting for potential confounding factors
+2.  Build predictive models to estimate relatedness patterns using individual-level covariates (sex, age and skeletal element of sample), considering that some of these factors may be confounded with DNA preservation quality and sampling success
+
+<div>
+
+→ How different are relatedness patterns in different tombs when statistically correcting for selection biases and confounding variables?
+
+</div>
+
+## Outline
+
+[**1. Overview & Terminology**]{style="color:lightgray;"}
+
+**2. Data Analysis & Statistical Modelling**
+
+-   Data Evaluation
+-   First Model Idea: GLM
+-   Second Model Idea: GLMM
+-   Final Model: nested GLMM
+
+[**3. Discussion**]{style="color:lightgray;"}
+
+## Data Evaluation
+
+(this is where the plot of description of the data (including searching for the nonsensical covariates) and probably the network plot?, and points to point out from the data)
+
+## Data Issues
+
+### Sparse Data
+
+-   Some tombs lack certain skeletal elements entirely
+-   Some skeletal elements appear only in one sex or one age group
+
+## First Model Idea: GLM
+
+-   Outcome: related or not related
+    -   $Y_{ij} \in \{0,1\}$ (1 = related, 0 = unrelated)
+-   Natural choice: **Logistic regression GLM**
+
+**Model specification**
+
+$$
+Y_{ij} \sim \text{Bernoulli}(p_{ij})
+$$
+
+$$
+\text{logit}(p_{ij})
+= \beta_0 
++ \beta_1 x_{ij}
++ \beta_2 x_{ij}
++ \beta_3 x_{ij}
++ \cdots
+$$
+
+-   Predictors from **tomb parameters - level data & individual - level metadata**
+-   Goal:
+    -   Estimate how these covariates affect the probability of a pair being related
+    -   Predicts the difference between observed and potential relatedness
+
+## First Model Idea: GLM
+
+### Problem
+
+**1. Data Issues**
+
+-   Sparse data. In some tombs:
+    -   lack certain skeletal elements
+    -   some skeletal elements only appear in one sex or age
+
+⇒ Problem:
+
+-   Unstable model, effect of the missing skeletal element can not be estimated for that tomb
+-   Collinearity: eg. Tomb 67 has only female phalanx ⇒ perfect collinearity between skeletal element & sex?
+
+## First Model Idea: GLM
+
+**2. Model Issues**
+
+-   With-in tomb correlation (same preservation environment,…)
+-   Too many parameters with too few observation (tomb-level data set)
+
+**Solution:** Mixed logistic modelling on individual-level data. Especially GLMM can handle categorical predictors with some levels missing in some cluster. It also assumes MAR, which is very realistic in our case.
+
+## Second Model Idea: GLMM
+
+To address the GLM issues, we allow observations from the **same tomb**\
+to share a common random effect.
+
+**Model**
+
+$$
+Y_{ij} \sim \text{Bernoulli}(p_{ij})
+$$
+
+$$
+\text{logit}(p_{ij})
+= \beta_0 
++ \beta_1 x_{ij}^{(\text{covariates})}
++ u_{\text{tomb}[ij]}
+$$
+
+where
+
+-   $u_{\text{tomb}} \sim \mathcal{N}(0, \sigma^2_{\text{tomb}})$
+-   captures within-tomb correlation
+-   stabilizes estimates for sparse or unbalanced tombs
+-   reduces bias from tomb-specific preservation environments
+
+## Second Model Idea: GLMM
+
+### Problem
+
+-   Each *individual* appears in multiple pairs\
+    → Individual A is paired with B, C, D, …
+
+-   Therefore, observations containing the same individual are **not independent**
+
+-   GLMM with only a tomb random effect assumes pairs from the same tomb cluster together\
+    but ignores clustering at the individual level.
+
+-   This leads to:
+
+    -   Residual correlation between pairs sharing the same individual
+    -   Potential bias when individuals have different sampling success or preservation
+
+**Conclusion:**\
+We need a model that accounts for the fact that **pairs share individuals**. This motivates the move to a **nested / crossed GLMM structure**
+
+## Final Model: Nested GLMM
+
+Let $Y_{t,ij} = 1$ if individuals $i$ and $j$ from tomb $t$ are closely related, and $Y_{t,ij} = 0$ otherwise.
+
+We assume:
+
+$$
+Y_{t,ij} \sim \text{Bernoulli}(\pi_{t,ij})
+$$
+
+where $\pi_{t,ij} = P(\text{related}_{t,ij} = 1)$.
+
+**Mixed-effects logistic regression**
+
+$$
+\text{logit}(\pi_{t,ij})
+= X_{t,ij}^{\top}\beta
++ b_t
++ v_i
++ v_j
+$$
+
+This structure models:
+
+$$
+\text{Pairs} \;\leftarrow\; \text{Individuals} \;\subset\; \text{Tombs}
+$$
+
+## Final Model: Nested GLMM
+
+**Random effects**
+
+-   Tomb-level random intercept\
+    $$b_t \sim \mathcal{N}(0, \sigma^2_{\text{tomb}})$$
+-   Individual-level random intercepts\
+    $$v_i, v_j \sim \mathcal{N}(0, \sigma^2_{\text{ind}})$$
+
+**Interpretation**
+
+-   $b_t$ captures tomb-specific preservation and environmental effects
+-   $v_i$ and $v_j$ capture that individuals appear in multiple pairs
+-   Each pair inherits two individual effects → **crossed structure**
+
