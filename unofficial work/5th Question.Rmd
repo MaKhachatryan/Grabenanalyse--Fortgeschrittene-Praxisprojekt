@@ -176,14 +176,203 @@ https://stats.stackexchange.com/questions/626546/how-does-lme4-handle-participan
 https://www.sciencedirect.com/science/article/pii/S0015028224002371
 
 
+<div style="color: red;">
+#### Yichen's feedback:
+Conclusion is fine, but visualisation needs a smarter approach for presentation.
+
+Correction idea:
+
+Use heatmap to show exactly where the data is missing to justify the use of GLMM. Like instead of showing a bunch of bar charts, we show the audience the zeros directly in a heatmap for easier comparison.
+
+</div>
+
+##### Absolute number of skeletal element as Sex in every tomb
+``` {r hm abs sex, echo=FALSE}
+# Create Tomb × Skeletal Element × Sex count matrix
+heat_df <- individual_metadata %>%
+  count(Tomb, Sex, `Skeletal element`) %>%
+  complete(Tomb, Sex, `Skeletal element`, fill = list(n = 0))
+
+# Plot
+ggplot(heat_df, aes(x = `Skeletal element`, y = Tomb, fill = n)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ Sex) +
+  scale_fill_gradient(
+    name = "Count",
+    low = "white",
+    high = "darkblue"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+
+```
+
+##### Relative number of skeletal element as Sex in every tomb
+``` {r hm rel sex, echo=FALSE}
+# Count raw numbers
+heat_df <- individual_metadata %>%
+  count(Tomb, Sex, `Skeletal element`) %>%
+  complete(Tomb, Sex, `Skeletal element`, fill = list(n = 0)) %>%
+  group_by(Tomb, Sex) %>%
+  mutate(prop = n / sum(n)) %>%   # <-- relative share per tomb
+  ungroup()
+
+# Plot relative proportions
+ggplot(heat_df, aes(x = `Skeletal element`, y = Tomb, fill = prop)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ Sex) +
+  scale_fill_gradient(
+    name = "Proportion",
+    low = "white",
+    high = "darkblue",
+    labels = scales::percent_format(accuracy = 1)
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    title = "Swiss Cheese Heatmap (Relative): Skeletal Elements by Tomb",
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+```
+
+
+##### Absolute number of skeletal element as Age in every tomb
+``` {r abs age, echo = FALSE}
+# Create Tomb × Skeletal Element × Age count matrix
+heat_df <- individual_metadata %>%
+  count(Tomb, `Age estimation`, `Skeletal element`) %>%
+  complete(Tomb, `Age estimation`, `Skeletal element`, fill = list(n = 0))
+
+# Plot
+ggplot(heat_df, aes(x = `Skeletal element`, y = Tomb, fill = n)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ `Age estimation`) +
+  scale_fill_gradient(
+    name = "Count",
+    low = "white",
+    high = "darkblue"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+
+
+```
+
+##### Relative number of skeletal element as Age in every tomb
+``` {r hm rel age, echo=FALSE}
+# Count raw numbers
+heat_df <- individual_metadata %>%
+  count(Tomb, `Age estimation`, `Skeletal element`) %>%
+  complete(Tomb, `Age estimation`, `Skeletal element`, fill = list(n = 0)) %>%
+  group_by(Tomb, `Age estimation`) %>%
+  mutate(prop = n / sum(n)) %>%   # <-- relative share per tomb
+  ungroup()
+
+# Plot relative proportions
+ggplot(heat_df, aes(x = `Skeletal element`, y = Tomb, fill = prop)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ `Age estimation`) +
+  scale_fill_gradient(
+    name = "Proportion",
+    low = "white",
+    high = "darkblue",
+    labels = scales::percent_format(accuracy = 1)
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+```
+
+##### Absolute number of Age as Sex in every tomb
+``` {r abs age sex, echo = FALSE}
+# Create Tomb × Sex × Age count matrix
+heat_df <- individual_metadata %>%
+  count(Tomb, `Age estimation`, Sex) %>%
+  complete(Tomb, `Age estimation`, Sex, fill = list(n = 0))
+
+# Plot
+ggplot(heat_df, aes(x = Sex, y = Tomb, fill = n)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ `Age estimation`) +
+  scale_fill_gradient(
+    name = "Count",
+    low = "white",
+    high = "darkblue"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Sex",
+    y = "Tomb"
+  )
+
+
+```
+
+
+##### Relative number of Sex as Age in every tomb
+``` {r hm rel sex age, echo=FALSE}
+# Count raw numbers
+heat_df <- individual_metadata %>%
+  count(Tomb, `Age estimation`, Sex) %>%
+  complete(Tomb, `Age estimation`, Sex, fill = list(n = 0)) %>%
+  group_by(Tomb, `Age estimation`) %>%
+  mutate(prop = n / sum(n)) %>%   # <-- relative share per tomb
+  ungroup()
+
+# Plot relative proportions
+ggplot(heat_df, aes(x = Sex, y = Tomb, fill = prop)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ `Age estimation`) +
+  scale_fill_gradient(
+    name = "Proportion",
+    low = "white",
+    high = "darkblue",
+    labels = scales::percent_format(accuracy = 1)
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+```
+
+##### Notes:
+Will only use relative plots
 
 ## Network visualization
 ### All tombs together
 ``` {r kr 2, echo=FALSE}
-kinship_result <- read_excel("Data/raw/Statistics project LMU_READv2 kinship results_Irene Hoegner_corr.xlsx")
-og_individual_metadata <- read_excel("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx")
-
-kinship_result <- kinship_result |>
+kinship_result <- og_kinship_result |>
   mutate(Rel = if_else(Low_data == "yes", "Uncertain", Rel, missing = Rel),
   "Individual1 ID" = substr(Ind1, 1, 6),
   "Individual2 ID" = substr(Ind2, 1, 6)) |>
@@ -191,7 +380,7 @@ kinship_result <- kinship_result |>
   rename(Tomb1 = Tomb) |>
   left_join(og_individual_metadata, by = c("Individual2 ID" = "Individual ID")) |>
   rename(Tomb2 = Tomb) |> 
-  select(names(kinship_result), Tomb1, Tomb2) |>
+  select(names(og_kinship_result), Tomb1, Tomb2) |>
   mutate(
     "Individual1 ID" = substr(Ind1, 1, 6),
     "Individual2 ID" = substr(Ind2, 1, 6)
