@@ -1050,12 +1050,11 @@ Arsine Chinaryan, Anh Hoang Minh Dang, Felicia Francis Immanuel, Margarita Khach
 <li>Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67<br>
 </li>
 </ul></li>
-<li><p><strong>Note</strong>: T46, T56, and T62 are also grouped into one fictitious tomb</p></li>
 <li><p><strong>Analyzed data</strong></p>
 <ul>
-<li><strong>Tomb parameters:</strong> estimated individuals, sampling success, length of use …</li>
-<li><strong>Individual metadata:</strong> individual ID, tomb, skeletal element, age …</li>
-<li><strong>Kinship results:</strong> relationship type, kinship coefficient, SNP overlap …</li>
+<li><strong>Tomb parameters:</strong> Summary information for each tomb, including estimated number of burials (MNI), length of use, sampling success, and counts of preserved skeletal elements that characterize the burial context.</li>
+<li><strong>Individual metadata:</strong> Attributes for each sampled individual, such as tomb affiliation, sex, age category, skeletal element used for analysis, and genotyping success indicators.</li>
+<li><strong>Kinship results:</strong> Pairwise comparisons between individuals, including kinship coefficients, SNP overlap, and inferred degrees of relatedness based on genetic similarity</li>
 </ul></li>
 </ul>
 </section>
@@ -1097,16 +1096,15 @@ Arsine Chinaryan, Anh Hoang Minh Dang, Felicia Francis Immanuel, Margarita Khach
 <p><span style="color:lightgray;"><strong>1. Overview &amp; Terminology</strong></span></p>
 <p><strong>2. Data Analysis &amp; Statistical Modelling</strong></p>
 <ul>
-<li>Data Evaluation</li>
-<li>First Model Idea: GLM</li>
-<li>Second Model Idea: GLMM</li>
-<li>Final Model: nested GLMM</li>
+<li>Data Description</li>
+<li>Data Issues</li>
+<li>Model</li>
 </ul>
 <p><span style="color:lightgray;"><strong>3. Discussion</strong></span></p>
 </section>
-<section id="data-evaluation" class="slide level2">
-<h2>Data Evaluation</h2>
-<p>(this is where the plot of description of the data (including searching for the nonsensical covariates) and probably the network plot?, and points to point out from the data)</p>
+<section id="data-description" class="slide level2">
+<h2>Data Description</h2>
+<p>(to put descriptive plots and correlation structures, DAG)</p>
 </section>
 <section id="data-issues" class="slide level2">
 <h2>Data Issues</h2>
@@ -1115,88 +1113,17 @@ Arsine Chinaryan, Anh Hoang Minh Dang, Felicia Francis Immanuel, Margarita Khach
 <li>Some tombs lack certain skeletal elements entirely</li>
 <li>Some skeletal elements appear only in one sex or one age group</li>
 </ul>
-</section>
-<section id="first-model-idea-glm" class="slide level2">
-<h2>First Model Idea: GLM</h2>
-<ul>
-<li>Outcome: related or not related
-<ul>
-<li><span class="math inline">\(Y_{ij} \in \{0,1\}\)</span> (1 = related, 0 = unrelated)</li>
-</ul></li>
-<li>Natural choice: <strong>Logistic regression GLM</strong></li>
-</ul>
-<p><strong>Model specification</strong></p>
-<p><span class="math display">\[
-Y_{ij} \sim \text{Bernoulli}(p_{ij})
-\]</span></p>
-<p><span class="math display">\[
-\text{logit}(p_{ij})
-= \beta_0
-+ \beta_1 x_{ij}
-+ \beta_2 x_{ij}
-+ \beta_3 x_{ij}
-+ \cdots
-\]</span></p>
-<ul>
-<li>Predictors from <strong>tomb parameters - level data &amp; individual - level metadata</strong></li>
-<li>Goal:
-<ul>
-<li>Estimate how these covariates affect the probability of a pair being related</li>
-<li>Predicts the difference between observed and potential relatedness</li>
-</ul></li>
-</ul>
-</section>
-<section id="first-model-idea-glm-1" class="slide level2">
-<h2>First Model Idea: GLM</h2>
-<h3 id="problem">Problem</h3>
-<p><strong>1. Data Issues</strong></p>
-<ul>
-<li>Sparse data. In some tombs:
-<ul>
-<li>lack certain skeletal elements</li>
-<li>some skeletal elements only appear in one sex or age</li>
-</ul></li>
-</ul>
 <p>⇒ Problem:</p>
 <ul>
-<li>Unstable model, effect of the missing skeletal element can not be estimated for that tomb</li>
-<li>Collinearity: eg. Tomb 67 has only female phalanx ⇒ perfect collinearity between skeletal element &amp; sex?</li>
+<li><p>Unstable model, effect of the missing skeletal element can not be estimated for that tomb</p></li>
+<li><p>Collinearity: eg. Tomb 67 has only female phalanx ⇒ perfect collinearity between skeletal element &amp; sex?</p></li>
+<li><p>With-in tomb correlation (same preservation environment,…)</p></li>
+<li><p>Too many parameters with too few observation (tomb-level data set)</p></li>
 </ul>
 </section>
-<section id="first-model-idea-glm-2" class="slide level2">
-<h2>First Model Idea: GLM</h2>
-<p><strong>2. Model Issues</strong></p>
-<ul>
-<li>With-in tomb correlation (same preservation environment,…)</li>
-<li>Too many parameters with too few observation (tomb-level data set)</li>
-</ul>
-<p><strong>Solution:</strong> Mixed logistic modelling on individual-level data. Especially GLMM can handle categorical predictors with some levels missing in some cluster. It also assumes MAR, which is very realistic in our case.</p>
-</section>
-<section id="second-model-idea-glmm" class="slide level2">
-<h2>Second Model Idea: GLMM</h2>
-<p>To address the GLM issues, we allow observations from the <strong>same tomb</strong><br>
-to share a common random effect.</p>
-<p><strong>Model</strong></p>
-<p><span class="math display">\[
-Y_{ij} \sim \text{Bernoulli}(p_{ij})
-\]</span></p>
-<p><span class="math display">\[
-\text{logit}(p_{ij})
-= \beta_0
-+ \beta_1 x_{ij}^{(\text{covariates})}
-+ u_{\text{tomb}[ij]}
-\]</span></p>
-<p>where</p>
-<ul>
-<li><span class="math inline">\(u_{\text{tomb}} \sim \mathcal{N}(0, \sigma^2_{\text{tomb}})\)</span></li>
-<li>captures within-tomb correlation</li>
-<li>stabilizes estimates for sparse or unbalanced tombs</li>
-<li>reduces bias from tomb-specific preservation environments</li>
-</ul>
-</section>
-<section id="second-model-idea-glmm-1" class="slide level2">
-<h2>Second Model Idea: GLMM</h2>
-<h3 id="problem-1">Problem</h3>
+<section id="data-issues-1" class="slide level2">
+<h2>Data Issues</h2>
+<h3 id="repeated-observations">Repeated observations</h3>
 <ul>
 <li><p>Each <em>individual</em> appears in multiple pairs<br>
 → Individual A is paired with B, C, D, …</p></li>
@@ -1209,11 +1136,21 @@ but ignores clustering at the individual level.</p></li>
 <li>Potential bias when individuals have different sampling success or preservation</li>
 </ul></li>
 </ul>
-<p><strong>Conclusion:</strong><br>
-We need a model that accounts for the fact that <strong>pairs share individuals</strong>. This motivates the move to a <strong>nested / crossed GLMM structure</strong></p>
 </section>
-<section id="final-model-nested-glmm" class="slide level2">
-<h2>Final Model: Nested GLMM</h2>
+<section id="data-issues-2" class="slide level2">
+<h2>Data Issues</h2>
+<h3 id="missing-values">Missing values</h3>
+<p>(to be added)</p>
+<p><strong>Conclusion:</strong><br>
+A mixed-effects logistic model (GLMM) is required because it can handle missing categories within tombs, assumes a realistic MAR mechanism, and accounts for the dependence created when pairs share individuals through a nested/crossed random-effects structure.</p>
+</section>
+<section id="model" class="slide level2">
+<h2>Model</h2>
+<h3 id="predictors">Predictors</h3>
+<p>(Listing out the predictors here)</p>
+</section>
+<section id="model-1" class="slide level2">
+<h2>Model</h2>
 <p>Let <span class="math inline">\(Y_{t,ij} = 1\)</span> if individuals <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> from tomb <span class="math inline">\(t\)</span> are closely related, and <span class="math inline">\(Y_{t,ij} = 0\)</span> otherwise.</p>
 <p>We assume:</p>
 <p><span class="math display">\[
@@ -1233,8 +1170,8 @@ Y_{t,ij} \sim \text{Bernoulli}(\pi_{t,ij})
 \text{Pairs} \;\leftarrow\; \text{Individuals} \;\subset\; \text{Tombs}
 \]</span></p>
 </section>
-<section id="final-model-nested-glmm-1" class="slide level2">
-<h2>Final Model: Nested GLMM</h2>
+<section id="model-2" class="slide level2">
+<h2>Model</h2>
 <p><strong>Random effects</strong></p>
 <ul>
 <li>Tomb-level random intercept<br>
@@ -1242,12 +1179,10 @@ Y_{t,ij} \sim \text{Bernoulli}(\pi_{t,ij})
 <li>Individual-level random intercepts<br>
 <span class="math display">\[v_i, v_j \sim \mathcal{N}(0, \sigma^2_{\text{ind}})\]</span></li>
 </ul>
-<p><strong>Interpretation</strong></p>
-<ul>
-<li><span class="math inline">\(b_t\)</span> captures tomb-specific preservation and environmental effects</li>
-<li><span class="math inline">\(v_i\)</span> and <span class="math inline">\(v_j\)</span> capture that individuals appear in multiple pairs</li>
-<li>Each pair inherits two individual effects → <strong>crossed structure</strong></li>
-</ul>
+</section>
+<section id="model-3" class="slide level2">
+<h2>Model</h2>
+<h3 id="interpretation-model-output-evaluation">Interpretation &amp; Model Output Evaluation</h3>
 
 </section>
     </div>
