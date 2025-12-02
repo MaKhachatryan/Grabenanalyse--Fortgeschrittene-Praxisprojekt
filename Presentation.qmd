@@ -52,16 +52,29 @@ editor: visual
 
 ## Description of data sets
 
+### General Information
+
 -   **Two burial sites**
 
     -   Amfissa (tholos)
     -   Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67\
+        Note: Analyze T46, T56, and T62 both as a group and as individual tombs
 
--   **Analyzed data**
+-   **Threshold Rule**
 
-    -   **Tomb parameters:** Summary information for each tomb, including estimated number of burials (MNI), length of use, sampling success, and counts of preserved skeletal elements that characterize the burial context.
-    -   **Individual metadata:** Attributes for each sampled individual, such as tomb affiliation, sex, age category, skeletal element used for analysis, and genotyping success indicators.
-    -   **Kinship results:** Pairwise comparisons between individuals, including kinship coefficients, SNP overlap, and inferred degrees of relatedness based on genetic similarity
+    -   Relationship assignments require minimum SNP overlap:
+        -   **1st degree**: ≥ 500 overlapping SNPs
+        -   **2nd degree**: ≥ 2,000 overlapping SNPs
+        -   **3rd degree**: ≥ 15,000 overlapping SNPs
+    -   Pairs below these thresholds are classified as **uncertain**.
+
+## Description of data sets
+
+### Analyzed Data
+
+-   **Tomb parameters:** Summary information for each tomb, including estimated number of burials, length of use, sampling success, and counts of preserved skeletal elements that characterize the burial context.
+-   **Individual metadata:** Attributes for each sampled individual, such as tomb affiliation, sex, age category, skeletal element used for analysis, and genotyping success indicators.
+-   **Kinship results:** Pairwise comparisons between individuals, including kinship coefficients, SNP overlap, and inferred degrees of relatedness based on genetic similarity
 
 ## Analyzed data
 
