@@ -1132,10 +1132,18 @@ Note: Analyze T46, T56, and T62 both as a group and as individual tombs</li>
 <li><p>Unstable model, effect of the missing skeletal element can not be estimated for that tomb</p></li>
 <li><p>Collinearity: eg. Tomb 67 has only female phalanx ⇒ perfect collinearity between skeletal element &amp; sex?</p></li>
 <li><p>With-in tomb correlation (same preservation environment,…)</p></li>
-<li><p>Too many parameters with too few observation (tomb-level data set)</p></li>
 </ul>
 </section>
 <section id="data-issues-1" class="slide level2">
+<h2>Data Issues</h2>
+<h3 id="tomb-level-modelling-is-not-feasible">Tomb-level modelling is not feasible</h3>
+<ul>
+<li><p>Tomb-level GLM cannot be fitted meaningfully<br>
+→ <em>too few tombs (N &lt; 60)</em> for the number of parameters.</p></li>
+<li><p>Predictor variables are at <strong>individual-level</strong>, but outcome was aggregated to <strong>tomb-level</strong> → severe information loss.</p></li>
+</ul>
+</section>
+<section id="data-issues-2" class="slide level2">
 <h2>Data Issues</h2>
 <h3 id="repeated-observations">Repeated observations</h3>
 <ul>
@@ -1151,7 +1159,7 @@ but ignores clustering at the individual level.</p></li>
 </ul></li>
 </ul>
 </section>
-<section id="data-issues-2" class="slide level2">
+<section id="data-issues-3" class="slide level2">
 <h2>Data Issues</h2>
 <h3 id="missing-values">Missing values</h3>
 <p>(to be added)</p>
