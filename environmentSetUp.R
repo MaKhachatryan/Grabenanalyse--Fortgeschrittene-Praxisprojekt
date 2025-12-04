@@ -32,13 +32,13 @@ og_kinship_result <- read_excel(here::here("Data/raw/Statistics project LMU_READ
 
 
 ## ----- cleaning names of variables -----
-individual_metadata_clean_name <- og_individual_metadata %>%
+og_individual_metadata <- og_individual_metadata %>%
   janitor::clean_names() %>%
   rename(
     `1240k_snps`= x1240k_sn_ps
   )
 
-tomb_parameter_clean_name <- og_tomb_parameter %>%
+og_tomb_parameter <- og_tomb_parameter %>%
   janitor::clean_names() %>%
   rename(
     twist_samples_used = twist_capture_samples_included_in_kinship_analysis,
