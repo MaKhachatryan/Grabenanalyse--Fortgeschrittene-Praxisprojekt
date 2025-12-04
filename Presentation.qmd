@@ -139,7 +139,14 @@ editor: visual
 
 -   With-in tomb correlation (same preservation environment,…)
 
--   Too many parameters with too few observation (tomb-level data set)
+## Data Issues
+
+### Tomb-level modelling is not feasible
+
+-   Tomb-level GLM cannot be fitted meaningfully\
+    → *too few tombs (N \< 60)* for the number of parameters.
+
+-   Predictor variables are at **individual-level**, but outcome was aggregated to **tomb-level** → severe information loss.
 
 ## Data Issues
 
