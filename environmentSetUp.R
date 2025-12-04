@@ -15,7 +15,8 @@ packages <- c("tidyr",
               "igraph",
               "ggraph",
               "purrr",
-              "here")
+              "here",
+              "janitor")
 
 for (pkg in packages) {
   if (!require(pkg, character.only = TRUE)) {
@@ -28,3 +29,29 @@ for (pkg in packages) {
 og_individual_metadata <- read_excel(here::here("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx"))
 og_tomb_parameter <- read_excel(here::here("Data/raw/Statistics project LMU_tomb parameters_Irene Hoegner_new.xlsx"), range = "A2:N12")
 og_kinship_result <- read_excel(here::here("Data/raw/Statistics project LMU_READv2 kinship results_Irene Hoegner_corr.xlsx"))
+
+
+## ----- cleaning names of variables -----
+individual_metadata_clean_name <- og_individual_metadata %>%
+  janitor::clean_names() %>%
+  rename(
+    `1240k_snps`= x1240k_sn_ps
+  )
+
+tomb_parameter_clean_name <- og_tomb_parameter %>%
+  janitor::clean_names() %>%
+  rename(
+    twist_samples_used = twist_capture_samples_included_in_kinship_analysis,
+    number_of_analysed_individuals = after_merging_samples_from_same_individual,
+    tomb = `x1`
+  )
+
+kinship_result_clean_name <- og_kinship_result %>%
+  janitor::clean_names() %>%
+  rename(
+    `1st_type` = x1st_type,
+    overlap_nsnps = overlap_nsn_ps,
+    nsnps_x_norm = nsn_ps_x_norm
+  )
+
+
