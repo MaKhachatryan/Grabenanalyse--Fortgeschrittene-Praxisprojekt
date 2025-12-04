@@ -168,7 +168,7 @@ kinship_result <- kinship_result |>
 
 ##clean pairs data
 
-pairs <- kinship_result %>%
+pairs_all <- kinship_result %>%
   mutate(
     sex_pair = case_when(
       sex1 == "XX" & sex2 == "XX" ~ "XX-XX",
@@ -187,3 +187,7 @@ pairs <- kinship_result %>%
     sample_success_min = pmin(sample_success1, sample_success2, na.rm = TRUE)
   )
 
+pairs_ind <- pairs_all |> filter(tomb1 != "Elateia T46 56 62", tomb2 != "Elateia T46 56 62")
+
+pairs_group <- pairs_all |> filter(!tomb1 %in% c("Elateia T46", "Elateia T56", "Elateia T62"),
+                                   !tomb2 %in% c("Elateia T46", "Elateia T56", "Elateia T62"))
