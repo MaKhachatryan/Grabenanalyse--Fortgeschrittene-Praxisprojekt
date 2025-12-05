@@ -1,17 +1,4 @@
-#Load packages
-library(here)
-library(readxl)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-library(scales)
-library(igraph)
-library(ggraph)
-library(purrr)
-
-#Set up environment
 source(here::here("environmentSetUp.R"))
-
 
 ##Individual Metadata
 ##- Filtering out the Lapoutsi
@@ -57,7 +44,7 @@ tomb_parameter$MNI[6] <- 70
 
 ##Kinship Result
 
-kinship_result <- kinship_result_clean_name |>
+kinship_result <- og_kinship_result |>
   mutate(rel = case_when(
     rel == "First Degree"  & overlap_nsnps < 500   ~ "Uncertain",
     rel == "Second Degree" & overlap_nsnps < 2000  ~ "Uncertain",
@@ -97,7 +84,7 @@ kinship_result <- kinship_result_clean_name |>
                 skeletal_element2 = skeletal_element
               ), by = c("individual2_id" = "individual_id")) |>
   
-  select(names(kinship_result_clean_name), global_binary, global_degree, tomb1, 
+  dplyr::select(names(og_kinship_result), global_binary, global_degree, tomb1, 
          tomb2, sex1, sex2, age1, age2, skeletal_element1, skeletal_element2) |>
   mutate(
     "individual1_id" = substr(ind1, 1, 6),
