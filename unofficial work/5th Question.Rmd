@@ -37,31 +37,41 @@ $\Rightarrow$ **# Analysed individuals** as denominator *(= "after merging sampl
 
 ``` {r p, echo=FALSE} 
 # Pre-processing data
-individual_metadata <- og_individual_metadata |> 
-  filter(Site != "Lapoutsi", Tomb %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) |>
-  mutate(`Age estimation` = if_else(`Age estimation` == "subadult?", "subadult", `Age estimation`),
-         `Age estimation` = if_else(`Age estimation` == "adolescent or young adult", "adult or undefined", `Age estimation`))
+individual_metadata <- individual_metadata_clean_name |> 
+  filter(
+    site != "Lapoutsi",
+    tomb %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", 
+                "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")
+  ) |>
+  mutate(
+    age_estimation = if_else(age_estimation == "subadult?", "subadult", age_estimation),
+    age_estimation = if_else(age_estimation == "adolescent or young adult", 
+                             "adult or undefined", age_estimation)
+  )
 
 tomb_group_rows <- individual_metadata |>
-  filter(Tomb %in% c("Tomb 46", "Tomb 56", "Tomb 62")) |>
-  mutate(Tomb = "Tomb 46 56 62")
+  filter(tomb %in% c("Tomb 46", "Tomb 56", "Tomb 62")) |>
+  mutate(tomb = "Tomb 46 56 62")
 
 individual_metadata <- bind_rows(individual_metadata, tomb_group_rows)
+
 ```
 
 #### Skeletal element
 **Absolute number of skeletal element in every tomb**
 ``` {r 1, echo=FALSE}
 individual_metadata |>
-  count(Tomb, `Skeletal element`) |>
-  group_by(Tomb) |>
+  count(tomb, skeletal_element) |>
+  group_by(tomb) |>
   mutate(prop = n / sum(n)) |>
-  ggplot(aes(x = `Skeletal element`, y = prop, fill = `Skeletal element`)) +
+  ggplot(aes(x = skeletal_element, y = prop, fill = skeletal_element)) +
   geom_bar(stat = "identity") +
-  facet_wrap(~ Tomb) +
+  facet_wrap(~ tomb) +
   scale_y_continuous(labels = scales::percent) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "none") +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"
+  ) +
   ylab("Proportion of Skeletal Elements") +
   xlab("Skeletal Element")
 ```
@@ -69,10 +79,10 @@ individual_metadata |>
 **Absolute number of skeletal element as Sex in every tomb**
 ``` {r 2, echo=FALSE}
 individual_metadata |>
-  count(Tomb, `Skeletal element`, Sex) |>
-  ggplot(aes(x = `Skeletal element`, y = n, fill = Sex)) +
+  count(tomb, skeletal_element, sex) |>
+  ggplot(aes(x = skeletal_element, y = n, fill = sex)) +
   geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~ Tomb) +
+  facet_wrap(~ tomb) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   ylab("Count") +
   xlab("Skeletal Element")
@@ -81,12 +91,12 @@ individual_metadata |>
 **Relative number of skeletal element as Sex in every tomb**
 ``` {r 3, echo=FALSE}
 individual_metadata |>
-  count(Tomb, `Skeletal element`, Sex) |>
-  group_by(Tomb, `Skeletal element`) |>
+  count(tomb, skeletal_element, sex) |>
+  group_by(tomb, skeletal_element) |>
   mutate(prop = n / sum(n)) |>
-  ggplot(aes(x = `Skeletal element`, y = prop, fill = Sex)) +
+  ggplot(aes(x = skeletal_element, y = prop, fill = sex)) +
   geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~ Tomb) +
+  facet_wrap(~ tomb) +
   scale_y_continuous(labels = scales::percent) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   ylab("Proportion of Sex within Skeletal Element") +
@@ -97,10 +107,10 @@ individual_metadata |>
 **Absolute number of skeletal element as Age in every tomb**
 ``` {r 4, echo=FALSE}
 individual_metadata |>
-  count(Tomb, `Skeletal element`, `Age estimation`) |>
-  ggplot(aes(x = `Skeletal element`, y = n, fill = `Age estimation`)) +
+  count(tomb, skeletal_element, age_estimation) |>
+  ggplot(aes(x = skeletal_element, y = n, fill = age_estimation)) +
   geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~ Tomb) +
+  facet_wrap(~ tomb) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   ylab("Count") +
   xlab("Skeletal Element")
@@ -109,15 +119,15 @@ individual_metadata |>
 **Relative number of skeletal element as Age in every tomb**
 ``` {r 5, echo=FALSE}
 individual_metadata |>
-  count(Tomb, `Skeletal element`, `Age estimation`) |>
-  group_by(Tomb, `Skeletal element`) |>
+  count(tomb, skeletal_element, age_estimation) |>
+  group_by(tomb, skeletal_element) |>
   mutate(prop = n / sum(n)) |>
-  ggplot(aes(x = `Skeletal element`, y = prop, fill = `Age estimation`)) +
+  ggplot(aes(x = skeletal_element, y = prop, fill = age_estimation)) +
   geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~ Tomb) +
+  facet_wrap(~ tomb) +
   scale_y_continuous(labels = scales::percent) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  ylab("Proportion of Sex within Skeletal Element") +
+  ylab("Proportion of Age Estimation within Skeletal Element") +
   xlab("Skeletal Element")
 ```
 
@@ -127,22 +137,22 @@ individual_metadata |>
 
 ``` {r 6, echo=FALSE}
 individual_metadata |>
-  count(Tomb, `Age estimation`, Sex) |>
-  ggplot(aes(x = `Age estimation`, y = n, fill = Sex)) +
+  count(tomb, age_estimation, sex) |>
+  ggplot(aes(x = age_estimation, y = n, fill = sex)) +
   geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~ Tomb) +
+  facet_wrap(~ tomb) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   ylab("Count") +
   xlab("Age Estimation")
 
 
 individual_metadata |>
-  count(Tomb, `Age estimation`, Sex) |>
-  group_by(Tomb) |>
+  count(tomb, age_estimation, sex) |>
+  group_by(tomb) |>
   mutate(prop = n / sum(n)) |>
-  ggplot(aes(x = `Age estimation`, y = prop, fill = Sex)) +
+  ggplot(aes(x = age_estimation, y = prop, fill = sex)) +
   geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~ Tomb) +
+  facet_wrap(~ tomb) +
   scale_y_continuous(labels = scales::percent) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   ylab("Proportion of Sex") +
@@ -176,96 +186,348 @@ https://stats.stackexchange.com/questions/626546/how-does-lme4-handle-participan
 https://www.sciencedirect.com/science/article/pii/S0015028224002371
 
 
+<div style="color: red;">
+#### Yichen's feedback:
+Conclusion is fine, but visualisation needs a smarter approach for presentation.
+
+Correction idea:
+
+Use heatmap to show exactly where the data is missing to justify the use of GLMM. Like instead of showing a bunch of bar charts, we show the audience the zeros directly in a heatmap for easier comparison.
+
+</div>
+
+##### Absolute number of skeletal element as Sex in every tomb
+``` {r hm abs sex, echo=FALSE}
+# Create Tomb × Skeletal Element × Sex count matrix
+heat_df <- individual_metadata %>%
+  count(tomb, sex, skeletal_element) %>%
+  complete(tomb, sex, skeletal_element, fill = list(n = 0))
+
+# Plot
+ggplot(heat_df, aes(x = skeletal_element, y = tomb, fill = n)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ sex) +
+  scale_fill_gradient(
+    name = "Count",
+    low = "white",
+    high = "darkblue"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+
+```
+
+##### Relative number of skeletal element as Sex in every tomb
+``` {r hm rel sex, echo=FALSE}
+# Count raw numbers and compute relative proportions
+heat_df <- individual_metadata %>%
+  count(tomb, sex, skeletal_element) %>%
+  complete(tomb, sex, skeletal_element, fill = list(n = 0)) %>%
+  group_by(tomb, sex) %>%
+  mutate(prop = n / sum(n)) %>%   # <-- relative share per tomb
+  ungroup()
+
+# Plot relative proportions
+ggplot(heat_df, aes(x = skeletal_element, y = tomb, fill = prop)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ sex) +
+  scale_fill_gradient(
+    name = "Proportion",
+    low = "white",
+    high = "darkblue",
+    labels = scales::percent_format(accuracy = 1)
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    title = "Swiss Cheese Heatmap (Relative): Skeletal Elements by Tomb",
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+```
+
+
+##### Absolute number of skeletal element as Age in every tomb
+``` {r abs age, echo = FALSE}
+# Create Tomb × Skeletal Element × Age count matrix
+heat_df <- individual_metadata %>%
+  count(tomb, age_estimation, skeletal_element) %>%
+  complete(tomb, age_estimation, skeletal_element, fill = list(n = 0))
+
+# Plot
+ggplot(heat_df, aes(x = skeletal_element, y = tomb, fill = n)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ age_estimation) +
+  scale_fill_gradient(
+    name = "Count",
+    low = "white",
+    high = "darkblue"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+
+
+```
+
+##### Relative number of skeletal element as Age in every tomb
+``` {r hm rel age, echo=FALSE}
+# Count raw numbers and calculate proportions
+heat_df <- individual_metadata %>%
+  count(tomb, age_estimation, skeletal_element) %>%
+  complete(tomb, age_estimation, skeletal_element, fill = list(n = 0)) %>%
+  group_by(tomb, age_estimation) %>%
+  mutate(prop = n / sum(n)) %>%   # relative share per tomb
+  ungroup()
+
+# Plot relative proportions
+ggplot(heat_df, aes(x = skeletal_element, y = tomb, fill = prop)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ age_estimation) +
+  scale_fill_gradient(
+    name = "Proportion",
+    low = "white",
+    high = "darkblue",
+    labels = scales::percent_format(accuracy = 1)
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Skeletal Element",
+    y = "Tomb"
+  )
+
+```
+
+##### Absolute number of Age as Sex in every tomb
+``` {r abs age sex, echo = FALSE}
+# Create Tomb × Sex × Age count matrix
+heat_df <- individual_metadata %>%
+  count(tomb, age_estimation, sex) %>%
+  complete(tomb, age_estimation, sex, fill = list(n = 0))
+
+# Plot
+ggplot(heat_df, aes(x = sex, y = tomb, fill = n)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ age_estimation) +
+  scale_fill_gradient(
+    name = "Count",
+    low = "white",
+    high = "darkblue"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Sex",
+    y = "Tomb"
+  )
+
+```
+
+
+##### Relative number of Sex as Age in every tomb
+``` {r hm rel sex age, echo=FALSE}
+# Count raw numbers
+heat_df <- individual_metadata %>%
+  count(tomb, age_estimation, sex) %>%
+  complete(tomb, age_estimation, sex, fill = list(n = 0)) %>%
+  group_by(tomb, age_estimation) %>%
+  mutate(prop = n / sum(n)) %>%   # <-- relative share per tomb
+  ungroup()
+
+# Plot relative proportions
+ggplot(heat_df, aes(x = sex, y = tomb, fill = prop)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ age_estimation) +
+  scale_fill_gradient(
+    name = "Proportion",
+    low = "white",
+    high = "darkblue",
+    labels = scales::percent_format(accuracy = 1)
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Sex",
+    y = "Tomb"
+  )
+
+```
+
+##### Notes:
+Will only use relative plots
 
 ## Network visualization
 ### All tombs together
 ``` {r kr 2, echo=FALSE}
-kinship_result <- read_excel("Data/raw/Statistics project LMU_READv2 kinship results_Irene Hoegner_corr.xlsx")
-og_individual_metadata <- read_excel("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx")
-
-kinship_result <- kinship_result |>
-  mutate(Rel = if_else(Low_data == "yes", "Uncertain", Rel, missing = Rel),
-  "Individual1 ID" = substr(Ind1, 1, 6),
-  "Individual2 ID" = substr(Ind2, 1, 6)) |>
-  left_join(og_individual_metadata, by = c("Individual1 ID" = "Individual ID")) |>
-  rename(Tomb1 = Tomb) |>
-  left_join(og_individual_metadata, by = c("Individual2 ID" = "Individual ID")) |>
-  rename(Tomb2 = Tomb) |> 
-  select(names(kinship_result), Tomb1, Tomb2) |>
+kinship_result <- kinship_result_clean_name %>%
   mutate(
-    "Individual1 ID" = substr(Ind1, 1, 6),
-    "Individual2 ID" = substr(Ind2, 1, 6)
-  ) |>
-  filter(!startsWith(`Ind1`, "LPS") & !startsWith(`Ind2`, "LPS"),
-         Tomb1 %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67"),
-         Tomb2 %in% c("Amfissa tholos", "Tomb 31", "Tomb 36", "Tomb 46", "Tomb 50", "Tomb 56", "Tomb 62", "Tomb 67")) 
+    individual1_id = substr(ind1, 1, 6),
+    individual2_id = substr(ind2, 1, 6),
+    rel = if_else(low_data == "yes", "Uncertain", rel, missing = rel)
+  ) %>%
+  
+  # join tomb1
+  left_join(
+    individual_metadata %>% select(individual_id, tomb),
+    by = c("individual1_id" = "individual_id")
+  ) %>%
+  rename(tomb1 = tomb) %>%
+  
+  # join tomb2
+  left_join(
+    individual_metadata %>% select(individual_id, tomb),
+    by = c("individual2_id" = "individual_id")
+  ) %>%
+  rename(tomb2 = tomb) %>%
+  
+  # filter out LPS and invalid tombs
+  filter(
+    !startsWith(ind1, "LPS"),
+    !startsWith(ind2, "LPS"),
+    tomb1 %in% c("Amfissa tholos","Tomb 31","Tomb 36","Tomb 46","Tomb 50","Tomb 56","Tomb 62","Tomb 67"),
+    tomb2 %in% c("Amfissa tholos","Tomb 31","Tomb 36","Tomb 46","Tomb 50","Tomb 56","Tomb 62","Tomb 67")
+  )
+
+
+
+# ---- GROUP TOMBS ----
 
 grouped_tombs <- c("Tomb 46", "Tomb 56", "Tomb 62")
 group_name <- "Tomb 46 56 62"
 
-kinship_group_pairs <- kinship_result |>
-  filter(Tomb1 %in% grouped_tombs | Tomb2 %in% grouped_tombs) |>
-  
-  # Rename the Tomb columns in the DUPLICATE rows to reflect the new group
+kinship_group_pairs <- kinship_result %>%
+  filter(tomb1 %in% grouped_tombs | tomb2 %in% grouped_tombs) %>%
   mutate(
-    Tomb1 = ifelse(Tomb1 %in% grouped_tombs, group_name, Tomb1),
-    Tomb2 = ifelse(Tomb2 %in% grouped_tombs, group_name, Tomb2)
+    tomb1 = ifelse(tomb1 %in% grouped_tombs, group_name, tomb1),
+    tomb2 = ifelse(tomb2 %in% grouped_tombs, group_name, tomb2)
   )
 
 kinship_result <- bind_rows(kinship_result, kinship_group_pairs)
 
-# COUNT PAIRS
-count_pairs <- kinship_result |> group_by(Tomb1, Tomb2, Rel) |> summarize(num_pairs = n())
-internal_relation <- count_pairs[count_pairs$Tomb1 == count_pairs$Tomb2, ]  # 2 Inds inside same tomb
 
 
+# ---- COUNT PAIRS ----
 
-# TEST NETWORK VISUALIZATION
+count_pairs <- kinship_result %>%
+  group_by(tomb1, tomb2, rel) %>%
+  summarize(num_pairs = n(), .groups = "drop")
+
+internal_relation <- count_pairs[count_pairs$tomb1 == count_pairs$tomb2, ]
+
+
+# ---- NETWORK VISUALIZATION ----
+
 network_kr <- kinship_result %>% 
   mutate(
-    Related = case_when(
-      Rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree") ~ TRUE,
-      Rel == "Uncertain" ~ FALSE,
-      Rel %in% c("Unrelated", "Unrelated/Consistent with Third Degree") ~ NA
+    related = case_when(
+      rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree") ~ TRUE,
+      rel == "Uncertain" ~ FALSE,
+      rel %in% c("Unrelated", "Unrelated/Consistent with Third Degree") ~ NA
     )
-  ) %>% 
-  filter(Related == TRUE)
+  ) %>%
+  filter(related == TRUE)
 
 edges <- network_kr %>% 
-  select(`Individual1 ID`, `Individual2 ID`, Tomb1, Tomb2)
+  select(individual1_id, individual2_id, tomb1, tomb2)
 
-# Create nodes using both columns and their tombs
 nodes <- edges %>%
-  transmute(name = `Individual1 ID`, Tomb = Tomb1) %>%
-  bind_rows(edges %>% transmute(name = `Individual2 ID`, Tomb = Tomb2)) %>%
+  transmute(name = individual1_id, tomb = tomb1) %>%
+  bind_rows(edges %>% transmute(name = individual2_id, tomb = tomb2)) %>%
   distinct(name, .keep_all = TRUE)
 
-# Create graph
 g <- graph_from_data_frame(d = edges, vertices = nodes, directed = FALSE)
 
-# Plot
 ggraph(g, layout = "fr") + 
   geom_edge_link(color = "grey70") +
-  geom_node_point(aes(color = Tomb), size = 3) +
+  geom_node_point(aes(color = tomb), size = 3) +
   geom_node_text(aes(label = name), vjust = -1, size = 2) +
   theme_void() +
   scale_color_brewer(palette = "Set2")
 ```
 
+### With kinship degrees
+``` {r, echo=FALSE}
+# --- Filter TRUE relationships and assign weights manually for plotting ---
+network_kr <- kinship_result %>%
+  filter(rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree")) %>%
+  mutate(
+    # Assign plotting widths manually: 1st thickest, 2nd medium, 3rd thinnest
+    edge_width = case_when(
+      rel %in% c("First Degree", "IdenticalTwins/SameIndividual") ~ 2.0,  # 1st degree
+      rel == "Second Degree" ~ 1.2,                                        # 2nd degree
+      rel == "Third Degree" ~ 0.6                                          # 3rd degree
+    ),
+    # Factor for legend ordering
+    degree_label = factor(rel,
+                          levels = c("First Degree", "Second Degree", "Third Degree"),
+                          labels = c("1st Degree", "2nd Degree", "3rd Degree"))
+  )
+
+# --- Create edges and nodes ---
+edges <- network_kr %>%
+  select(individual1_id, individual2_id, tomb1, tomb2, edge_width, degree_label)
+
+nodes <- edges %>%
+  transmute(name = individual1_id, tomb = tomb1) %>%
+  bind_rows(edges %>% transmute(name = individual2_id, tomb = tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+# --- Build graph ---
+g <- graph_from_data_frame(d = edges, vertices = nodes, directed = FALSE)
+
+ggraph(g, layout = "fr") +
+  geom_edge_link(aes(width = edge_width, color = degree_label)) +  # show degree in color legend
+  geom_node_point(aes(color = tomb), size = 3) +
+  geom_node_text(aes(label = name), vjust = -1, size = 2) +
+  scale_edge_width(range = c(0.5, 2), guide = "none") +  # widths already set manually
+  scale_edge_color_manual(
+    values = c("1st Degree" = "black", "2nd Degree" = "grey40", "3rd Degree" = "grey70"),
+    name = "Kinship degree"
+  ) +
+  scale_color_brewer(palette = "Set2") +
+  theme_void()
+
+```
 
 ### Separated tombs
 ``` {r sep, echo=FALSE}
-tombs <- unique(nodes$Tomb)
+
+# list of unique tombs
+tombs <- unique(nodes$tomb)
 
 plots <- map(tombs, function(t) {
   
   # select edges where either individual belongs to tomb t
   edges_t <- edges %>%
-    filter(Tomb1 == t | Tomb2 == t)
+    filter(tomb1 == t | tomb2 == t)
   
   # nodes involved
   nodes_t <- nodes %>%
-    filter(name %in% unique(c(edges_t$`Individual1 ID`, edges_t$`Individual2 ID`)))
+    filter(name %in% unique(c(edges_t$individual1_id, edges_t$individual2_id)))
   
   # graph
   g_t <- graph_from_data_frame(d = edges_t, vertices = nodes_t, directed = FALSE)
@@ -273,58 +535,154 @@ plots <- map(tombs, function(t) {
   # plot
   ggraph(g_t, layout = "fr") + 
     geom_edge_link(color = "grey70") +
-    geom_node_point(aes(color = Tomb), size = 3) +
+    geom_node_point(aes(color = tomb), size = 3) +
     geom_node_text(aes(label = name), vjust = -1, size = 2) +
     theme_void() +
     ggtitle(paste(t)) +
     scale_color_brewer(palette = "Set2")
 })
 
-
+# print all plots
 for(p in plots) print(p)
 
 
 ```
 
+### Separated tombs with kinship degrees
+
+tombs <- unique(nodes$tomb)  # lowercase tomb
+``` {r, echo=FALSE}
+plots <- map(tombs, function(t) {
+  
+  # select edges where either individual belongs to tomb t
+  edges_t <- edges %>%
+    filter(tomb1 == t | tomb2 == t)
+  
+  # nodes involved
+  nodes_t <- nodes %>%
+    filter(name %in% unique(c(edges_t$individual1_id, edges_t$individual2_id)))
+  
+  # graph
+  g_t <- graph_from_data_frame(d = edges_t, vertices = nodes_t, directed = FALSE)
+  
+  # plot
+  ggraph(g_t, layout = "fr") +
+    geom_edge_link(aes(width = edge_width, color = degree_label)) +  # kinship degrees
+    geom_node_point(aes(color = tomb), size = 3) +
+    geom_node_text(aes(label = name), vjust = -1, size = 2) +
+    scale_edge_width(range = c(0.5, 2), guide = "none") +
+    scale_edge_color_manual(
+      values = c("1st Degree" = "black", "2nd Degree" = "grey40", "3rd Degree" = "grey70"),
+      name = "Kinship degree"
+    ) +
+    scale_color_brewer(palette = "Set2") +
+    ggtitle(t) +
+    theme_void()
+})
+
+for(p in plots) print(p)
+```
 
 
 #### Grouped tomb 46 56 62 version
 ``` {r 3 tombs, echo=FALSE}
+# Grouped tombs
 kinship_result_grouped <- kinship_result %>%
   mutate(
-    Tomb1 = ifelse(Tomb1 %in% grouped_tombs, group_name, Tomb1),
-    Tomb2 = ifelse(Tomb2 %in% grouped_tombs, group_name, Tomb2)
+    tomb1 = ifelse(tomb1 %in% grouped_tombs, group_name, tomb1),
+    tomb2 = ifelse(tomb2 %in% grouped_tombs, group_name, tomb2)
   )
 
+# Keep only related pairs
 network_grouped <- kinship_result_grouped %>%
   mutate(
-    Related = case_when(
-      Rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree") ~ TRUE,
-      Rel == "Uncertain" ~ FALSE,
+    related = case_when(
+      rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree") ~ TRUE,
+      rel == "Uncertain" ~ FALSE,
       TRUE ~ NA
     )
   ) %>%
-  filter(Related == TRUE)
+  filter(related == TRUE)
 
+# Create edges
 edges_g <- network_grouped %>%
-  select(`Individual1 ID`, `Individual2 ID`, Tomb1, Tomb2)
+  select(individual1_id, individual2_id, tomb1, tomb2)
 
+# Create nodes
 nodes_g <- edges_g %>%
-  transmute(name = `Individual1 ID`, Tomb = Tomb1) %>%
-  bind_rows(edges_g %>% transmute(name = `Individual2 ID`, Tomb = Tomb2)) %>%
+  transmute(name = individual1_id, tomb = tomb1) %>%
+  bind_rows(edges_g %>% transmute(name = individual2_id, tomb = tomb2)) %>%
   distinct(name, .keep_all = TRUE)
 
-nodes_g$Tomb <- droplevels(factor(nodes_g$Tomb))
+nodes_g$tomb <- droplevels(factor(nodes_g$tomb))
 
+# Create graph
 g_g <- graph_from_data_frame(d = edges_g, vertices = nodes_g, directed = FALSE)
 
+# Plot
 ggraph(g_g, layout = "fr") +
   geom_edge_link(color = "grey70") +
-  geom_node_point(aes(color = Tomb), size = 3) +
+  geom_node_point(aes(color = tomb), size = 3) +
   geom_node_text(aes(label = name), vjust = -1, size = 2) +
   theme_void() +
   ggtitle("All tombs with grouped Tomb 46 56 62") +
   scale_color_brewer(palette = "Set2")
+```
+
+# With kinship degrees
+``` {r, echo=FALSE}
+network_grouped <- kinship_result %>%
+  # group the 46/56/62 tombs
+  mutate(
+    tomb1 = ifelse(tomb1 %in% grouped_tombs, group_name, tomb1),
+    tomb2 = ifelse(tomb2 %in% grouped_tombs, group_name, tomb2)
+  ) %>%
+  # keep only true kinship relationships
+  filter(rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree")) %>%
+  mutate(
+    # Manual edge widths for plotting
+    edge_width = case_when(
+      rel %in% c("First Degree", "IdenticalTwins/SameIndividual") ~ 2.0,
+      rel == "Second Degree" ~ 1.2,
+      rel == "Third Degree" ~ 0.6
+    ),
+    # Factor for legend ordering
+    degree_label = factor(rel,
+                          levels = c("First Degree", "Second Degree", "Third Degree"),
+                          labels = c("1st Degree", "2nd Degree", "3rd Degree"))
+  )
+
+# --- Create edges and nodes ---
+
+edges_g <- network_grouped %>%
+  select(individual1_id, individual2_id, tomb1, tomb2, edge_width, degree_label)
+
+nodes_g <- edges_g %>%
+  transmute(name = individual1_id, tomb = tomb1) %>%
+  bind_rows(edges_g %>% transmute(name = individual2_id, tomb = tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+nodes_g$tomb <- droplevels(factor(nodes_g$tomb))
+
+# --- Build graph ---
+
+g_g <- graph_from_data_frame(d = edges_g, vertices = nodes_g, directed = FALSE)
+
+# --- Plot ---
+
+set.seed(123)
+ggraph(g_g, layout = "fr") +
+  geom_edge_link(aes(width = edge_width, color = degree_label)) +
+  geom_node_point(aes(color = tomb), size = 3) +
+  geom_node_text(aes(label = name), vjust = -1, size = 2) +
+  scale_edge_width(range = c(0.5, 2), guide = "none") +
+  scale_edge_color_manual(
+    values = c("1st Degree" = "black", "2nd Degree" = "grey40", "3rd Degree" = "grey70"),
+    name = "Kinship degree"
+  ) +
+  scale_color_brewer(palette = "Set2") +
+  ggtitle("All tombs with grouped Tomb 46 56 62") +
+  theme_void()
 ```
 
 #### Tomb 46 56 62 only
@@ -334,38 +692,152 @@ group_name <- "Tomb 46 56 62"
 
 network_grouped <- kinship_result_grouped %>%
   # keep only pairs where at least one side is the grouped tomb
-  filter(Tomb1 == group_name | Tomb2 == group_name) %>%
+  filter(tomb1 == group_name | tomb2 == group_name) %>%
   
   mutate(
-    Related = case_when(
-      Rel %in% c("First Degree", "IdenticalTwins/SameIndividual", 
+    related = case_when(
+      rel %in% c("First Degree", "IdenticalTwins/SameIndividual", 
                  "Second Degree", "Third Degree") ~ TRUE,
-      Rel == "Uncertain" ~ FALSE,
+      rel == "Uncertain" ~ FALSE,
       TRUE ~ NA
     )
   ) %>%
-  filter(Related == TRUE)
+  filter(related == TRUE)
 
 edges_g <- network_grouped %>%
-  select(`Individual1 ID`, `Individual2 ID`, Tomb1, Tomb2)
+  select(individual1_id, individual2_id, tomb1, tomb2)
 
 nodes_g <- edges_g %>%
-  transmute(name = `Individual1 ID`, Tomb = Tomb1) %>%
-  bind_rows(edges_g %>% transmute(name = `Individual2 ID`, Tomb = Tomb2)) %>%
+  transmute(name = individual1_id, tomb = tomb1) %>%
+  bind_rows(edges_g %>% transmute(name = individual2_id, tomb = tomb2)) %>%
   distinct(name, .keep_all = TRUE)
 
-nodes_g$Tomb <- droplevels(factor(nodes_g$Tomb))
+nodes_g$tomb <- droplevels(factor(nodes_g$tomb))
 
 g_g <- graph_from_data_frame(d = edges_g, vertices = nodes_g, directed = FALSE)
 
 ggraph(g_g, layout = "fr") +
   geom_edge_link(color = "grey70") +
-  geom_node_point(aes(color = Tomb), size = 3) +
+  geom_node_point(aes(color = tomb), size = 3) +
   geom_node_text(aes(label = name), vjust = -1, size = 2) +
   theme_void() +
   ggtitle("Network: Only pairs involving grouped Tomb 46 56 62") +
   scale_color_brewer(palette = "Set2")
 
+
+```
+
+# With kinship degrees
+``` {r, echo=FALSE}
+group_name <- "Tomb 46 56 62"
+
+network_grouped <- kinship_result_grouped %>%
+  # Keep only pairs where at least one individual is in the grouped tomb
+  filter(tomb1 == group_name | tomb2 == group_name) %>%
+  # Keep only true kinship relationships
+  filter(rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree")) %>%
+  mutate(
+    # Manual edge widths
+    edge_width = case_when(
+      rel %in% c("First Degree", "IdenticalTwins/SameIndividual") ~ 2.0,
+      rel == "Second Degree" ~ 1.2,
+      rel == "Third Degree" ~ 0.6
+    ),
+    # Factor for legend ordering
+    degree_label = factor(rel,
+                          levels = c("First Degree", "Second Degree", "Third Degree"),
+                          labels = c("1st Degree", "2nd Degree", "3rd Degree"))
+  )
+
+# --- Create edges and nodes ---
+edges_g <- network_grouped %>%
+  select(individual1_id, individual2_id, tomb1, tomb2, edge_width, degree_label)
+
+nodes_g <- edges_g %>%
+  transmute(name = individual1_id, tomb = tomb1) %>%
+  bind_rows(edges_g %>% transmute(name = individual2_id, tomb = tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+nodes_g$tomb <- droplevels(factor(nodes_g$tomb))
+
+# --- Build graph ---
+g_g <- graph_from_data_frame(d = edges_g, vertices = nodes_g, directed = FALSE)
+
+# --- Plot ---
+set.seed(123)
+ggraph(g_g, layout = "fr") +
+  geom_edge_link(aes(width = edge_width, color = degree_label)) +
+  geom_node_point(aes(color = tomb), size = 3) +
+  geom_node_text(aes(label = name), vjust = -1, size = 2) +
+  scale_edge_width(range = c(0.5, 2), guide = "none") +
+  scale_edge_color_manual(
+    values = c("1st Degree" = "black", "2nd Degree" = "grey40", "3rd Degree" = "grey70"),
+    name = "Kinship degree"
+  ) +
+  scale_color_brewer(palette = "Set2") +
+  ggtitle("Network: Only pairs involving grouped Tomb 46 56 62") +
+  theme_void()
+```
+
+### Cross and within tomb relations
+``` {r, echo=FALSE}
+# --- Prepare kinship network with weights for plotting ---
+network_kr <- kinship_result %>%
+  filter(rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree")) %>%
+  mutate(
+    # Manual edge widths: 1st thickest, 2nd medium, 3rd thinnest
+    edge_width = case_when(
+      rel %in% c("First Degree", "IdenticalTwins/SameIndividual") ~ 2.0,
+      rel == "Second Degree" ~ 1.2,
+      rel == "Third Degree" ~ 0.6
+    ),
+    degree_label = factor(rel,
+                          levels = c("First Degree", "Second Degree", "Third Degree"),
+                          labels = c("1st Degree", "2nd Degree", "3rd Degree"))
+  )
+
+# --- Create edges and nodes ---
+edges <- network_kr %>%
+  select(individual1_id, individual2_id, tomb1, tomb2, edge_width, degree_label) %>%
+  mutate(
+    # classify edges as within-tomb or cross-tomb
+    edge_type = ifelse(tomb1 == tomb2, "Within-tomb", "Cross-tomb")
+  )
+
+nodes <- edges %>%
+  transmute(name = individual1_id, tomb = tomb1) %>%
+  bind_rows(edges %>% transmute(name = individual2_id, tomb = tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+nodes$tomb <- droplevels(factor(nodes$tomb))
+
+# --- List of tombs ---
+tombs <- unique(nodes$tomb)
+
+# --- Generate per-tomb plots ---
+plots <- lapply(tombs, function(t) {
+  
+  edges_t <- edges %>% filter(tomb1 == t | tomb2 == t)
+  nodes_t <- nodes %>% filter(name %in% unique(c(edges_t$individual1_id, edges_t$individual2_id)))
+  
+  g_t <- graph_from_data_frame(d = edges_t, vertices = nodes_t, directed = FALSE)
+  
+  ggraph(g_t, layout = "fr") +
+    geom_edge_link(aes(width = edge_width, color = edge_type), show.legend = TRUE) +
+    geom_node_point(aes(color = tomb), size = 3) +
+    geom_node_text(aes(label = name), vjust = -1, size = 2) +
+    scale_edge_width(range = c(0.5, 2), guide = "none") +
+    scale_edge_color_manual(
+      values = c("Within-tomb" = "black", "Cross-tomb" = "red"),
+      name = "Edge Type"
+    ) +
+    scale_color_brewer(palette = "Set2") +
+    ggtitle(paste("Tomb:", t)) +
+    theme_void()
+})
+
+# --- Print all plots ---
+for(p in plots) print(p)
 ```
 
 
@@ -373,14 +845,3 @@ ggraph(g_g, layout = "fr") +
 
 - Different ratio in whether the related pairs or in the same tombs or in different tombs
 - But just by looking, some tombs really point out that they tends to have internal relatedness more than random relatedness to different tombs.
-
-
-
-
-
-
-
-
-
-
-

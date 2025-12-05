@@ -8,6 +8,7 @@ institute: "Project partners: Irene Högner, Alissa Mittnik"
 
 format: 
   revealjs:
+    html-math-method: mathjax
     logo: "LMULogo.jpg"
     css: customstyle.css
     embed-resources: true
@@ -24,9 +25,15 @@ editor: visual
 -   Description of data sets\
 -   Research questions
 
-**2. Data Analysis**
+**2. Data Analysis & Statistical Modelling**
+
+-   Data Description
+-   Data and Modeling Issues
+-   Model
 
 **3. Discussion**
+
+- Proposal to handle MNAR
 
 ## Outline
 
@@ -36,7 +43,7 @@ editor: visual
 -   Description of data sets\
 -   Research questions
 
-[**2. Data Analysis**]{style="color:lightgray;"}\
+[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}\
 
 [**3. Discussion**]{style="color:lightgray;"}\
 
@@ -50,14 +57,201 @@ editor: visual
 <img src="tombs.png" style="width: 60%;"/>
 :::
 
-## Description of data sets
 
--   **Survey**: Retrospective cross-sectional analysis with temporal parameters\
--   **Two burial sites**
-    -   Amfissa (tholos)
-    -   Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67\
--   **Note**: T46, T56, and T62 are also grouped into one fictitious tomb
--   **Analyzed data**
-    -   **Tomb parameters:** estimated individuals, sampling success, length of use …
-    -   **Individual metadata:** individual ID, tomb, skeletal element, age …
-    -   **Kinship results:** relationship type, kinship coefficient, SNP overlap …
+## Description of Data sets
+**1. Tomb parameters** - Summary information for each tomb:
+
+- Minimum number of individuals (MNI)
+- Number of total samples
+- Number of sampled skeletal element: Petrous bones, Teeth, Talus/Phalanx, other
+- Number of analysed individuals
+- Length of use in years
+- Percentage of successful samples
+
+## Description of Data sets
+**1. Tomb parameters** - Summary information for each tomb
+
+**2. Individual metadata** - Information of each sampled individual:
+
+- Analysis ID, Individual ID, Site, 1240k SNPs, Sex, Tomb, Skeletal Element, Age Estimation
+
+## Description of Data sets
+**1. Tomb parameters** - Summary information for each tomb
+
+**2. Individual metadata** - Information of each sampled individual
+
+**3. Kinship results:** Pairwise relatedness results between individuals
+
+- **Kinship coefficient**: Genetic relatedness measure between two individuals
+- **Relation**: Assigned relationship category (1st / 2nd / 3rd degree)
+- **Overlapping SNPs**: Number of shared SNPs used to estimate relatedness
+- **Low data**: Indicator that OverlapNSNPs is below the reliability threshold
+- Pair individuals ID, Upper & lower Z-score, Allele-sharing statistics (mean, unnormalized, standard error of P0), Kinship coefficient CI (min/max), Kinship coefficient min/max
+
+
+## Special Remarks
+
+- **Two burial sites**
+  - Amfissa (tholos)
+  - Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67\
+        **Note:** Analyze T46, T56, and T62 both as a group and as individual tombs
+- **Threshold Rule**
+  - Relationship assignments require minimum SNP overlap:
+    - **1st degree**: ≥ 500 overlapping SNPs
+    - **2nd degree**: ≥ 2,000 overlapping SNPs
+    - **3rd degree**: ≥ 15,000 overlapping SNPs
+  -   Pairs below these thresholds are classified as **uncertain**.
+
+## Research Questions
+
+1.  Develop and validate statistical models to predict the **difference between observed and potential relatedness**, using **tomb parameters** (length of use, estimated number of burials, sample success rate) as predictor variables, while accounting for potential confounding factors
+2.  Build predictive models to estimate **relatedness** patterns using **individual-level covariates** (sex, age and skeletal element of sample), considering that some of these factors may be confounded with DNA preservation quality and sampling success
+
+<div>
+
+$\rightarrow$ How different are relatedness patterns in different tombs when statistically correcting for selection biases and confounding variables?
+
+</div>
+
+## Outline
+
+[**1. Overview & Terminology**]{style="color:lightgray;"}
+
+**2. Data Analysis & Statistical Modelling**
+
+-   Data Description
+-   Data and Modeling Issues
+-   Model
+
+[**3. Discussion**]{style="color:lightgray;"}
+
+## Data Description
+
+(to put descriptive plots and correlation structures, DAG)
+
+## Data and Modeling Issues
+### Tomb-level model
+- Too few data (only 8 tombs) 
+- For too many parameters: length of use, # analysed individuals, effect of 4 types of skeletal elements
+
+$\Rightarrow$ Can not fit a meaningful tomb-level model
+ 
+
+## Data and Modeling Issues
+### Individual-level model
+**1. Unbalanced & sparse Data: **
+
+- Different sample size in each tombs
+- Some tombs lack certain skeletal elements entirely
+- In some tombs, certain skeletal elements appear only in one sex or one age group
+
+
+
+## Data and Modeling Issues
+### Individual-level model
+**1. Unbalanced & sparse Data**
+
+**2. Across-tomb modeling: **
+
+- Not only model the pairs with-in one tomb but also **across tombs**
+- Each pair has 2 tomb memberships
+- Relatedness between A and B is influenced by **both** of their tombs
+
+
+## Data and Modeling Issues
+### Individual-level model
+**1. Unbalanced & sparse Data**
+
+**2. Across-tomb modeling**
+
+**3. Repeated observation:**
+
+- Each individual appears in multiple pairs (A-B, A-C, A-D,...)
+- Creates non-independent observations
+- Residual correlation between pairs sharing the same individual
+- Potential bias when individuals have different sampling success or preservation
+
+## Data and Modeling Issues
+### Individual-level model
+**1. Unbalanced & sparse Data**
+
+**2. Across-tomb modeling**
+
+**3. Repeated observation**
+
+$\Rightarrow$ Multiple membership multiple classiﬁcation (MMMC) model
+
+- This accounts for missing category combinations across tombs,  cross-tomb structure and controls for repeated measurements on individuals.
+- Add random effects for both 2 tombs and 2 individuals
+
+## Data and Modeling Issues
+### Individual-level model
+**4. Missing values: **
+
+- Pairs below certain thresholds of Overlapping SNPs are classified as **uncertain**
+- Missingness Not At Random
+- Data being missing is directly dependent on the value of the target variable (relatedness)
+
+$\Rightarrow$ Current solution: Only use pairs that has over 15.000 Overlapping SNPs to turn it to MAR.
+
+- 1 more proposal to present in the discussion part
+
+## Model
+### Predictors
+
+(Listing out the predictors here)
+
+Maybe add DAG idk 
+
+## Model
+
+Let $Y_{ij} = 1$ if individuals $i$ and $j$ are related, and $Y_{t,ij} = 0$ otherwise.
+
+We assume:
+
+$$
+Y_{t,ij} \sim \text{Bernoulli}(\pi_{ij})
+$$
+
+where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
+
+**Multi-Membership Generalized Linear Mixed Model (GLMM)**
+
+$$
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
+    + \underbrace{(u_i + u_j)}_{\text{Individual MM}} 
+    + \underbrace{(v_{T(i)} + v_{T(j)})}_{\text{Tomb MM}}
+$$
+
+## Model
+$$
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
+    + \underbrace{(u_i + u_j)}_{\text{Individual MM}} 
+    + \underbrace{(v_{T(i)} + v_{T(j)})}_{\text{Tomb MM}}
+$$
+Where:
+
+- $\alpha$: Global intercept
+- $\mathbf{X}_{ij}$: 
+- $u$: RE for Individual with $u \sim \mathcal{N}(0, \sigma^2_{\text{ind}})$
+- $v$: RE for Tomb with $v \sim \mathcal{N}(0, \sigma^2_{\text{tomb}})$
+
+## Model
+Model output
+
+
+
+## Model
+### Interpretation & Model Output Evaluation
+
+
+## Outline
+[**1. Overview & Terminology**]{style="color:lightgray;"}
+
+[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}
+
+**3. Discussion**
+
+- Proposal to handle MNAR
+
+
