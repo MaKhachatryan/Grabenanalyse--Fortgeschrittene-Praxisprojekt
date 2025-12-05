@@ -50,52 +50,50 @@ editor: visual
 <img src="tombs.png" style="width: 60%;"/>
 :::
 
-## Description of data sets
 
-### General Information
+## Description of Data sets
+**1. Tomb parameters** - Summary information for each tomb:
 
--   **Two burial sites**
+- Minimum number of individuals (MNI)
+- Number of total samples
+- Number of sampled skeletal element: Petrous bones, Teeth, Talus/Phalanx, other
+- Number of analysed individuals
+- Length of use in years
+- Percentage of successful samples
 
-    -   Amfissa (tholos)
-    -   Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67\
-        Note: Analyze T46, T56, and T62 both as a group and as individual tombs
+## Description of Data sets
+**1. Tomb parameters** - Summary information for each tomb
 
--   **Threshold Rule**
+**2. Individual metadata** - Information of each sampled individual:
 
-    -   Relationship assignments require minimum SNP overlap:
-        -   **1st degree**: ≥ 500 overlapping SNPs
-        -   **2nd degree**: ≥ 2,000 overlapping SNPs
-        -   **3rd degree**: ≥ 15,000 overlapping SNPs
-    -   Pairs below these thresholds are classified as **uncertain**.
+- Analysis ID, Individual ID, Site, 1240k SNPs, Sex, Tomb, Skeletal Element, Age Estimation
 
-## Description of data sets
+## Description of Data sets
+**1. Tomb parameters** - Summary information for each tomb
 
-### Analyzed Data
+**2. Individual metadata** - Information of each sampled individual
 
--   **Tomb parameters:** Summary information for each tomb, including estimated number of burials, length of use, sampling success, and counts of preserved skeletal elements that characterize the burial context.
--   **Individual metadata:** Attributes for each sampled individual, such as tomb affiliation, sex, age category, skeletal element used for analysis, and genotyping success indicators.
--   **Kinship results:** Pairwise comparisons between individuals, including kinship coefficients, SNP overlap, and inferred degrees of relatedness based on genetic similarity
+**3. Kinship results:** Pairwise relatedness results between individuals
 
-## Analyzed data
+- **Kinship coefficient**: Genetic relatedness measure between two individuals
+- **Relation**: Assigned relationship category (1st / 2nd / 3rd degree)
+- **Overlapping SNPs**: Number of shared SNPs used to estimate relatedness
+- **Low data**: Indicator that OverlapNSNPs is below the reliability threshold
+- Pair individuals ID, Upper & lower Z-score, Allele-sharing statistics (mean, unnormalized, standard error of P0), Kinship coefficient CI (min/max), Kinship coefficient min/max
 
-### Tomb parameters
 
--   **Estimated number of burials**: MNI (Minimum number of individuals)
--   **Sample numbers**: Original number of samples, Same individual sampled twice, Max number of individuals
--   **Skeletal element of samples**: Petrous bones, Teeth, Talus/Phalanx, other, control
--   **Genetic Analyses**: TWIST capture samples included in kinship analyses, after merging samples from same individuals
--   **Length of use tomb**
--   **Percentage of successful samples**
+## Special requirements
 
-## Analyzed data
-
-### Individual metadata
-
--   Analysis ID, Individual ID, Site, 1240k SNPs, Sex, Tomb, Skeletal Element, Age Estimation
-
-### Kinship results
-
--   PairIndividuals, Rel, Zup, Zdown, P0_mean, Nonnormalized_P0, Nonnormalized_P0_serr, 1st_Type, Perc_Win_1stdeg_P0, OverlapNSNPs, NSNPsXNorm, KinshipCoefficient, KinshipCoefficient_95percCI\[min,max\], Low_data, Ind1, Ind2, KinshipCoefficient_min, KinshipCoefficient_max
+- **Two burial sites**
+  - Amfissa (tholos)
+  - Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67\
+        **Note:** Analyze T46, T56, and T62 both as a group and as individual tombs
+- **Threshold Rule**
+  - Relationship assignments require minimum SNP overlap:
+    - **1st degree**: ≥ 500 overlapping SNPs
+    - **2nd degree**: ≥ 2,000 overlapping SNPs
+    - **3rd degree**: ≥ 15,000 overlapping SNPs
+  -   Pairs below these thresholds are classified as **uncertain**.
 
 ## Research Questions
 
@@ -104,7 +102,7 @@ editor: visual
 
 <div>
 
-→ How different are relatedness patterns in different tombs when statistically correcting for selection biases and confounding variables?
+$\rightarrow$ How different are relatedness patterns in different tombs when statistically correcting for selection biases and confounding variables?
 
 </div>
 
@@ -115,7 +113,7 @@ editor: visual
 **2. Data Analysis & Statistical Modelling**
 
 -   Data Description
--   Data Issues
+-   Data and Modeling Issues
 -   Model
 
 [**3. Discussion**]{style="color:lightgray;"}
@@ -124,55 +122,72 @@ editor: visual
 
 (to put descriptive plots and correlation structures, DAG)
 
-## Data Issues
+## Data and Modeling Issues
+### Tomb-level model
+- Too few data (only 8 tombs) 
+- For too many parameters: length of use, # analysed individuals, effect of 4 types of skeletal elements
 
-### Sparse Data
+$\Rightarrow$ Can not fit a meaningful tomb-level model
+ 
 
--   Some tombs lack certain skeletal elements entirely
--   Some skeletal elements appear only in one sex or one age group
+## Data and Modeling Issues
+### Individual-level model
+**1. Unbalanced & sparse Data: **
 
-⇒ Problem:
+- Different sample size in each tombs
+- Some tombs lack certain skeletal elements entirely
+- In some tombs, certain skeletal elements appear only in one sex or one age group
 
--   Unstable model, effect of the missing skeletal element can not be estimated for that tomb
 
--   Collinearity: eg. Tomb 67 has only female phalanx ⇒ perfect collinearity between skeletal element & sex?
 
--   With-in tomb correlation (same preservation environment,…)
+## Data and Modeling Issues
+### Individual-level model
+**1. Unbalanced & sparse Data**
 
-## Data Issues
+**2. Across-tomb modeling: **
 
-### Tomb-level modelling is not feasible
+- Not only model the pairs with-in one tomb but also **across tombs**
+- Each pair has 2 tomb memberships
+- Relatedness between A and B is influenced by **both** of their tombs
 
--   Tomb-level GLM cannot be fitted meaningfully\
-    → *too few tombs (N \< 60)* for the number of parameters.
 
--   Predictor variables are at **individual-level**, but outcome was aggregated to **tomb-level** → severe information loss.
+## Data and Modeling Issues
+### Individual-level model
+**1. Unbalanced & sparse Data**
 
-## Data Issues
+**2. Across-tomb modeling**
 
-### Repeated observations
+**3. Repeated observation:**
 
--   Each *individual* appears in multiple pairs\
-    → Individual A is paired with B, C, D, …
+- Each individual appears in multiple pairs (A-B, A-C, A-D,...)
+- Creates non-independent observations
+- Residual correlation between pairs sharing the same individual
+- Potential bias when individuals have different sampling success or preservation
 
--   Therefore, observations containing the same individual are **not independent**
+## Data and Modeling Issues
+### Individual-level model
+**1. Unbalanced & sparse Data**
 
--   GLMM with only a tomb random effect assumes pairs from the same tomb cluster together\
-    but ignores clustering at the individual level.
+**2. Across-tomb modeling**
 
--   This leads to:
+**3. Repeated observation**
 
-    -   Residual correlation between pairs sharing the same individual
-    -   Potential bias when individuals have different sampling success or preservation
+$\Rightarrow$ Multiple membership multiple classiﬁcation (MMMC) model
 
-## Data Issues
+- This accounts for missing category combinations across tombs,  cross-tomb structure and controls for repeated measurements on individuals.
+- Add random effects for both 2 tombs and 2 individuals
 
-### Missing values
+## Data and Modeling Issues
+### Individual-level model
+**4. Missing values: **
 
-(to be added)
+- Pairs below certain thresholds of Overlapping SNPs are classified as **uncertain**
+- Missingness Not At Random
+- Data being missing is directly dependent on the value of the target variable (relatedness)
 
-**Conclusion:**\
-A mixed-effects logistic model (GLMM) is required because it can handle missing categories within tombs, assumes a realistic MAR mechanism, and accounts for the dependence created when pairs share individuals through a nested/crossed random-effects structure.
+$\Rightarrow$ Current solution: Only use pairs that has over 15.000 Overlapping SNPs to turn it to MAR.
+
+- 1 more proposal to present in the discussion part
 
 ## Model
 
