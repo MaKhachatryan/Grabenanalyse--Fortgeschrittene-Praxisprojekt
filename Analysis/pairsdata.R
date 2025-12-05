@@ -1,4 +1,4 @@
-source(here::here("environmentSetUp.R"))
+source("environmentSetUp.R")
 
 ##Individual Metadata
 ##- Filtering out the Lapoutsi
@@ -45,29 +45,38 @@ tomb_parameter$MNI[6] <- 70
 ##Kinship Result
 
 kinship_result <- og_kinship_result |>
-  mutate(rel = case_when(
+  mutate(rel_original = rel, # keeping the original rel for global threshold
+  
+  # cleaning rel based on original threshold
+  rel = case_when(
     rel == "First Degree"  & overlap_nsnps < 500   ~ "Uncertain",
     rel == "Second Degree" & overlap_nsnps < 2000  ~ "Uncertain",
     rel == "Third Degree"  & overlap_nsnps < 15000 ~ "Uncertain",
     TRUE ~ rel
   ),
-  rel_original = rel,
   
-  # Binary relatedness under global threshold
-  global_binary = case_when(
-    overlap_nsnps < 15000 ~ "Unrelated",
-    rel_original == "Unrelated" ~ "Unrelated",
-    TRUE ~ "Related"
+  # Binary relatedness under global threshold (related/unrelated) → (0/1) 
+  # - If a pair has < 15000 overlapping SNPs → 0 (unrelated)
+  # - If rel = "Unrelated" → 0 (even if SNP coverage is high)
+  # - If rel = 1st/2nd/3rd degree AND has ≥15000 SNPs  → 1 (related).
+  related_binary = case_when(
+    overlap_nsnps < 15000              ~ 0,
+    rel_original == "Unrelated"        ~ 0,
+    rel_original %in% c("First Degree", "Second Degree", "Third Degree") &
+      overlap_nsnps >= 15000           ~ 1,
+    TRUE                               ~ NA_real_
   ),
   
-  # Degree outcome under global threshold (optional)
+  # Degree outcome under global threshold 
   global_degree = case_when(
     overlap_nsnps < 15000 ~ "Uncertain",
-    TRUE ~ rel_original      # keep 1st/2nd/3rd/Unrelated as is
+    TRUE ~ rel_original      
   ),
   
   "individual1_id" = substr(ind1, 1, 6),
   "individual2_id" = substr(ind2, 1, 6)) |>
+  
+  # adding ind1 information
   left_join(individual_metadata |>
               rename(
                 tomb1 = tomb,
@@ -76,6 +85,7 @@ kinship_result <- og_kinship_result |>
                 skeletal_element1 = skeletal_element
               ), by = c("individual1_id" = "individual_id")) |>
   
+  # adding ind2 information
   left_join(individual_metadata |>
               rename(
                 tomb2 = tomb,
@@ -84,7 +94,7 @@ kinship_result <- og_kinship_result |>
                 skeletal_element2 = skeletal_element
               ), by = c("individual2_id" = "individual_id")) |>
   
-  dplyr::select(names(og_kinship_result), global_binary, global_degree, tomb1, 
+  dplyr::select(names(og_kinship_result), related_binary, global_degree, tomb1, 
          tomb2, sex1, sex2, age1, age2, skeletal_element1, skeletal_element2) |>
   mutate(
     "individual1_id" = substr(ind1, 1, 6),
