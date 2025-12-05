@@ -55,16 +55,15 @@ kinship_result <- og_kinship_result |>
     TRUE ~ rel
   ),
   
-  # Binary relatedness under global threshold (related/unrelated) → (0/1) 
-  # - If a pair has < 15000 overlapping SNPs → 0 (unrelated)
-  # - If rel = "Unrelated" → 0 (even if SNP coverage is high)
-  # - If rel = 1st/2nd/3rd degree AND has ≥15000 SNPs  → 1 (related).
+  # Binary relatedness based on the thresholded "rel" column:
+  # - 1st/2nd/3rd degree = 1  (related)
+  # - Unrelated          = 0  (unrelated)
+  # - Uncertain          = NA (cannot classify reliably)
   related_binary = case_when(
-    overlap_nsnps < 15000              ~ 0,
-    rel_original == "Unrelated"        ~ 0,
-    rel_original %in% c("First Degree", "Second Degree", "Third Degree") &
-      overlap_nsnps >= 15000           ~ 1,
-    TRUE                               ~ NA_real_
+    rel %in% c("First Degree", "Second Degree", "Third Degree") ~ 1,
+    rel == "Unrelated"                                          ~ 0,
+    rel == "Uncertain"                                          ~ NA_real_,
+    TRUE                                                        ~ NA_real_
   ),
   
   # Degree outcome under global threshold 
@@ -163,6 +162,38 @@ kinship_result <- kinship_result |>
   )
 
 
+# Helper to combine skeletal elements from two individuals into one
+combine_skeletal_elements <- function(sk1, sk2) {
+  if (is.na(sk1) && is.na(sk2)) return(NA_character_)
+  
+  # Split by '+' and trim spaces
+  split_and_clean <- function(x) {
+    if (is.na(x)) return(character(0))
+    parts <- unlist(strsplit(x, "\\+"))
+    trimws(parts)
+  }
+  
+  els1 <- split_and_clean(sk1)
+  els2 <- split_and_clean(sk2)
+  
+  all_els <- unique(c(els1, els2))
+  
+  if (length(all_els) == 0) return(NA_character_)
+  
+  # Define a canonical order for elements
+  element_order <- c("petrous bone",
+                     "talus",
+                     "phalanx",
+                     "tooth",
+                     "other")
+  
+  all_els <- all_els[order(match(all_els, element_order))]
+  
+
+  paste(all_els, collapse = "+")
+}
+
+
 ##clean pairs data
 
 pairs_all <- kinship_result %>%
@@ -177,6 +208,12 @@ pairs_all <- kinship_result %>%
       age1 == "subadult" & age2 == "subadult" ~ "both subadult",
       age1 == "subadult" | age2 == "subadult" ~ "mixed",
       TRUE                                    ~ "both adult/undefined"
+    ),
+    
+    skeletal_element_pair = map2_chr(
+      skeletal_element1,
+      skeletal_element2,
+      combine_skeletal_elements
     ),
     
     same_tomb = tomb1 == tomb2,
