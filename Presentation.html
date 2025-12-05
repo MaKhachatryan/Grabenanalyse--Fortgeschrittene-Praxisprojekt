@@ -1399,27 +1399,22 @@ Arsine Chinaryan, Anh Hoang Minh Dang, Felicia Francis Immanuel, Margarita Khach
 <h2>Model</h2>
 <h3 id="predictors">Predictors</h3>
 <p>(Listing out the predictors here)</p>
+<p>Maybe add DAG idk</p>
 </section>
 <section id="model-1" class="slide level2">
 <h2>Model</h2>
-<p>Let <span class="math inline">\(Y_{t,ij} = 1\)</span> if individuals <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> from tomb <span class="math inline">\(t\)</span> are closely related, and <span class="math inline">\(Y_{t,ij} = 0\)</span> otherwise.</p>
+<p>Let <span class="math inline">\(Y_{ij} = 1\)</span> if individuals <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> are related, and <span class="math inline">\(Y_{t,ij} = 0\)</span> otherwise.</p>
 <p>We assume:</p>
 <p><span class="math display">\[
-Y_{t,ij} \sim \text{Bernoulli}(\pi_{t,ij})
+Y_{t,ij} \sim \text{Bernoulli}(\pi_{ij})
 \]</span></p>
-<p>where <span class="math inline">\(\pi_{t,ij} = P(\text{related}_{t,ij} = 1)\)</span>.</p>
-<p><strong>Mixed-effects logistic regression</strong></p>
+<p>where <span class="math inline">\(\pi_{ij} = P(\text{related}_{ij} = 1)\)</span>.</p>
+<p><strong>Multi-Membership Generalized Linear Mixed Model (GLMM)</strong></p>
 <p><span class="math display">\[
-\text{logit}(\pi_{t,ij})
-= X_{t,ij}^{\top}\beta
-+ b_t
-+ v_i
-+ v_j
-\]</span></p>
-<p>This structure models:</p>
-<p><span class="math display">\[
-\text{Pairs} \;\leftarrow\; \text{Individuals} \;\subset\; \text{Tombs}
-\]</span></p>
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta}
+    + \underbrace{(u_i + u_j)}_{\text{Individual MM}}
+    + \underbrace{(v_{T(i)} + v_{T(j)})}_{\text{Tomb MM}}
+\]</span> <span class="math display">\[\text{Pairs} \;\leftarrow\; \text{Individuals} \;\subset\; \text{Tombs}\]</span></p>
 </section>
 <section id="model-2" class="slide level2">
 <h2>Model</h2>
@@ -2491,7 +2486,7 @@ window.QuartoSupport = function () {
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],

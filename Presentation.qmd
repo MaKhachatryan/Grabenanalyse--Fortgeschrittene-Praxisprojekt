@@ -8,6 +8,7 @@ institute: "Project partners: Irene Högner, Alissa Mittnik"
 
 format: 
   revealjs:
+    html-math-method: mathjax
     logo: "LMULogo.jpg"
     css: customstyle.css
     embed-resources: true
@@ -190,38 +191,33 @@ $\Rightarrow$ Current solution: Only use pairs that has over 15.000 Overlapping 
 - 1 more proposal to present in the discussion part
 
 ## Model
-
 ### Predictors
 
 (Listing out the predictors here)
 
+Maybe add DAG idk 
+
 ## Model
 
-Let $Y_{t,ij} = 1$ if individuals $i$ and $j$ from tomb $t$ are closely related, and $Y_{t,ij} = 0$ otherwise.
+Let $Y_{ij} = 1$ if individuals $i$ and $j$ are related, and $Y_{t,ij} = 0$ otherwise.
 
 We assume:
 
 $$
-Y_{t,ij} \sim \text{Bernoulli}(\pi_{t,ij})
+Y_{t,ij} \sim \text{Bernoulli}(\pi_{ij})
 $$
 
-where $\pi_{t,ij} = P(\text{related}_{t,ij} = 1)$.
+where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
 
-**Mixed-effects logistic regression**
-
-$$
-\text{logit}(\pi_{t,ij})
-= X_{t,ij}^{\top}\beta
-+ b_t
-+ v_i
-+ v_j
-$$
-
-This structure models:
+**Multi-Membership Generalized Linear Mixed Model (GLMM)**
 
 $$
-\text{Pairs} \;\leftarrow\; \text{Individuals} \;\subset\; \text{Tombs}
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
+    + \underbrace{(u_i + u_j)}_{\text{Individual MM}} 
+    + \underbrace{(v_{T(i)} + v_{T(j)})}_{\text{Tomb MM}}
 $$
+$$\text{Pairs} \;\leftarrow\; \text{Individuals} \;\subset\; \text{Tombs}$$
+
 
 ## Model
 
