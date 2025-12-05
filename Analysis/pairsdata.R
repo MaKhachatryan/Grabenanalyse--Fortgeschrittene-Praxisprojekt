@@ -1,4 +1,4 @@
-source(here::here("environmentSetUp.R"))
+source("environmentSetUp.R")
 
 ##Individual Metadata
 ##- Filtering out the Lapoutsi
