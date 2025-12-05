@@ -46,7 +46,7 @@ og_tomb_parameter <- og_tomb_parameter %>%
     tomb = `x1`
   )
 
-kinship_result_clean_name <- og_kinship_result %>%
+og_kinship_result <- og_kinship_result %>%
   janitor::clean_names() %>%
   rename(
     `1st_type` = x1st_type,
