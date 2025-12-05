@@ -16,7 +16,8 @@ packages <- c("tidyr",
               "ggraph",
               "purrr",
               "here",
-              "janitor")
+              "janitor",
+              "brms")
 
 for (pkg in packages) {
   if (!require(pkg, character.only = TRUE)) {
