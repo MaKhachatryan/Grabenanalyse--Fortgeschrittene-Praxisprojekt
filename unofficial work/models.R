@@ -22,7 +22,7 @@ pairs_ind <- pairs_ind %>%
       TRUE ~ "low-low"
     )
   )
-pairs_group <- pairs_ind %>%
+pairs_group <- pairs_group |>
   mutate(
     bone_quality = case_when(
       grepl("petrous", skeletal_element1) & grepl("petrous", skeletal_element2) ~ "high-high",
@@ -43,6 +43,56 @@ binary_separate_cat <- brm(related_binary ~ sex_pair + age_pair + bone_quality +
 
 summary(binary_separate_cat)
 
+##----------- Improve ------
+##### Improved version
+imp_binary_separate_cat <- brm(related_binary ~ sex_pair + age_pair + bone_quality + same_tomb +
+                             (1 | mm(individual1_id, individual2_id)) +
+                             (1 | mm(tomb1, tomb2)),
+                           data = pairs_ind,
+                           family = bernoulli(),
+                           control = list(
+                             adapt_delta = 0.999,   # The "Baby Steps" (Default 0.8)
+                             max_treedepth = 15     # Allow longer trajectories (Default 10)
+                           ),
+                           
+                           # INCREASE ITERATIONS
+                           # 6000 total = 3000 warmup (thrown away) + 3000 sampling (kept)
+                           iter = 6000, 
+                           warmup = 3000, 
+                           
+                           chains = 4, 
+                           cores = 4, 
+                           seed = 123)
+
+summary(imp_binary_separate_cat)
+saveRDS(imp_binary_separate_cat, "unofficial work/models save/imp_binary_separate_cat.rds")
+
+
+##### Try out the improved model of group version
+imp_binary_group_cat <- brm(related_binary ~ sex_pair + age_pair + bone_quality + same_tomb +
+                                 (1 | mm(individual1_id, individual2_id)) +
+                                 (1 | mm(tomb1, tomb2)),
+                               data = pairs_group,
+                               family = bernoulli(),
+                               control = list(
+                                 adapt_delta = 0.999,   # The "Baby Steps" (Default 0.8)
+                                 max_treedepth = 15     # Allow longer trajectories (Default 10)
+                               ),
+                               
+                               # INCREASE ITERATIONS
+                               # 6000 total = 3000 warmup (thrown away) + 3000 sampling (kept)
+                               iter = 6000, 
+                               warmup = 3000, 
+                               
+                               chains = 4, 
+                               cores = 4, 
+                               seed = 123)
+
+summary(imp_binary_group_cat)
+saveRDS(imp_binary_group_cat, "unofficial work/models save/imp_binary_group_cat.rds")
+
+
+##----------------------
 
 
 #### Binary separated (with Overlapping SNPs instead of bones)
@@ -91,6 +141,10 @@ binary_group_cat <- brm(related_binary ~ sex_pair + age_pair + bone_quality + sa
                         seed = 123)
 
 summary(binary_group_cat)
+
+
+
+
 
 
 #### Binary grouped (with Overlapping SNPs instead of bones)
