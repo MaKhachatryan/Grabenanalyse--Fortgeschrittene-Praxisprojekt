@@ -351,7 +351,11 @@ $\Rightarrow$ The model is healthy and reliable.
 
 ## Model
 ### Interpretation
+In logistic regression, $\beta$ are given in Log-Odds 
 
+$\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
+
+![](model interpretation.png){fig-align="center" width="90%"}
 
 
 ## Outline
