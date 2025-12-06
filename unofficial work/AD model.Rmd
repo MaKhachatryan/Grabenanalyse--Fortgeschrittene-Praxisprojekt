@@ -35,7 +35,7 @@ Remark:
 #### Binary separate
 
 ``` {r bs}
-binary_separate <- brm(related_binary ~ sex_pair + age_pair + 
+binary_separate <- brm(related_binary ~ sex_pair + age_pair + skeletal_element_pair + same_tomb +
   (1 | mm(individual1_id, individual2_id)) +
   (1 | mm(tomb1, tomb2)),
   data = pairs_ind,
@@ -43,19 +43,4 @@ binary_separate <- brm(related_binary ~ sex_pair + age_pair +
 
 summary(binary_separate)
 ```
-
-``` {r try solve divergent}
-binary_separate_fix <- brm(related_binary ~ sex_pair + age_pair + 
-  (1 | mm(individual1_id, individual2_id)) +
-  (1 | mm(tomb1, tomb2)),
-  data = pairs_ind,
-  family = bernoulli(),
-  control = list(adapt_delta = 0.99, max_treedepth = 15),
-  # You may need more iterations because steps are smaller
-  iter = 4000, warmup = 2000, chains = 4, cores = 4)
-
-summary(binary_separate_fix)
-```
-
-``` {r }
 
