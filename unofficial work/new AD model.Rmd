@@ -1,0 +1,186 @@
+---
+title: "new AD model"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(loo)
+source(here::here("environmentSetUp.R"))
+source(here::here("Analysis/pairsdata.R"))
+```
+
+**Remark:**
+
+- Only model the pairs over 15k in Overlapping SNPs
+- Create new variable to collapse skeletal elements into good and bad bones only (high-quality: petrous, low-quality: others)
+- Use beta distrbution for numeric target (kinship coefficient) since it's skewed heavily
+
+### Separated tomb
+#### Binary separated (with categorical bones)
+``` {r bin sep cat}
+binary_separate_cat <- readRDS(here::here("unofficial work/models save/binary_separate_cat.rds"))
+
+summary(binary_separate_cat)
+```
+
+#### Binary separated (with Overlapping SNPs instead of bones)
+``` {r bin sep ov}
+binary_separate_ov <- readRDS(here::here("unofficial work/models save/binary_separate_ov.rds"))
+
+summary(binary_separate_ov)
+
+```
+
+#### Numeric separated (with categorical bones)
+``` {r num sep cat}
+numeric_separate_cat <- readRDS(here::here("unofficial work/models save/numeric_separate_cat.rds"))
+
+summary(numeric_separate_cat)
+```
+
+#### Numeric separated (with Overlapping SNPs instead of bones)
+``` {r num sep ov}
+numeric_separate_ov <- readRDS(here::here("unofficial work/models save/numeric_separate_ov.rds"))
+
+summary(numeric_separate_ov)
+
+```
+
+
+### Compare models
+#### Model health
+``` {r compare}
+# 1. Put your models in a list (Make sure these objects exist in your environment)
+model_list <- list(
+  "binary_separate_cat" = binary_separate_cat, 
+  "binary_separate_ov"  = binary_separate_ov,
+  "numeric_separate_cat" = numeric_separate_cat, # Be careful if this one is broken/missing
+  "numeric_separate_ov"  = numeric_separate_ov   # Be careful if this one is broken/missing
+)
+
+# 2. Corrected Function
+get_model_stats <- function(model, name) {
+  
+  # A. Model Health
+  # Use nuts_params from brms to get divergences
+  nuts <- tryCatch(nuts_params(model), error = function(e) NULL)
+  if(!is.null(nuts)) {
+    divs <- sum(subset(nuts, Parameter == "divergent__")$Value)
+  } else {
+    divs <- NA # Handle cases where model crashed
+  }
+  
+  # FIX FOR RHAT ERROR:
+  # We extract Rhats directly from the rhat() function in brms namespace
+  # If that fails, we return NA
+  r_values <- tryCatch(brms::rhat(model), error = function(e) NA)
+  rhat_max <- max(r_values, na.rm = TRUE)
+  
+  # B. Model Fit (WAIC)
+  waic_val <- tryCatch(waic(model)$estimates["waic", "Estimate"], error = function(e) NA)
+  
+  # C. Key Biological Coefficients
+  # We use fixef() which is standard for brms
+  fix <- fixef(model)
+  
+  # Extract Male-Male Effect (Adjust string "XYMXY" if your summary shows differently)
+  # using grep to find the row that matches "XYMXY" even if the name varies slightly
+  mm_row <- grep("XYMXY", rownames(fix))
+  beta_MM <- if(length(mm_row) > 0) fix[mm_row, "Estimate"] else NA
+  
+  # Extract Subadult Effect
+  sub_row <- grep("subadult", rownames(fix))
+  beta_Subadult <- if(length(sub_row) > 0) fix[sub_row, "Estimate"] else NA
+  
+  # D. Random Effect Variances
+  # Safely extract variances
+  vars <- VarCorr(model)
+  
+  # Extract Individual Variance (mm function)
+  # Note: The name is usually 'mmindividual1_idindividual2_id' but might vary
+  sd_ind <- NA
+  if("mmindividual1_idindividual2_id" %in% names(vars)) {
+    sd_ind <- vars$mmindividual1_idindividual2_id$sd[1]
+  }
+  
+  # Extract Tomb Variance
+  sd_tomb <- NA
+  if("mmtomb1tomb2" %in% names(vars)) {
+    sd_tomb <- vars$mmtomb1tomb2$sd[1]
+  }
+  
+  return(data.frame(
+    Model = name,
+    Divergences = divs,
+    Max_Rhat = round(rhat_max, 3),
+    WAIC = round(waic_val, 1),
+    Est_MaleMale = round(beta_MM, 2),
+    Est_Subadult = round(beta_Subadult, 2),
+    SD_Ind = round(sd_ind, 2),
+    SD_Tomb = round(sd_tomb, 2)
+  ))
+}
+
+# 3. Run and Bind
+comparison_table <- bind_rows(lapply(names(model_list), function(x) get_model_stats(model_list[[x]], x)))
+
+# 4. View
+comparison_table
+```
+
+
+**Comment:**
+
+- The healthiest model is binary_separated_cat
+- Although there are still divergence (11, 0.275%) but we have good Rhat ($\approx 1$), 
+and good Effective Sample Size (>1000)
+
+**Source: **
+- https://mc-stan.org/learn-stan/diagnostics-warnings.html
+- https://easystats.github.io/bayestestR/reference/effective_sample.html
+
+**Improve: **
+- Rerun with higher adapt_delta (0.999) and more iteration
+
+### Improved version
+#### Separated tomb
+``` {r imp sep}
+imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
+summary(imp_binary_separate_cat)
+```
+
+#### Group tomb
+``` {r imp gr}
+imp_binary_group_cat <- readRDS(here::here("unofficial work/models save/imp_binary_group_cat.rds"))
+summary(imp_binary_group_cat)
+```
+
+**Comment:**
+
+- So much better outcome
+- No divergence, Rhat = 1, all large ESS
+- No drastical difference compare to the previous model with divergence, indicate that the 
+11 divergences were negligible
+- The "Same Tomb" effect got stronger 
+  - If the grouping was random, the effect would likely be weaker
+  - But it got stronger => the relatedness in grouped tomb is more confirmed
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
