@@ -1,0 +1,46 @@
+---
+title: "AD model"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+source(here::here("environmentSetUp.R"))
+source(here::here("Analysis/pairsdata.R"))
+```
+
+Idea: Each model twice for separated and grouped tombs:
+
+- Binary target
+- Continuous target: Try kinship coefficient, p0 score
+
+**Remark:**
+
+- Only model the pairs over 15k in Overlapping SNPs
+
+``` {r data}
+pairs_ind <- pairs_ind[pairs_ind$overlap_nsnps >= 15000, ]
+pairs_group <- pairs_group[pairs_group$overlap_nsnps >= 15000, ]
+summary(pairs_ind)
+plot(density(pairs_ind$nonnormalized_p0 - mean(pairs_ind$nonnormalized_p0)))
+plot(density(pairs_ind$kinship_coefficient - mean(pairs_ind$kinship_coefficient)))
+```
+
+
+Remark:
+
+- Neither of these continous variables are gaussian
+
+#### Binary separate
+
+``` {r bs}
+binary_separate <- brm(related_binary ~ sex_pair + age_pair + skeletal_element_pair + same_tomb +
+  (1 | mm(individual1_id, individual2_id)) +
+  (1 | mm(tomb1, tomb2)),
+  data = pairs_ind,
+  family = bernoulli())
+
+summary(binary_separate)
+```
+
