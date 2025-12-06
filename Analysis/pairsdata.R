@@ -1,4 +1,5 @@
-source("environmentSetUp.R")
+library(here)
+source(here::here("environmentSetUp.R"))
 
 ##Individual Metadata
 ##- Filtering out the Lapoutsi
@@ -225,3 +226,20 @@ pairs_ind <- pairs_all |> filter(tomb1 != "Elateia T46 56 62", tomb2 != "Elateia
 
 pairs_group <- pairs_all |> filter(!tomb1 %in% c("Elateia T46", "Elateia T56", "Elateia T62"),
                                    !tomb2 %in% c("Elateia T46", "Elateia T56", "Elateia T62"))
+
+pairs_ind <- pairs_ind %>%
+  mutate(
+    bone_quality = case_when(
+      grepl("petrous", skeletal_element1) & grepl("petrous", skeletal_element2) ~ "high-high",
+      grepl("petrous", skeletal_element1) | grepl("petrous", skeletal_element2) ~ "high-low",
+      TRUE ~ "low-low"
+    )
+  )
+pairs_group <- pairs_group |>
+  mutate(
+    bone_quality = case_when(
+      grepl("petrous", skeletal_element1) & grepl("petrous", skeletal_element2) ~ "high-high",
+      grepl("petrous", skeletal_element1) | grepl("petrous", skeletal_element2) ~ "high-low",
+      TRUE ~ "low-low"
+    )
+  )

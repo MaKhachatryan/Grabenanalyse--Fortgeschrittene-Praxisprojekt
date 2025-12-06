@@ -16,6 +16,11 @@ format:
     slide-number-position: "bottom-right"
 editor: visual
 ---
+```{r setup, include=FALSE}
+source("environmentSetUp.R")
+source("Analysis/pairsdata.R")
+```
+
 
 ## Outline
 
@@ -163,6 +168,13 @@ $\Rightarrow$ Can not fit a meaningful tomb-level model
 -   Some tombs lack certain skeletal elements entirely
 -   In some tombs, certain skeletal elements appear only in one sex or one age group
 
+::: {.fragment}
+**Solution 1:**
+
+$\Rightarrow$ Collapse many categories of skeletal elements into high-quality bone (petrous bone)
+and low-quality bone (the rest)
+:::
+
 ## Data and Modeling Issues
 
 ### Individual-level model
@@ -200,11 +212,14 @@ $\Rightarrow$ Can not fit a meaningful tomb-level model
 
 **3. Repeated observation**
 
+::: {.fragment}
+**Solution 2 & 3**
+
 $\Rightarrow$ Multiple membership multiple classiﬁcation (MMMC) model
 
 -   This accounts for missing category combinations across tombs, cross-tomb structure and controls for repeated measurements on individuals.
 -   Add random effects for both 2 tombs and 2 individuals
-
+:::
 ## Data and Modeling Issues
 
 ### Individual-level model
@@ -215,17 +230,13 @@ $\Rightarrow$ Multiple membership multiple classiﬁcation (MMMC) model
 -   Missingness Not At Random
 -   Data being missing is directly dependent on the value of the target variable (relatedness)
 
-$\Rightarrow$ Current solution: Only use pairs that has over 15.000 Overlapping SNPs to turn it to MAR.
+::: {.fragment}
+**Current solution 4**
+
+$\Rightarrow$ Only use pairs that has over 15.000 Overlapping SNPs to turn it to MAR.
 
 -   1 more proposal to present in the discussion part
-
-## Model
-
-### Predictors
-
-(Listing out the predictors here)
-
-Maybe add DAG idk
+:::
 
 ## Model
 
@@ -262,11 +273,90 @@ $$ Where:
 
 ## Model
 
-Model output
+### Variables
+
+```{r variables, echo=FALSE}
+pairs_ind_show <- pairs_ind |>
+  select(related_binary, sex_pair, age_pair, bone_quality, same_tomb, individual1_id, individual2_id, tomb1, tomb2)
+
+set.seed(45454)
+pairs_ind_show |>
+  slice_sample(n = 20) |>
+  slice(11:20) |>
+  gt() |>
+  tab_header(
+    title = "Variables in the model"
+  )
+```
+
+- One version for all separated tombs
+- One version with Tomb 46, 56, 62 grouped as 1 tomb
 
 ## Model
+### Separated tombs
+``` {r mod sep, echo=FALSE, out.height="500px"}
+imp_binary_separate_cat <- readRDS("unofficial work/models save/imp_binary_separate_cat.rds")
+imp_binary_separate_cat
+```
 
-### Interpretation & Model Output Evaluation
+## Model
+### Grouped tombs
+``` {r mod group, echo=FALSE, out.height="500px"}
+imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_cat.rds")
+imp_binary_group_cat
+```
+
+## Model
+### Sampling health (Diagnostic)
+**1. R-hat**
+
+- Both model: 1.00
+
+$\Rightarrow$ Very good. 4 different simulation chains have converged to the exact same result.
+
+## Model
+### Sampling health (Diagnostic)
+1. R-hat: very good
+
+::: {.fragment}
+**2. Divergent transitions**
+
+- Both model: 0
+
+$\Rightarrow$ Perfect. Zero cases of divergence.
+:::
+
+## Model
+### Sampling health (Diagnostic)
+1. R-hat: very good
+2. Divergent transitions: 0
+
+::: {.fragment}
+**3. Effective sample size**
+
+- Separated model: Bulk ESS > 4800; Tail ESS > 6000
+- Grouped model: Bulk ESS > 4800; Tail ESS > 5200
+
+$\Rightarrow$ Extremely high number of independent samples. Indicate reliable estimates and boundaries.
+:::
+
+## Model
+### Sampling health (Diagnostic)
+1. R-hat: very good
+2. Divergent transitions: 0
+3. Effective Sample Size: extremely high
+
+$\Rightarrow$ The model is healthy and reliable.
+
+
+## Model
+### Interpretation
+In logistic regression, $\beta$ are given in Log-Odds 
+
+$\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
+
+![](model interpretation.png){fig-align="center" width="90%"}
+
 
 ## Outline
 
@@ -277,3 +367,6 @@ Model output
 **3. Discussion**
 
 -   Proposal to handle MNAR
+
+
+## Appendix
