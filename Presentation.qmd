@@ -585,3 +585,9 @@ GLMM:
 Variable Z in MNAR:
 
 <https://arxiv.org/pdf/2404.04905>
+
+brms library:
+
+<https://mc-stan.org/learn-stan/diagnostics-warnings.html>
+
+<https://easystats.github.io/bayestestR/reference/effective_sample.html>
