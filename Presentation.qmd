@@ -273,7 +273,7 @@ $$
 $$ Where:
 
 -   $\alpha$: Global intercept
--   $\mathbf{X}_{ij}$:
+-   $\mathbf{X}_{ij}$: Covariate vector
 -   $u$: RE for Individual with $u \sim \mathcal{N}(0, \sigma^2_{\text{ind}})$
 -   $v$: RE for Tomb with $v \sim \mathcal{N}(0, \sigma^2_{\text{tomb}})$
 
