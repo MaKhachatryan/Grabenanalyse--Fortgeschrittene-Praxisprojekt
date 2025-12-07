@@ -75,7 +75,28 @@ imp_binary_group_cat <- brm(related_binary ~ sex_pair + age_pair + bone_quality 
 summary(imp_binary_group_cat)
 saveRDS(imp_binary_group_cat, "unofficial work/models save/imp_binary_group_cat.rds")
 
+### try out numeric target
+imp_numeric_sep_cat <- brm(
+  kinship_coefficient ~ sex_pair + age_pair + bone_quality + same_tomb +
+    (1 | mm(individual1_id, individual2_id)) +
+    (1 | mm(tomb1, tomb2)),
+  data = pairs_ind,
+  
+  family = student(),
+  
+  control = list(
+    adapt_delta = 0.999,
+    max_treedepth = 15
+  ),
+  iter = 6000,
+  warmup = 3000,
+  chains = 4,
+  cores = 4,
+  seed = 123
+)
 
+summary(imp_numeric_sep_cat)
+saveRDS(imp_numeric_sep_cat, "unofficial work/models save/imp_numeric_sep_cat.rds")
 ##----------------------
 
 #### Binary separated (with Overlapping SNPs instead of bones)
