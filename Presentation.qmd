@@ -295,7 +295,7 @@ pairs_ind_show |>
   )
 ```
 
--   Use r library "brms"
+-   Use r library "brms" (Bayesian Regression Models using 'Stan')
 -   One version for all separated tombs
 -   One version with Tomb 46, 56, 62 grouped as 1 tomb
 
