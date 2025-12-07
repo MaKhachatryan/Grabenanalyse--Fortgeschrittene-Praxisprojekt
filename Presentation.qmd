@@ -256,7 +256,7 @@ $$
 
 where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
 
-**Multi-Membership Generalized Linear Mixed Model (GLMM)**
+**Multi-Membership Generalized Linear Mixed Model (GLMM)** 
 
 $$
 \text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
@@ -295,6 +295,7 @@ pairs_ind_show |>
   )
 ```
 
+-   Use r library "brms"
 -   One version for all separated tombs
 -   One version with Tomb 46, 56, 62 grouped as 1 tomb
 
