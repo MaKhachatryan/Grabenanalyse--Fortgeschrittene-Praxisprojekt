@@ -11,6 +11,11 @@ source(here::here("environmentSetUp.R"))
 source(here::here("Analysis/pairsdata.R"))
 ```
 
+```{r plot}
+plot(density(pairs_ind$nonnormalized_p0))
+plot(density(pairs_ind$kinship_coefficient))
+```
+
 **Remark:**
 
 - Only model the pairs over 15k in Overlapping SNPs

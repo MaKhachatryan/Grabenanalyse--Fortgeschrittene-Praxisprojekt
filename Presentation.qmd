@@ -30,7 +30,7 @@ source("Analysis/pairsdata.R")
 -   Description of data sets\
 -   Research questions
 
-**2. Data Analysis & Statistical Modelling**
+**2. Data Analysis & Statistical Modeling**
 
 -   Data Description
 -   Data and Modeling Issues
@@ -48,15 +48,13 @@ source("Analysis/pairsdata.R")
 -   Description of data sets\
 -   Research questions
 
-[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}\
+[**2. Data Analysis & Statistical Modeling**]{style="color:lightgray;"}\
 
 [**3. Discussion**]{style="color:lightgray;"}\
 
 ## Overview of the Project
 
 **Grave Analysis**: How do different factors influence the ratio of relatedness and unrelatedness in a collective tomb from Mycenaean times?
-
-**Research Background**: The project investigates who was buried together in Mycenaean collective tombs using genetic and osteological data. The dataset provides initial insights into multi-generational burial organization and social belonging.
 
 ::: {style="text-align: center;"}
 <img src="tombs.png" style="width: 60%;"/>
@@ -66,12 +64,7 @@ source("Analysis/pairsdata.R")
 
 **1. Tomb parameters** - Summary information for each tomb:
 
--   Minimum number of individuals (MNI)
--   Number of total samples
--   Number of sampled skeletal element: Petrous bones, Teeth, Talus/Phalanx, other
--   Number of analysed individuals
--   Length of use in years
--   Percentage of successful samples
+**Minimum number of individuals (MNI), Number of analysed individuals, Length of use in years, Percentage of successful samples**, Number of total samples, Number of sampled skeletal element: Petrous bones, Teeth, Talus/Phalanx, other
 
 ## Description of Data sets
 
@@ -111,19 +104,14 @@ source("Analysis/pairsdata.R")
 ## Research Questions
 
 1.  Develop and validate statistical models to predict the **difference between observed and potential relatedness**, using **tomb parameters** (length of use, estimated number of burials, sample success rate) as predictor variables, while accounting for potential confounding factors
+
 2.  Build predictive models to estimate **relatedness** patterns using **individual-level covariates** (sex, age and skeletal element of sample), considering that some of these factors may be confounded with DNA preservation quality and sampling success
-
-<div>
-
-$\rightarrow$ How different are relatedness patterns in different tombs when statistically correcting for selection biases and confounding variables?
-
-</div>
 
 ## Outline
 
 [**1. Overview & Terminology**]{style="color:lightgray;"}
 
-**2. Data Analysis & Statistical Modelling**
+**2. Data Analysis & Statistical Modeling**
 
 -   Data Description
 -   Data and Modeling Issues
@@ -256,7 +244,7 @@ $$
 
 where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
 
-**Multi-Membership Generalized Linear Mixed Model (GLMM)** 
+**Multi-Membership Generalized Linear Mixed Model (MM-GLMM)**
 
 $$
 \text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
@@ -381,12 +369,12 @@ $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 
 [**1. Overview & Terminology**]{style="color:lightgray;"}
 
-[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}
+[**2. Data Analysis & Statistical Modeling**]{style="color:lightgray;"}
 
 **3. Discussion**
 
 -   Proposal to handle MNAR
--   Modelling Overlap SNPs
+-   Modeling Overlap SNPs
 
 ## Proposal to handle MNAR
 
@@ -398,7 +386,7 @@ $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 
 ## Proposal to handle MNAR
 
-### Proposal: Include Overlap and Low_data in our model
+### Statistical reasoning 
 
 **From the statistical reference we use:**\
 If missingness depends on an auxiliary variable Z, then including Z in the model makes the missing-data mechanism satisfy MAR instead of MNAR.
@@ -408,95 +396,34 @@ In our case:
 -   Z = overlap_snps (continuous data-quality variable)
 -   low_data = threshold flag (encoding whether the overlap is insufficient for that degree)
 
-::: fragment
-Thus, we propose:
+## Proposal to handle MNAR
+
+### Proposal: Include Overlap NSPs and low_data in the model
 
 **Include both overlap and low_data in the relatedness model** so the model explicitly accounts for the mechanism that creates uncertainty.
 
-Even if two pairs have identical overlap, **their threshold differs by degree**, and the low_data indicator lets the model learn this.
-:::
+Even if two pairs have identical overlap, their threshold differs by degree, and the low_data indicator lets the model learn this.
 
 ## Proposal to handle MNAR
 
 ### **Used** model **and data:**
 
--   Multi-Membership Generalized Linear Model(GLMM) (We reuse the model structure from the main analysis) with random effects for both 2 tombs and 2 individuals
--   Right now only one version for all separated tombs
-
-## Proposal to handle MNAR
-
-### Model
-
-```{r mod r, echo=FALSE, warning=FALSE, out.height="500px"}
-m_related <- readRDS("unofficial work/models save/m_related1.rds") 
-m_related
-```
-
-## Proposal to handle MNAR
-
-### Sampling health (Diagnostic)
-
--   **R-hat ≈ 1.00 or 1.01** → chains mixed well
-
--   **Bulk ESS, Tail ESS reasonable** → stable posterior estimates
-
--   **Very few divergent transactions** → sampler explored geometry correctly
-
-    ::: fragment
-    $\Rightarrow$ The diagnostics indicate reliable posterior estimation.
-    :::
-
-## Proposal to handle MNAR
-
-### Interpretation
-
-![](images/Screenshot%202025-12-07%20at%2005.13.48.png){width="645"}
-
-## Proposal to handle MNAR
-
-### Interpreting the Low Bone Quality Coefficient
-
--   **Logically**, and as confirmed by our Overlap Model,
-
-    -   good-quality bone → **higher** overlap
-
-    -   low-quality bone → **lower** overlap
-
--   However, in the Relatedness Model, **low bone quality shows a positive coefficient**.
-
-::: fragment
-**Why?**
-
-This is a **conditional statistical effect**, not a biological one.
-
--   Because **overlap_sc is already included in the model**, it absorbs the main effect of DNA preservation.
-
--   After adjusting for overlap, **bone quality no longer represents DNA quality**.
-
--   Instead, its remaining variation correlates with other factors in the dataset
-
-    (e.g., specific tombs or individuals that happen to contain more relatives).
-:::
-
-## Proposal to handle MNAR
-
-### Conclusion
-
-This model provides a statistically valid way to address the MNAR mechanism in our dataset and yields reliable estimates of relatedness under realistic archaeological and technical conditions.
+-   Multi-Membership Generalized Linear Mixed Model(MM-GLMM) (We reuse the model structure from the main analysis) with random effects for both 2 tombs and 2 individuals
+-   Use the whole data without marking anything as uncertain
 
 ## Outline
 
 [**1. Overview & Terminology**]{style="color:lightgray;"}
 
-[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}
+[**2. Data Analysis & Statistical Modeling**]{style="color:lightgray;"}
 
 **3. Discussion**
 
 [- Proposal to handle MNAR]{style="color:lightgray;"}
 
-\- Modelling Overlap SNPs
+\- Modeling Overlap SNPs
 
-## Modelling Overlap SNPs
+## Modeling Overlap SNPs
 
 ### Motivation
 
@@ -516,7 +443,7 @@ Therefore:
 -   To correctly adjust for this bias, **we first need to understand what predicts overlap itself.**
 :::
 
-## Modelling Overlap SNPs
+## Modeling Overlap SNPs
 
 ### Model
 
@@ -541,7 +468,7 @@ GLM was chosen because:
 -   no hierarchical structure needed
 :::
 
-## Modelling Overlap SNPs
+## Modeling Overlap SNPs
 
 ### Model
 
@@ -550,7 +477,7 @@ m_overlap <- readRDS("unofficial work/models save/m_overlap_glm.rds")
 m_overlap
 ```
 
-## Modelling Overlap SNPs
+## Modeling Overlap SNPs
 
 ### Interpretation
 
@@ -568,4 +495,87 @@ m_overlap
     It shows that overlap is predictable, structured, and therefore the right variable to include when correcting MNAR bias in the relatedness model.
     :::
 
+## Sources
+
+Multiple membership model:
+
+<https://journals.sagepub.com/doi/epdf/10.1177/1471082X0100100202>
+
+<https://www.youtube.com/watch?v=ob-VAapo3w4>
+
+GLMM:
+
+<https://stats.stackexchange.com/questions/626546/how-does-lme4-handle-participants-who-only-have-data-for-only-one-level-of-a-cat>
+
+<https://www.tjmahr.com/plotting-partial-pooling-in-mixed-effects-models/>
+
+Variable Z in MNAR:
+
+<https://arxiv.org/pdf/2404.04905>
+
+brms library:
+
+<https://mc-stan.org/learn-stan/diagnostics-warnings.html>
+
+<https://easystats.github.io/bayestestR/reference/effective_sample.html>
+
 ## Appendix
+
+### Proposal to handle MNAR: Model
+
+```{r mod r, echo=FALSE, warning=FALSE, out.height="500px"}
+m_related <- readRDS("unofficial work/models save/m_related1.rds") 
+m_related
+```
+
+## Appendix
+
+### Proposal to handle MNAR: Sampling health (Diagnostic)
+
+-   **R-hat ≈ 1.00 or 1.01** → chains mixed well
+
+-   **Bulk ESS, Tail ESS reasonable** → stable posterior estimates
+
+-   **Very few divergent transactions** → sampler explored geometry correctly
+
+    ::: Fragment
+    $\Rightarrow$ The diagnostics indicate reliable posterior estimation.
+    :::
+
+## Appendix
+
+### Proposal to handle MNAR: Interpretation
+
+![](images/Screenshot 2025-12-07 at 05.13.48-01.png)
+
+## Appendix
+
+### Proposal to handle MNAR: Interpreting the Low Bone Quality Coefficient
+
+-   **Logically**, and as confirmed by our Overlap Model,
+
+    -   good-quality bone → **higher** overlap
+
+    -   low-quality bone → **lower** overlap
+
+-   However, in the Relatedness Model, **low bone quality shows a positive coefficient**.
+
+::: fragment
+**Why?**
+
+This is a **conditional statistical effect**, not a biological one.
+
+-   Because **overlap_sc is already included in the model**, it absorbs the main effect of DNA preservation.
+
+-   After adjusting for overlap, **bone quality no longer represents DNA quality**.
+
+-   Instead, its remaining variation correlates with other factors in the dataset
+
+    (e.g., specific tombs or individuals that happen to contain more relatives).
+:::
+
+## Appendix
+
+### Proposal to handle MNAR: Conclusion
+
+This model provides a statistically valid way to address the MNAR mechanism in our dataset and yields reliable estimates of relatedness under realistic archaeological and technical conditions.
