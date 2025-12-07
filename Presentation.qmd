@@ -30,7 +30,7 @@ source("Analysis/pairsdata.R")
 -   Description of data sets\
 -   Research questions
 
-**2. Data Analysis & Statistical Modelling**
+**2. Data Analysis & Statistical Modeling**
 
 -   Data Description
 -   Data and Modeling Issues
@@ -48,7 +48,7 @@ source("Analysis/pairsdata.R")
 -   Description of data sets\
 -   Research questions
 
-[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}\
+[**2. Data Analysis & Statistical Modeling**]{style="color:lightgray;"}\
 
 [**3. Discussion**]{style="color:lightgray;"}\
 
@@ -123,7 +123,7 @@ $\rightarrow$ How different are relatedness patterns in different tombs when sta
 
 [**1. Overview & Terminology**]{style="color:lightgray;"}
 
-**2. Data Analysis & Statistical Modelling**
+**2. Data Analysis & Statistical Modeling**
 
 -   Data Description
 -   Data and Modeling Issues
@@ -256,7 +256,7 @@ $$
 
 where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
 
-**Multi-Membership Generalized Linear Mixed Model (GLMM)**
+**Multi-Membership Generalized Linear Mixed Model (MM-GLMM)**
 
 $$
 \text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
@@ -273,7 +273,7 @@ $$
 $$ Where:
 
 -   $\alpha$: Global intercept
--   $\mathbf{X}_{ij}$:
+-   $\mathbf{X}_{ij}$: Covariate vector
 -   $u$: RE for Individual with $u \sim \mathcal{N}(0, \sigma^2_{\text{ind}})$
 -   $v$: RE for Tomb with $v \sim \mathcal{N}(0, \sigma^2_{\text{tomb}})$
 
@@ -295,6 +295,7 @@ pairs_ind_show |>
   )
 ```
 
+-   Use r library "brms" (Bayesian Regression Models using 'Stan')
 -   One version for all separated tombs
 -   One version with Tomb 46, 56, 62 grouped as 1 tomb
 
@@ -380,12 +381,12 @@ $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 
 [**1. Overview & Terminology**]{style="color:lightgray;"}
 
-[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}
+[**2. Data Analysis & Statistical Modeling**]{style="color:lightgray;"}
 
 **3. Discussion**
 
 -   Proposal to handle MNAR
--   Modelling Overlap SNPs
+-   Modeling Overlap SNPs
 
 ## Proposal to handle MNAR
 
@@ -419,7 +420,7 @@ Even if two pairs have identical overlap, **their threshold differs by degree**,
 
 ### **Used** model **and data:**
 
--   Multi-Membership Generalized Linear Model(GLMM) (We reuse the model structure from the main analysis) with random effects for both 2 tombs and 2 individuals
+-   Multi-Membership Generalized Linear Mixed Model(MM-GLMM) (We reuse the model structure from the main analysis) with random effects for both 2 tombs and 2 individuals
 -   Right now only one version for all separated tombs
 
 ## Proposal to handle MNAR
@@ -487,15 +488,15 @@ This model provides a statistically valid way to address the MNAR mechanism in o
 
 [**1. Overview & Terminology**]{style="color:lightgray;"}
 
-[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}
+[**2. Data Analysis & Statistical Modeling**]{style="color:lightgray;"}
 
 **3. Discussion**
 
 [- Proposal to handle MNAR]{style="color:lightgray;"}
 
-\- Modelling Overlap SNPs
+\- Modeling Overlap SNPs
 
-## Modelling Overlap SNPs
+## Modeling Overlap SNPs
 
 ### Motivation
 
@@ -515,7 +516,7 @@ Therefore:
 -   To correctly adjust for this bias, **we first need to understand what predicts overlap itself.**
 :::
 
-## Modelling Overlap SNPs
+## Modeling Overlap SNPs
 
 ### Model
 
@@ -540,7 +541,7 @@ GLM was chosen because:
 -   no hierarchical structure needed
 :::
 
-## Modelling Overlap SNPs
+## Modeling Overlap SNPs
 
 ### Model
 
@@ -549,7 +550,7 @@ m_overlap <- readRDS("unofficial work/models save/m_overlap_glm.rds")
 m_overlap
 ```
 
-## Modelling Overlap SNPs
+## Modeling Overlap SNPs
 
 ### Interpretation
 
@@ -567,4 +568,26 @@ m_overlap
     It shows that overlap is predictable, structured, and therefore the right variable to include when correcting MNAR bias in the relatedness model.
     :::
 
-## Appendix
+## Sources
+
+Multiple membership model:
+
+<https://journals.sagepub.com/doi/epdf/10.1177/1471082X0100100202>
+
+<https://www.youtube.com/watch?v=ob-VAapo3w4>
+
+GLMM:
+
+<https://stats.stackexchange.com/questions/626546/how-does-lme4-handle-participants-who-only-have-data-for-only-one-level-of-a-cat>
+
+<https://www.tjmahr.com/plotting-partial-pooling-in-mixed-effects-models/>
+
+Variable Z in MNAR:
+
+<https://arxiv.org/pdf/2404.04905>
+
+brms library:
+
+<https://mc-stan.org/learn-stan/diagnostics-warnings.html>
+
+<https://easystats.github.io/bayestestR/reference/effective_sample.html>
