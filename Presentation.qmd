@@ -16,11 +16,11 @@ format:
     slide-number-position: "bottom-right"
 editor: visual
 ---
+
 ```{r setup, include=FALSE}
 source("environmentSetUp.R")
 source("Analysis/pairsdata.R")
 ```
-
 
 ## Outline
 
@@ -133,6 +133,12 @@ $\rightarrow$ How different are relatedness patterns in different tombs when sta
 
 ## Data Description
 
+### DAG (**directed acyclic graph)**
+
+![](images/DAGfinal.jpg)
+
+## Data Description
+
 ### [Absolute relation of MNI and analysed individuals]{style="font-size:26px;"}
 
 ![](Plots/plot_mni.png){width="70%"}
@@ -168,11 +174,10 @@ $\Rightarrow$ Can not fit a meaningful tomb-level model
 -   Some tombs lack certain skeletal elements entirely
 -   In some tombs, certain skeletal elements appear only in one sex or one age group
 
-::: {.fragment}
+::: fragment
 **Solution 1:**
 
-$\Rightarrow$ Collapse many categories of skeletal elements into high-quality bone (petrous bone)
-and low-quality bone (the rest)
+$\Rightarrow$ Collapse many categories of skeletal elements into high-quality bone (petrous bone) and low-quality bone (the rest)
 :::
 
 ## Data and Modeling Issues
@@ -212,7 +217,7 @@ and low-quality bone (the rest)
 
 **3. Repeated observation**
 
-::: {.fragment}
+::: fragment
 **Solution 2 & 3**
 
 $\Rightarrow$ Multiple membership multiple classiﬁcation (MMMC) model
@@ -220,6 +225,7 @@ $\Rightarrow$ Multiple membership multiple classiﬁcation (MMMC) model
 -   This accounts for missing category combinations across tombs, cross-tomb structure and controls for repeated measurements on individuals.
 -   Add random effects for both 2 tombs and 2 individuals
 :::
+
 ## Data and Modeling Issues
 
 ### Individual-level model
@@ -230,7 +236,7 @@ $\Rightarrow$ Multiple membership multiple classiﬁcation (MMMC) model
 -   Missingness Not At Random
 -   Data being missing is directly dependent on the value of the target variable (relatedness)
 
-::: {.fragment}
+::: fragment
 **Current solution 4**
 
 $\Rightarrow$ Only use pairs that has over 15.000 Overlapping SNPs to turn it to MAR.
@@ -250,7 +256,7 @@ $$
 
 where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
 
-**Multi-Membership Generalized Linear Mixed Model (GLMM)**
+**Multi-Membership Generalized Linear Mixed Model (GLMM)** 
 
 $$
 \text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
@@ -267,7 +273,7 @@ $$
 $$ Where:
 
 -   $\alpha$: Global intercept
--   $\mathbf{X}_{ij}$:
+-   $\mathbf{X}_{ij}$: Covariate vector
 -   $u$: RE for Individual with $u \sim \mathcal{N}(0, \sigma^2_{\text{ind}})$
 -   $v$: RE for Tomb with $v \sim \mathcal{N}(0, \sigma^2_{\text{tomb}})$
 
@@ -289,74 +295,87 @@ pairs_ind_show |>
   )
 ```
 
-- One version for all separated tombs
-- One version with Tomb 46, 56, 62 grouped as 1 tomb
+-   Use r library "brms" (Bayesian Regression Models using 'Stan')
+-   One version for all separated tombs
+-   One version with Tomb 46, 56, 62 grouped as 1 tomb
 
 ## Model
+
 ### Separated tombs
-``` {r mod sep, echo=FALSE, out.height="500px"}
+
+```{r mod sep, echo=FALSE, out.height="500px"}
 imp_binary_separate_cat <- readRDS("unofficial work/models save/imp_binary_separate_cat.rds")
 imp_binary_separate_cat
 ```
 
 ## Model
+
 ### Grouped tombs
-``` {r mod group, echo=FALSE, out.height="500px"}
+
+```{r mod group, echo=FALSE, out.height="500px"}
 imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_cat.rds")
 imp_binary_group_cat
 ```
 
 ## Model
+
 ### Sampling health (Diagnostic)
+
 **1. R-hat**
 
-- Both model: 1.00
+-   Both model: 1.00
 
 $\Rightarrow$ Very good. 4 different simulation chains have converged to the exact same result.
 
 ## Model
-### Sampling health (Diagnostic)
-1. R-hat: very good
 
-::: {.fragment}
+### Sampling health (Diagnostic)
+
+1.  R-hat: very good
+
+::: fragment
 **2. Divergent transitions**
 
-- Both model: 0
+-   Both model: 0
 
 $\Rightarrow$ Perfect. Zero cases of divergence.
 :::
 
 ## Model
-### Sampling health (Diagnostic)
-1. R-hat: very good
-2. Divergent transitions: 0
 
-::: {.fragment}
+### Sampling health (Diagnostic)
+
+1.  R-hat: very good
+2.  Divergent transitions: 0
+
+::: fragment
 **3. Effective sample size**
 
-- Separated model: Bulk ESS > 4800; Tail ESS > 6000
-- Grouped model: Bulk ESS > 4800; Tail ESS > 5200
+-   Separated model: Bulk ESS \> 4800; Tail ESS \> 6000
+-   Grouped model: Bulk ESS \> 4800; Tail ESS \> 5200
 
 $\Rightarrow$ Extremely high number of independent samples. Indicate reliable estimates and boundaries.
 :::
 
 ## Model
+
 ### Sampling health (Diagnostic)
-1. R-hat: very good
-2. Divergent transitions: 0
-3. Effective Sample Size: extremely high
+
+1.  R-hat: very good
+2.  Divergent transitions: 0
+3.  Effective Sample Size: extremely high
 
 $\Rightarrow$ The model is healthy and reliable.
 
-
 ## Model
+
 ### Interpretation
-In logistic regression, $\beta$ are given in Log-Odds 
+
+In logistic regression, $\beta$ are given in Log-Odds
 
 $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 
-![](model interpretation.png){fig-align="center" width="90%"}
-
+![](model%20interpretation.png){fig-align="center" width="90%"}
 
 ## Outline
 
@@ -367,6 +386,186 @@ $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 **3. Discussion**
 
 -   Proposal to handle MNAR
+-   Modelling Overlap SNPs
 
+## Proposal to handle MNAR
+
+### Background: MNAR in Kinship Data
+
+-   Relatedness labels become *uncertain* when overlap SNP is lower than the given threshold
+-   Thresholds depend on degree (1st/2nd/3rd)
+-   Missingness is **Missing Not At Random**
+
+## Proposal to handle MNAR
+
+### Proposal: Include Overlap and Low_data in our model
+
+**From the statistical reference we use:**\
+If missingness depends on an auxiliary variable Z, then including Z in the model makes the missing-data mechanism satisfy MAR instead of MNAR.
+
+In our case:
+
+-   Z = overlap_snps (continuous data-quality variable)
+-   low_data = threshold flag (encoding whether the overlap is insufficient for that degree)
+
+::: fragment
+Thus, we propose:
+
+**Include both overlap and low_data in the relatedness model** so the model explicitly accounts for the mechanism that creates uncertainty.
+
+Even if two pairs have identical overlap, **their threshold differs by degree**, and the low_data indicator lets the model learn this.
+:::
+
+## Proposal to handle MNAR
+
+### **Used** model **and data:**
+
+-   Multi-Membership Generalized Linear Model(GLMM) (We reuse the model structure from the main analysis) with random effects for both 2 tombs and 2 individuals
+-   Right now only one version for all separated tombs
+
+## Proposal to handle MNAR
+
+### Model
+
+```{r mod r, echo=FALSE, warning=FALSE, out.height="500px"}
+m_related <- readRDS("unofficial work/models save/m_related1.rds") 
+m_related
+```
+
+## Proposal to handle MNAR
+
+### Sampling health (Diagnostic)
+
+-   **R-hat ≈ 1.00 or 1.01** → chains mixed well
+
+-   **Bulk ESS, Tail ESS reasonable** → stable posterior estimates
+
+-   **Very few divergent transactions** → sampler explored geometry correctly
+
+    ::: fragment
+    $\Rightarrow$ The diagnostics indicate reliable posterior estimation.
+    :::
+
+## Proposal to handle MNAR
+
+### Interpretation
+
+![](images/Screenshot%202025-12-07%20at%2005.13.48.png){width="645"}
+
+## Proposal to handle MNAR
+
+### Interpreting the Low Bone Quality Coefficient
+
+-   **Logically**, and as confirmed by our Overlap Model,
+
+    -   good-quality bone → **higher** overlap
+
+    -   low-quality bone → **lower** overlap
+
+-   However, in the Relatedness Model, **low bone quality shows a positive coefficient**.
+
+::: fragment
+**Why?**
+
+This is a **conditional statistical effect**, not a biological one.
+
+-   Because **overlap_sc is already included in the model**, it absorbs the main effect of DNA preservation.
+
+-   After adjusting for overlap, **bone quality no longer represents DNA quality**.
+
+-   Instead, its remaining variation correlates with other factors in the dataset
+
+    (e.g., specific tombs or individuals that happen to contain more relatives).
+:::
+
+## Proposal to handle MNAR
+
+### Conclusion
+
+This model provides a statistically valid way to address the MNAR mechanism in our dataset and yields reliable estimates of relatedness under realistic archaeological and technical conditions.
+
+## Outline
+
+[**1. Overview & Terminology**]{style="color:lightgray;"}
+
+[**2. Data Analysis & Statistical Modelling**]{style="color:lightgray;"}
+
+**3. Discussion**
+
+[- Proposal to handle MNAR]{style="color:lightgray;"}
+
+\- Modelling Overlap SNPs
+
+## Modelling Overlap SNPs
+
+### Motivation
+
+In our DAG, several archaeological and biological factors (age, sex, skeletal element, sample success, tomb use length) directly influence **DNA preservation**.
+
+DNA preservation determines how many SNPs overlap between two individuals:
+
+DNA Preservation Factors → Overlap SNPs → Uncertainty in Relatedness
+
+::: fragment
+Therefore:
+
+-   **Overlap is the key data-quality variable** in our dataset.
+
+-   It is the variable that triggers uncertainty (MNAR) in kinship labels.
+
+-   To correctly adjust for this bias, **we first need to understand what predicts overlap itself.**
+:::
+
+## Modelling Overlap SNPs
+
+### Model
+
+Overlap SNPs is a continuous, approximately symmetric variable after standardization, we model it with a Gaussian GLM with an identity link. This is equivalent to a linear regression model, but framed as a generalized linear model for consistency with our other models.
+
+$$
+\mathbb{E}[\text{Overlap}_{ij}] 
+= \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta},
+\qquad 
+\text{Overlap}_{ij} \sim \mathcal{N}(\mu_{ij},\sigma^2).
+$$
+
+::: fragment
+GLM was chosen because:
+
+-   outcome is continuous
+
+-   predictors are a mix of categorical and numeric
+
+-   interpretation is straightforward
+
+-   no hierarchical structure needed
+:::
+
+## Modelling Overlap SNPs
+
+### Model
+
+```{r mod ov, echo=FALSE, warning=FALSE, out.height="500px"}
+m_overlap <- readRDS("unofficial work/models save/m_overlap_glm.rds") 
+m_overlap
+```
+
+## Modelling Overlap SNPs
+
+### Interpretation
+
+1.  Lower bone quality strongly reduces overlap
+
+2.  Pairs coming from tombs with higher sampling success show better DNA overlap.
+
+3.  Subadults tend to yield higher overlap
+
+4.  Being buried in the same tomb has only a negligible influence on overlap
+
+    ::: fragment
+    $\Rightarrow$ DNA preservation (overlap) is mainly driven by bone quality and tomb-level sampling success.
+
+    It shows that overlap is predictable, structured, and therefore the right variable to include when correcting MNAR bias in the relatedness model.
+    :::
 
 ## Appendix
