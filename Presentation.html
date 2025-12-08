@@ -2005,25 +2005,22 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <h2>Proposal to handle MNAR</h2>
 <h3 id="statistical-reasoning">Statistical reasoning</h3>
 <p><strong>From the statistical reference we use:</strong><br>
-If missingness depends on an auxiliary variable Z, then including Z in the model makes the missing-data mechanism satisfy MAR instead of MNAR.</p>
-<p>In our case:</p>
+“If missingness depends on an auxiliary variable Z, then including Z in the model makes the missing-data mechanism satisfy MAR instead of MNAR.”</p>
+<p>In this case:</p>
 <ul>
 <li>Z = overlap_snps (continuous data-quality variable)</li>
 <li>low_data = threshold flag (encoding whether the overlap is insufficient for that degree)</li>
 </ul>
+<div class="Fragment">
+<p>=&gt; <strong>Include both overlap and low_data in the relatedness model</strong></p>
+</div>
 </section>
 <section id="proposal-to-handle-mnar-2" class="slide level2">
 <h2>Proposal to handle MNAR</h2>
-<h3 id="proposal-include-overlap-nsps-and-low_data-in-the-model">Proposal: Include Overlap NSPs and low_data in the model</h3>
-<p><strong>Include both overlap and low_data in the relatedness model</strong> so the model explicitly accounts for the mechanism that creates uncertainty.</p>
-<p>Even if two pairs have identical overlap, their threshold differs by degree, and the low_data indicator lets the model learn this.</p>
-</section>
-<section id="proposal-to-handle-mnar-3" class="slide level2">
-<h2>Proposal to handle MNAR</h2>
 <h3 id="used-model-and-data"><strong>Used</strong> model <strong>and data:</strong></h3>
 <ul>
-<li>Multi-Membership Generalized Linear Mixed Model(MM-GLMM) (We reuse the model structure from the main analysis) with random effects for both 2 tombs and 2 individuals</li>
-<li>Use the whole data without marking anything as uncertain</li>
+<li>Multi-Membership Generalized Linear Mixed Model(MM-GLMM) with random effects for both 2 tombs and 2 individuals</li>
+<li>Use the whole data without marking anything uncertain</li>
 </ul>
 </section>
 <section id="outline-4" class="slide level2">
@@ -2037,22 +2034,25 @@ If missingness depends on an auxiliary variable Z, then including Z in the model
 <section id="modeling-overlap-snps" class="slide level2">
 <h2>Modeling Overlap SNPs</h2>
 <h3 id="motivation">Motivation</h3>
-<p>In our DAG, several archaeological and biological factors (age, sex, skeletal element, sample success, tomb use length) directly influence <strong>DNA preservation</strong>.</p>
-<p>DNA preservation determines how many SNPs overlap between two individuals:</p>
+<p>Archaeological and biological factors influencing DNA preservation:</p>
+<ul>
+<li><p>skeletal element</p></li>
+<li><p>tomb sample success and length of use</p></li>
+<li><p>age and sex</p></li>
+</ul>
 <p>DNA Preservation Factors → Overlap SNPs → Uncertainty in Relatedness</p>
 <div class="fragment">
 <p>Therefore:</p>
 <ul>
-<li><p><strong>Overlap is the key data-quality variable</strong> in our dataset.</p></li>
-<li><p>It is the variable that triggers uncertainty (MNAR) in kinship labels.</p></li>
-<li><p>To correctly adjust for this bias, <strong>we first need to understand what predicts overlap itself.</strong></p></li>
+<li><p><strong>Overlap is the key data-quality variable</strong></p></li>
+<li><p>It triggers uncertainty (MNAR) in kinship labels</p></li>
 </ul>
 </div>
 </section>
 <section id="modeling-overlap-snps-1" class="slide level2">
 <h2>Modeling Overlap SNPs</h2>
 <h3 id="model-10">Model</h3>
-<p>Overlap SNPs is a continuous, approximately symmetric variable after standardization, we model it with a Gaussian GLM with an identity link. This is equivalent to a linear regression model, but framed as a generalized linear model for consistency with our other models.</p>
+<p>Gaussian GLM with an identity link</p>
 <p><span class="math display">\[
 \mathbb{E}[\text{Overlap}_{ij}]
 = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta},
@@ -2065,7 +2065,6 @@ If missingness depends on an auxiliary variable Z, then including Z in the model
 <li><p>outcome is continuous</p></li>
 <li><p>predictors are a mix of categorical and numeric</p></li>
 <li><p>interpretation is straightforward</p></li>
-<li><p>no hierarchical structure needed</p></li>
 </ul>
 </div>
 </section>
@@ -2099,13 +2098,12 @@ Residual Deviance: 23790    AIC: 74460</code></pre>
 <h2>Modeling Overlap SNPs</h2>
 <h3 id="interpretation-1">Interpretation</h3>
 <ol type="1">
-<li><p>Lower bone quality strongly reduces overlap</p></li>
-<li><p>Pairs coming from tombs with higher sampling success show better DNA overlap.</p></li>
-<li><p>Subadults tend to yield higher overlap</p></li>
-<li><p>Being buried in the same tomb has only a negligible influence on overlap</p>
+<li><p>Lower bone quality -&gt; low overlap</p></li>
+<li><p>Higher tomb sampling success -&gt; better overlap</p></li>
+<li><p>Subadults -&gt; higher overlap</p></li>
+<li><p>Same tomb -&gt; negligible influence</p>
 <div class="fragment">
-<p><span class="math inline">\(\Rightarrow\)</span> DNA preservation (overlap) is mainly driven by bone quality and tomb-level sampling success.</p>
-<p>It shows that overlap is predictable, structured, and therefore the right variable to include when correcting MNAR bias in the relatedness model.</p>
+<p><span class="math inline">\(\Rightarrow\)</span> Overlap NSPs is mainly driven by bone quality and tomb-level sampling success</p>
 </div></li>
 </ol>
 </section>

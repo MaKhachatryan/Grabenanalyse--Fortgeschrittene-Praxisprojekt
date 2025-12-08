@@ -389,27 +389,23 @@ $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 ### Statistical reasoning 
 
 **From the statistical reference we use:**\
-If missingness depends on an auxiliary variable Z, then including Z in the model makes the missing-data mechanism satisfy MAR instead of MNAR.
+"If missingness depends on an auxiliary variable Z, then including Z in the model makes the missing-data mechanism satisfy MAR instead of MNAR."
 
-In our case:
+In this case:
 
 -   Z = overlap_snps (continuous data-quality variable)
 -   low_data = threshold flag (encoding whether the overlap is insufficient for that degree)
 
-## Proposal to handle MNAR
-
-### Proposal: Include Overlap NSPs and low_data in the model
-
-**Include both overlap and low_data in the relatedness model** so the model explicitly accounts for the mechanism that creates uncertainty.
-
-Even if two pairs have identical overlap, their threshold differs by degree, and the low_data indicator lets the model learn this.
+::: Fragment
+=\> **Include both overlap and low_data in the relatedness model**
+:::
 
 ## Proposal to handle MNAR
 
 ### **Used** model **and data:**
 
--   Multi-Membership Generalized Linear Mixed Model(MM-GLMM) (We reuse the model structure from the main analysis) with random effects for both 2 tombs and 2 individuals
--   Use the whole data without marking anything as uncertain
+-   Multi-Membership Generalized Linear Mixed Model(MM-GLMM) with random effects for both 2 tombs and 2 individuals
+-   Use the whole data without marking anything uncertain
 
 ## Outline
 
@@ -427,27 +423,29 @@ Even if two pairs have identical overlap, their threshold differs by degree, and
 
 ### Motivation
 
-In our DAG, several archaeological and biological factors (age, sex, skeletal element, sample success, tomb use length) directly influence **DNA preservation**.
+Archaeological and biological factors influencing DNA preservation:
 
-DNA preservation determines how many SNPs overlap between two individuals:
+-   skeletal element
+
+-   tomb sample success and length of use
+
+-   age and sex
 
 DNA Preservation Factors → Overlap SNPs → Uncertainty in Relatedness
 
 ::: fragment
 Therefore:
 
--   **Overlap is the key data-quality variable** in our dataset.
+-   **Overlap is the key data-quality variable**
 
--   It is the variable that triggers uncertainty (MNAR) in kinship labels.
-
--   To correctly adjust for this bias, **we first need to understand what predicts overlap itself.**
+-   It triggers uncertainty (MNAR) in kinship labels
 :::
 
 ## Modeling Overlap SNPs
 
 ### Model
 
-Overlap SNPs is a continuous, approximately symmetric variable after standardization, we model it with a Gaussian GLM with an identity link. This is equivalent to a linear regression model, but framed as a generalized linear model for consistency with our other models.
+Gaussian GLM with an identity link
 
 $$
 \mathbb{E}[\text{Overlap}_{ij}] 
@@ -464,8 +462,6 @@ GLM was chosen because:
 -   predictors are a mix of categorical and numeric
 
 -   interpretation is straightforward
-
--   no hierarchical structure needed
 :::
 
 ## Modeling Overlap SNPs
@@ -481,18 +477,16 @@ m_overlap
 
 ### Interpretation
 
-1.  Lower bone quality strongly reduces overlap
+1.  Lower bone quality -\> low overlap
 
-2.  Pairs coming from tombs with higher sampling success show better DNA overlap.
+2.  Higher tomb sampling success -\> better overlap
 
-3.  Subadults tend to yield higher overlap
+3.  Subadults -\> higher overlap
 
-4.  Being buried in the same tomb has only a negligible influence on overlap
+4.  Same tomb -\> negligible influence
 
     ::: fragment
-    $\Rightarrow$ DNA preservation (overlap) is mainly driven by bone quality and tomb-level sampling success.
-
-    It shows that overlap is predictable, structured, and therefore the right variable to include when correcting MNAR bias in the relatedness model.
+    $\Rightarrow$ Overlap NSPs is mainly driven by bone quality and tomb-level sampling success
     :::
 
 ## Sources
