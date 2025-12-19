@@ -292,7 +292,7 @@ pairs_ind_show |>
 ### Separated tombs
 
 ```{r mod sep, echo=FALSE, out.height="500px"}
-imp_binary_separate_cat <- readRDS("unofficial work/models save/imp_binary_separate_cat.rds")
+imp_binary_separate_cat <- readRDS("Models/saved_models/imp_binary_separate_cat.rds")
 imp_binary_separate_cat
 ```
 
@@ -301,7 +301,7 @@ imp_binary_separate_cat
 ### Grouped tombs
 
 ```{r mod group, echo=FALSE, out.height="500px"}
-imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_cat.rds")
+imp_binary_group_cat <- readRDS("Models/saved_models/imp_binary_group_cat.rds")
 imp_binary_group_cat
 ```
 
@@ -386,7 +386,7 @@ $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 
 ## Proposal to handle MNAR
 
-### Statistical reasoning 
+### Statistical reasoning
 
 **From the statistical reference we use:**\
 "If missingness depends on an auxiliary variable Z, then including Z in the model makes the missing-data mechanism satisfy MAR instead of MNAR."
@@ -469,7 +469,7 @@ GLM was chosen because:
 ### Model
 
 ```{r mod ov, echo=FALSE, warning=FALSE, out.height="500px"}
-m_overlap <- readRDS("unofficial work/models save/m_overlap_glm.rds") 
+m_overlap <- readRDS("Models/saved_models/m_overlap_glm.rds") 
 m_overlap
 ```
 
@@ -518,7 +518,7 @@ brms library:
 ### Proposal to handle MNAR: Model
 
 ```{r mod r, echo=FALSE, warning=FALSE, out.height="500px"}
-m_related <- readRDS("unofficial work/models save/m_related1.rds") 
+m_related <- readRDS("Models/saved_models/m_related1.rds") 
 m_related
 ```
 
@@ -540,7 +540,7 @@ m_related
 
 ### Proposal to handle MNAR: Interpretation
 
-![](images/Screenshot 2025-12-07 at 05.13.48-01.png)
+![](images/Screenshot%202025-12-07%20at%2005.13.48-01.png)
 
 ## Appendix
 
