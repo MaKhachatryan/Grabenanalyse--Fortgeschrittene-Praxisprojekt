@@ -469,7 +469,7 @@ GLM was chosen because:
 ### Model
 
 ```{r mod ov, echo=FALSE, warning=FALSE, out.height="500px"}
-m_overlap <- readRDS("unofficial work/models save/m_overlap_glm.rds") 
+m_overlap <- readRDS("Models/saved_models/m_overlap_glm.rds") 
 m_overlap
 ```
 
@@ -518,7 +518,7 @@ brms library:
 ### Proposal to handle MNAR: Model
 
 ```{r mod r, echo=FALSE, warning=FALSE, out.height="500px"}
-m_related <- readRDS("unofficial work/models save/m_related1.rds") 
+m_related <- readRDS("Models/saved_models/m_related1.rds") 
 m_related
 ```
 
