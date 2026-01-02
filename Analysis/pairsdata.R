@@ -118,10 +118,12 @@ kinship_group_pairs <- kinship_result |>
 
 kinship_result <- bind_rows(kinship_result, kinship_group_pairs)
 
-tomb_success <- tomb_parameter |>
+tomb_lookup <- tomb_parameter |>
   group_by(Tomb) |>
   summarise(
-    sample_success = first(percentage_of_successful_samples),
+    sample_success       = first(percentage_of_successful_samples),
+    analysed_individuals = first(`analysed individuals`),   
+    length_of_use        = first(length_of_use_of_tomb),
     .groups = "drop"
   )
 
@@ -144,20 +146,24 @@ kinship_result <- kinship_result |>
 kinship_result <- kinship_result |>
   # join for individual 1's tomb
   left_join(
-    tomb_success |>
+    tomb_lookup |>
       rename(
-        tomb1 = Tomb,
-        sample_success1 = sample_success
+        tomb1            = Tomb,
+        sample_success1  = sample_success,
+        analysed_ind1    = analysed_individuals,
+        length_of_use1   = length_of_use
       ),
     by = "tomb1"
   ) |>
   
   # join for individual 2's tomb
   left_join(
-    tomb_success |>
+    tomb_lookup |>
       rename(
-        tomb2 = Tomb,
-        sample_success2 = sample_success
+        tomb2            = Tomb,
+        sample_success2  = sample_success,
+        analysed_ind2    = analysed_individuals,
+        length_of_use2   = length_of_use
       ),
     by = "tomb2"
   )
@@ -243,8 +249,6 @@ pairs_group <- pairs_group |>
       TRUE ~ "low-low"
     )
   )
-
-
 
 ###### Data preparation for modeling SNP overlap and MNAR considerations
 
