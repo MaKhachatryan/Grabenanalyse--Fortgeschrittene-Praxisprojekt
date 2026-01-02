@@ -11,10 +11,7 @@ library(here)
 source(here::here("environmentSetUp.R"))
 library(marginaleffects)
 library(collapse)
-```
 
-Load the data 
-```{r}
 source(here::here("Analysis", "pairsdata.R"))
 imp_binary_group_cat <- readRDS(
   here::here("unofficial work", "models save", "imp_binary_group_cat.rds")
@@ -75,14 +72,32 @@ In practice, we report **average marginal effects (AMEs)**, which average the pr
 pp_group_sex <- avg_predictions(
   model = imp_binary_group_cat,
   by = "sex_pair",
-  type = "response",        # probability scale
-  newdata = pairs_ind,
-  re_formula = NA,          # population-level (no random effects)
+  type = "response",# probability scale
+  newdata = pairs_group, 
+  re_formula = NA, # population-level (no random effects)
   allow_new_levels = TRUE
 )
 
 pp_group_sex
 
+```
+```{r}
+ggplot(pp_group_sex, aes(x = sex_pair, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.1
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 0.1)
+  ) +
+  labs(
+    x = "Sex pair",
+    y = "Predicted probability of relatedness",
+    title = "Marginal predicted probabilities by sex pair",
+    subtitle = "Population-level predictions (random effects excluded)"
+  ) +
+  theme_minimal()
 ```
 
 2. each age_pair category
@@ -91,13 +106,31 @@ pp_group_age <- avg_predictions(
   model = imp_binary_group_cat,
   by = "age_pair",
   type = "response",        
-  newdata = pairs_ind,
+  newdata = pairs_group,
   re_formula = NA,          
   allow_new_levels = TRUE
 )
 
 pp_group_age
 
+```
+```{r}
+ggplot(pp_group_age, aes(x = age_pair, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.1
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 0.1)
+  ) +
+  labs(
+    x = "Age pair",
+    y = "Predicted probability of relatedness",
+    title = "Marginal predicted probabilities by age pair",
+    subtitle = "Population-level predictions (random effects excluded)"
+  ) +
+  theme_minimal()
 ```
 
 3. each bone_quality category
@@ -106,13 +139,31 @@ pp_group_bone <- avg_predictions(
   model = imp_binary_group_cat,
   by = "bone_quality",
   type = "response",        
-  newdata = pairs_ind,
+  newdata = pairs_group,
   re_formula = NA,          
   allow_new_levels = TRUE
 )
 
 pp_group_bone
 
+```
+```{r}
+ggplot(pp_group_bone, aes(x = bone_quality, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.1
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 0.1)
+  ) +
+  labs(
+    x = "Bone quality",
+    y = "Predicted probability of relatedness",
+    title = "Marginal predicted probabilities by bone quality",
+    subtitle = "Population-level predictions (random effects excluded)"
+  ) +
+  theme_minimal()
 ```
 
 4. each same_tomb category?
@@ -121,13 +172,31 @@ pp_group_tomb <- avg_predictions(
   model = imp_binary_group_cat,
   by = "same_tomb",
   type = "response",        
-  newdata = pairs_ind,
+  newdata = pairs_group,
   re_formula = NA,          
   allow_new_levels = TRUE
 )
 
 pp_group_tomb
 
+```
+```{r}
+ggplot(pp_group_tomb, aes(x = same_tomb, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.1
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 0.1)
+  ) +
+  labs(
+    x = "Same tomb",
+    y = "Predicted probability of relatedness",
+    title = "Marginal predicted probabilities by tomb",
+    subtitle = "Population-level predictions (random effects excluded)"
+  ) +
+  theme_minimal()
 ```
 
 **“By how many percentage points does the probability change compared to the reference?”**
