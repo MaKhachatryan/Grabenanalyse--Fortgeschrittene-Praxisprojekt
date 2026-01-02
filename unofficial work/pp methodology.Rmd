@@ -1,0 +1,36 @@
+---
+title: "pp methodology"
+output: html_document
+---
+
+### Try the sensitivity analysis anyway
+#### Main model with 15k threshold - Separated
+``` {r load, echo=FALSE}
+library(here)
+
+all_binary_separate_cat <- readRDS(here("unofficial work/models save/all_binary_separate_cat.rds"))
+all_binary_group_cat <- readRDS(here("unofficial work/models save/all_binary_group_cat.rds"))
+imp_binary_separate_cat <- readRDS(here("unofficial work/models save/imp_binary_separate_cat.rds"))
+imp_binary_group_cat <- readRDS(here("unofficial work/models save/imp_binary_group_cat.rds"))
+```
+
+``` {r mods 1}
+imp_binary_separate_cat
+```
+
+#### Model with original threshold - Separated
+``` {r mods 2}
+all_binary_separate_cat
+```
+
+#### Main model with 15k threshold - Grouped
+``` {r mods 3}
+imp_binary_group_cat
+```
+
+
+#### Model with original threshold - Grouped
+
+``` {r mods 4}
+all_binary_group_cat
+```
