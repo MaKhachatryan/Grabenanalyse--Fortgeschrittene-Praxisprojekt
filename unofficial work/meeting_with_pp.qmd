@@ -1,0 +1,64 @@
+---
+format: 
+  revealjs:
+    html-math-method: mathjax
+    logo: "../LMULogo.jpg"
+    css: "../customstyle.css"
+    embed-resources: true
+    slide-number: c
+    slide-number-position: "bottom-right"
+editor: visual
+---
+
+## Why We Cannot Use a Tomb-level Model
+
+- The dataset includes **only a small number of tombs**  
+  (Amfissa and 7 tombs from Elateia)
+
+- At the tomb level, we would need to consider **too many factors for too few data**, for example:
+  - how long each tomb was used  
+  - how many individuals were analyzed  
+  - which skeletal elements were sampled (petrous bone, teeth, others)
+
+- Because of this, any tomb-level model would be:
+  - unstable  
+  - strongly affected by individual tombs  
+  - hard to interpret
+
+$\Rightarrow$ **With the available data, a meaningful tomb-level model is not possible**
+
+## DAG (**directed acyclic graph)**
+
+![](../images/DAGfinal.jpg)
+
+## Cross and within tomb relations
+
+![](network_plots/Amfissa%20tholos.png)
+
+## Cross and within tomb relations
+
+![](network_plots/Tomb%2031.png)
+
+## Cross and within tomb relations
+
+![](network_plots/Tomb%2036.png)
+
+## Cross and within tomb relations
+
+![](network_plots/Tomb%2046.png)
+
+## Cross and within tomb relations
+
+![](network_plots/Tomb%2050.png)
+
+## Cross and within tomb relations
+
+![](network_plots/Tomb%2056.png)
+
+## Cross and within tomb relations
+
+![](network_plots/Tomb%2062.png)
+
+## Cross and within tomb relations
+
+![](network_plots/Tomb%2067.png)
