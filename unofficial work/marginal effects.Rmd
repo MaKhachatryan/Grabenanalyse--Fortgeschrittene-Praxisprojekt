@@ -1,0 +1,265 @@
+---
+title: "Marginal effect model"
+author: "Felicia Francis Immanuel"
+date: "2025-12-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+source(here::here("environmentSetUp.R"))
+library(marginaleffects)
+library(collapse)
+
+source(here::here("Analysis", "pairsdata.R"))
+imp_binary_group_cat <- readRDS(
+  here::here("unofficial work", "models save", "imp_binary_group_cat.rds")
+)
+imp_binary_separate_cat <- readRDS(
+  here::here("unofficial work", "models save", "imp_binary_separate_cat.rds")
+)
+```
+
+## Interpreting GLMM coefficients with marginal effects
+
+Our outcome is binary (`related = 1` vs `related = 0`), so we fit a logistic GLMM.  
+In a logistic model, coefficients are on the log-odds scale:
+
+\[
+\text{logit}(p) = \log\left(\frac{p}{1-p}\right) = \eta = \beta_0 + \beta_1 x_1 + \dots
+\]
+
+Exponentiating a coefficient gives an odds ratio:
+
+\[
+\exp(\beta_k) = \text{odds ratio}
+\]
+
+This is not the same as “times more likely” in terms of probability.  
+The same odds ratio can correspond to very different probability changes depending on the baseline probability \(p\). Therefore, interpreting \(\exp(\beta)\) as a direct multiplier of probability can be misleading when baseline probabilities are small.
+
+## Marginal Effect
+
+A marginal effect translates the model from the log-odds scale to the probability scale.  
+It answers the question:
+
+> “Holding other variables constant, how much does the predicted probability \(P(\text{related}=1)\) change when a predictor changes?”
+
+For a continuous predictor \(x\), the (instantaneous) marginal effect is:
+
+\[
+\frac{\partial p}{\partial x}
+\]
+
+For a categorical predictor (e.g., sex-pair group), the marginal effect is typically reported as a discrete change:
+
+\[
+\Delta p = p(x=\text{level A}) - p(x=\text{reference})
+\]
+
+## Average marginal effects and marginal predicted probabilities
+
+In practice, we report **average marginal effects (AMEs)**, which average the probability changes across individuals/pairs in the dataset. This yields results on an interpretable scale (percentage-point changes):
+
+- **Marginal predicted probabilities**: predicted \(p\) for each group (e.g., XX–XX, XX–XY, XY–XY)
+- **Average marginal effects**: average difference in predicted probability between groups (e.g., XY–XY vs XX–XX)
+
+**What is the average probability that a pair is related, for: **
+
+1. each sex_pair category?
+```{r}
+pp_group_sex <- avg_predictions(
+  model = imp_binary_group_cat,
+  by = "sex_pair",
+  type = "response",# probability scale
+  newdata = pairs_group, 
+  re_formula = NA, # population-level (no random effects)
+  allow_new_levels = TRUE
+)
+
+pp_group_sex
+
+```
+```{r}
+ggplot(pp_group_sex, aes(x = sex_pair, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.1
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 0.1)
+  ) +
+  labs(
+    x = "Sex pair",
+    y = "Predicted probability of relatedness",
+    title = "Marginal predicted probabilities by sex pair",
+    subtitle = "Population-level predictions (random effects excluded)"
+  ) +
+  theme_minimal()
+```
+
+2. each age_pair category
+```{r}
+pp_group_age <- avg_predictions(
+  model = imp_binary_group_cat,
+  by = "age_pair",
+  type = "response",        
+  newdata = pairs_group,
+  re_formula = NA,          
+  allow_new_levels = TRUE
+)
+
+pp_group_age
+
+```
+```{r}
+ggplot(pp_group_age, aes(x = age_pair, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.1
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 0.1)
+  ) +
+  labs(
+    x = "Age pair",
+    y = "Predicted probability of relatedness",
+    title = "Marginal predicted probabilities by age pair",
+    subtitle = "Population-level predictions (random effects excluded)"
+  ) +
+  theme_minimal()
+```
+
+3. each bone_quality category
+```{r}
+pp_group_bone <- avg_predictions(
+  model = imp_binary_group_cat,
+  by = "bone_quality",
+  type = "response",        
+  newdata = pairs_group,
+  re_formula = NA,          
+  allow_new_levels = TRUE
+)
+
+pp_group_bone
+
+```
+```{r}
+ggplot(pp_group_bone, aes(x = bone_quality, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.1
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 0.1)
+  ) +
+  labs(
+    x = "Bone quality",
+    y = "Predicted probability of relatedness",
+    title = "Marginal predicted probabilities by bone quality",
+    subtitle = "Population-level predictions (random effects excluded)"
+  ) +
+  theme_minimal()
+```
+
+4. each same_tomb category?
+```{r}
+pp_group_tomb <- avg_predictions(
+  model = imp_binary_group_cat,
+  by = "same_tomb",
+  type = "response",        
+  newdata = pairs_group,
+  re_formula = NA,          
+  allow_new_levels = TRUE
+)
+
+pp_group_tomb
+
+```
+```{r}
+ggplot(pp_group_tomb, aes(x = same_tomb, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0.1
+  ) +
+  scale_y_continuous(
+    labels = scales::percent_format(accuracy = 0.1)
+  ) +
+  labs(
+    x = "Same tomb",
+    y = "Predicted probability of relatedness",
+    title = "Marginal predicted probabilities by tomb",
+    subtitle = "Population-level predictions (random effects excluded)"
+  ) +
+  theme_minimal()
+```
+
+**“By how many percentage points does the probability change compared to the reference?”**
+
+```{r}
+new_data <- imp_binary_group_cat$data
+```
+
+1. sex pair
+```{r}
+cmp_group_sex <- avg_comparisons(
+  imp_binary_group_cat,
+  variables = "sex_pair",
+  type = "response",
+  newdata = new_data,
+  re_formula = NA,
+  allow_new_levels = TRUE
+)
+cmp_group_sex
+
+```
+
+2. age pair
+```{r}
+cmp_group_age <- avg_comparisons(
+  imp_binary_group_cat,
+  variables = "age_pair",
+  type = "response",
+  newdata = new_data,
+  re_formula = NA,
+  allow_new_levels = TRUE
+)
+cmp_group_age
+
+```
+
+3. bone quality
+
+```{r}
+cmp_group_bone <- avg_comparisons(
+  imp_binary_group_cat,
+  variables = "bone_quality",
+  type = "response",
+  newdata = new_data,
+  re_formula = NA,
+  allow_new_levels = TRUE
+)
+cmp_group_bone
+
+```
+
+
+4. same tomb
+
+```{r}
+cmp_group_tomb <- avg_comparisons(
+  imp_binary_group_cat,
+  variables = "same_tomb",
+  type = "response",
+  newdata = new_data,
+  re_formula = NA,
+  allow_new_levels = TRUE
+)
+cmp_group_tomb
+
+```
