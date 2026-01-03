@@ -852,6 +852,15 @@ plots <- lapply(tombs, function(t) {
 # --- Print all plots ---
 for (p in plots) print(p)
 
+# Save each plot with the tomb name inside network_plots
+for (i in seq_along(plots)) {
+  tomb_name <- tombs[i]  # tombs is your vector of tomb names
+  ggsave(
+    filename = paste0("network_plots/", tomb_name, ".png"),
+    plot = plots[[i]],
+    width = 6, height = 4, dpi = 300
+  )
+}
 ```
 
 
