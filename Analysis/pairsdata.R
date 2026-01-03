@@ -225,7 +225,11 @@ pairs_all <- kinship_result %>%
     
     same_tomb = tomb1 == tomb2,
     
-    sample_success_min = pmin(sample_success1, sample_success2, na.rm = TRUE)
+    sample_success_min = pmin(sample_success1, sample_success2, na.rm = TRUE),
+    
+    analysed_ind_min = pmin(analysed_ind1, analysed_ind2, na.rm = TRUE),
+    
+    length_of_use_absdiff = abs(length_of_use1 - length_of_use2)
   )
 
 pairs_ind <- pairs_all |> filter(tomb1 != "Elateia T46 56 62", tomb2 != "Elateia T46 56 62")
