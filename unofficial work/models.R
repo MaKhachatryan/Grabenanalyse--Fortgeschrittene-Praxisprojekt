@@ -202,6 +202,7 @@ for (m in model_names) {
 
 ### NEW MODEL SENSITIVITY ANALYSIS ------
 # Now we try to see if the model works without the strict (15k only) threshold
+source("Analysis/pairsdata.R")
 pairs_ind_all <- pairs_ind[is.na(pairs_ind$low_data), ]
 pairs_group_all <- pairs_group[is.na(pairs_group$low_data), ]
 
@@ -312,6 +313,9 @@ saveRDS(bone_vs_nobone, "unofficial work/models save/bone_vs_nobone.rds")
 
 
 ### Only use same_tomb parameter ------
+pairs_ind <- pairs_ind[pairs_ind$overlap_nsnps >= 15000, ]
+pairs_group <- pairs_group[pairs_group$overlap_nsnps >= 15000, ]
+
 imp_binary_separate_sametomb <- brm(related_binary ~ same_tomb +
                                     (1 | mm(individual1_id, individual2_id)) +
                                     (1 | mm(tomb1, tomb2)),
