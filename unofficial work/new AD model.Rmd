@@ -174,17 +174,59 @@ summary(imp_binary_group_cat)
   
 
 
+### Compare between 15k threshold and original threhold
+#### Separated tomb
+``` {r compare threshold}
+imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
+all_binary_separate_cat <- readRDS(here::here("unofficial work/models save/all_binary_separate_cat.rds"))
+ogthreshold_vs_15k <- readRDS(here::here("unofficial work/models save/ogthreshold_vs_15k.rds"))
+
+
+summary(imp_binary_separate_cat)
+summary(all_binary_separate_cat)
+ogthreshold_vs_15k
+```
+
+
+**Comment:**
+
+- Model with original threshold is distorted: high individual variance, most of the parameters are insignificant, worse diagnostics than the 15k threshold
+- Comparison table point out that: 
+  - Original threshold explains more variance (higher $R^2$)
+  - 15k predicts new data better (ELPD, LOOIC, WAIC)
+  - $\Rightarrow$ Indicates using original threshold is more complex or overfitting.
 
 
 
+### Compare between with and without bone quality
+Logic of this sensitivity analysis: 
+
+Because "Tomb" $\rightarrow$ "Preservation" $\rightarrow$ "Observed kinship", therefore we added bone_quality to the model before to control for the path between "Tomb" and "Kinship". So that the relationship between Tomb and Kinship not just an artifact of preservation. 
+
+But does this "preservation bias" really exist (and need to be controlled by the bone quality)? Or was it already taken care of from when we filter 15k threshold (only qualified sample)? 
+
+$\Rightarrow$ Sensitivity analysis:
+
+- Bias: If when we remove bone_quality, the "Same Tomb" coefficient shifts wildly because it suddenly has to absorb the preservation bias. Then we still need to add bone_quality in the model.
+- No bias: When we remove bone_quality, the same_tomb coefficient stays stable. Then we can just delete bone_quality (which makes the model simpler and easier to interpret).
+
+``` {r compare bone}
+imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
+imp_binary_separate_nobone <- readRDS(here::here("unofficial work/models save/imp_binary_separate_nobone.rds"))
+bone_vs_nobone <- readRDS(here::here("unofficial work/models save/bone_vs_nobone.rds"))
 
 
+summary(imp_binary_separate_cat)
+summary(imp_binary_separate_nobone)
+bone_vs_nobone
+```
 
+**Comment:**
+- The model stays stable
+- No bone model even gives better diagnostics $\Rightarrow$ mathematically cleaner
+- The compared metrics are nearly identical, no metric provides meaningful evidence that one model is better
 
-
-
-
-
+$\Rightarrow$ Prefer the no bone model, since it's simpler, easier to interpret, and mathematically cleaner without losing scientific accuracy.
 
 
 
