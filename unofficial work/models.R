@@ -202,6 +202,7 @@ for (m in model_names) {
 
 ### NEW MODEL SENSITIVITY ANALYSIS ------
 # Now we try to see if the model works without the strict (15k only) threshold
+source("Analysis/pairsdata.R")
 pairs_ind_all <- pairs_ind[is.na(pairs_ind$low_data), ]
 pairs_group_all <- pairs_group[is.na(pairs_group$low_data), ]
 
@@ -252,6 +253,120 @@ all_binary_group_cat <- brm(related_binary ~ sex_pair + age_pair + bone_quality 
 summary(all_binary_group_cat)
 saveRDS(all_binary_group_cat, "unofficial work/models save/all_binary_group_cat.rds")
 
+## Compare
+ogthreshold_vs_15k <- modelsummary(list("Model with 15k threshold" = imp_binary_separate_cat,
+                  "Model with original threshold" = all_binary_separate_cat))
+saveRDS(ogthreshold_vs_15k, "unofficial work/models save/ogthreshold_vs_15k")
+
+### Delete bone quality as proxy ------
+imp_binary_separate_nobone <- brm(related_binary ~ sex_pair + age_pair + same_tomb +
+                                 (1 | mm(individual1_id, individual2_id)) +
+                                 (1 | mm(tomb1, tomb2)),
+                               data = pairs_ind,
+                               family = bernoulli(),
+                               control = list(
+                                 adapt_delta = 0.999,   # The "Baby Steps" (Default 0.8)
+                                 max_treedepth = 15     # Allow longer trajectories (Default 10)
+                               ),
+                               
+                               # INCREASE ITERATIONS
+                               # 6000 total = 3000 warmup (thrown away) + 3000 sampling (kept)
+                               iter = 6000, 
+                               warmup = 3000, 
+                               
+                               chains = 4, 
+                               cores = 4, 
+                               seed = 123)
+
+summary(imp_binary_separate_nobone)
+saveRDS(imp_binary_separate_nobone, "unofficial work/models save/imp_binary_separate_nobone.rds")
+
+
+##### Group version
+imp_binary_group_nobone <- brm(related_binary ~ sex_pair + age_pair + same_tomb +
+                              (1 | mm(individual1_id, individual2_id)) +
+                              (1 | mm(tomb1, tomb2)),
+                            data = pairs_group,
+                            family = bernoulli(),
+                            control = list(
+                              adapt_delta = 0.999,   # The "Baby Steps" (Default 0.8)
+                              max_treedepth = 15     # Allow longer trajectories (Default 10)
+                            ),
+                            
+                            # INCREASE ITERATIONS
+                            # 6000 total = 3000 warmup (thrown away) + 3000 sampling (kept)
+                            iter = 6000, 
+                            warmup = 3000, 
+                            
+                            chains = 4, 
+                            cores = 4, 
+                            seed = 123)
+
+summary(imp_binary_group_nobone)
+saveRDS(imp_binary_group_nobone, "unofficial work/models save/imp_binary_group_nobone.rds")
+
+
+## Compare
+bone_vs_nobone <- modelsummary(list("Model with bone quality" = imp_binary_separate_cat,
+                                        "Model without bone quality" = imp_binary_separate_nobone))
+saveRDS(bone_vs_nobone, "unofficial work/models save/bone_vs_nobone.rds")
+
+
+### Only use same_tomb parameter ------
+pairs_ind <- pairs_ind[pairs_ind$overlap_nsnps >= 15000, ]
+pairs_group <- pairs_group[pairs_group$overlap_nsnps >= 15000, ]
+
+imp_binary_separate_sametomb <- brm(related_binary ~ same_tomb +
+                                    (1 | mm(individual1_id, individual2_id)) +
+                                    (1 | mm(tomb1, tomb2)),
+                                  data = pairs_ind,
+                                  family = bernoulli(),
+                                  control = list(
+                                    adapt_delta = 0.999,   # The "Baby Steps" (Default 0.8)
+                                    max_treedepth = 15     # Allow longer trajectories (Default 10)
+                                  ),
+                                  
+                                  # INCREASE ITERATIONS
+                                  # 6000 total = 3000 warmup (thrown away) + 3000 sampling (kept)
+                                  iter = 6000, 
+                                  warmup = 3000, 
+                                  
+                                  chains = 4, 
+                                  cores = 4, 
+                                  seed = 123)
+
+summary(imp_binary_separate_sametomb)
+saveRDS(imp_binary_separate_sametomb, "unofficial work/models save/imp_binary_separate_sametomb.rds")
+
+
+##### Group version
+imp_binary_group_sametomb <- brm(related_binary ~ same_tomb +
+                                 (1 | mm(individual1_id, individual2_id)) +
+                                 (1 | mm(tomb1, tomb2)),
+                               data = pairs_group,
+                               family = bernoulli(),
+                               control = list(
+                                 adapt_delta = 0.999,   # The "Baby Steps" (Default 0.8)
+                                 max_treedepth = 15     # Allow longer trajectories (Default 10)
+                               ),
+                               
+                               # INCREASE ITERATIONS
+                               # 6000 total = 3000 warmup (thrown away) + 3000 sampling (kept)
+                               iter = 6000, 
+                               warmup = 3000, 
+                               
+                               chains = 4, 
+                               cores = 4, 
+                               seed = 123)
+
+summary(imp_binary_group_sametomb)
+saveRDS(imp_binary_group_sametomb, "unofficial work/models save/imp_binary_group_sametomb.rds")
+
+
+## Compare
+normal_vs_only_sametomb <- modelsummary(list("Normal (no bone)" = imp_binary_separate_nobone,
+                                    "Model with only same_tomb" = imp_binary_separate_sametomb))
+saveRDS(normal_vs_only_sametomb, "unofficial work/models save/normal_vs_only_sametomb.rds")
 
 
 
