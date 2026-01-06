@@ -127,6 +127,22 @@ tomb_lookup <- tomb_parameter |>
     .groups = "drop"
   )
 
+tomb_lookup <- tomb_lookup |>
+  mutate(
+    Tomb = str_remove(Tomb, "\\s*\\(MNI\\s*\\d+\\)"),
+    Tomb = str_replace(Tomb, "T\\s+(\\d)", "T\\1"),
+    Tomb = str_replace_all(Tomb, ",", " ")
+  ) |>
+  
+  group_by(Tomb) |>
+  summarise(
+    sample_success                    = first(sample_success),
+    analysed_individuals              = first(analysed_individuals),
+    length_of_use                     = first(length_of_use),
+    .groups = "drop"
+  )
+
+
 #changing tomb names to match tomb parameter data set
 kinship_result <- kinship_result |>
   mutate(
