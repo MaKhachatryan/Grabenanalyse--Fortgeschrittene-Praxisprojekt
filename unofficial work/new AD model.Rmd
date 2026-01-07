@@ -174,6 +174,127 @@ summary(imp_binary_group_cat)
   
 
 
+### Compare between 15k threshold and original threhold
+#### Separated tomb
+``` {r compare threshold}
+imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
+all_binary_separate_cat <- readRDS(here::here("unofficial work/models save/all_binary_separate_cat.rds"))
+ogthreshold_vs_15k <- readRDS(here::here("unofficial work/models save/ogthreshold_vs_15k.rds"))
+
+
+summary(imp_binary_separate_cat)
+summary(all_binary_separate_cat)
+ogthreshold_vs_15k
+```
+
+
+**Comment:**
+
+- Model with original threshold is distorted: high individual variance, most of the parameters are insignificant, worse diagnostics than the 15k threshold
+- Comparison table point out that: 
+  - Original threshold explains more variance (higher $R^2$)
+  - 15k predicts new data better (ELPD, LOOIC, WAIC)
+  - $\Rightarrow$ Indicates using original threshold is more complex or overfitting.
+
+
+
+### Compare between with and without bone quality
+Logic of this sensitivity analysis: 
+
+Because "Tomb" $\rightarrow$ "Preservation" $\rightarrow$ "Observed kinship", therefore we added bone_quality to the model before to control for the path between "Tomb" and "Kinship". So that the relationship between Tomb and Kinship not just an artifact of preservation. 
+
+But does this "preservation bias" really exist (and need to be controlled by the bone quality)? Or was it already taken care of from when we filter 15k threshold (only qualified sample)? 
+
+$\Rightarrow$ Sensitivity analysis:
+
+- Bias: If when we remove bone_quality, the "Same Tomb" coefficient shifts wildly because it suddenly has to absorb the preservation bias. Then we still need to add bone_quality in the model.
+- No bias: When we remove bone_quality, the same_tomb coefficient stays stable. Then we can just delete bone_quality (which makes the model simpler and easier to interpret).
+
+``` {r compare bone}
+imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
+imp_binary_separate_nobone <- readRDS(here::here("unofficial work/models save/imp_binary_separate_nobone.rds"))
+bone_vs_nobone <- readRDS(here::here("unofficial work/models save/bone_vs_nobone.rds"))
+
+
+summary(imp_binary_separate_cat)
+summary(imp_binary_separate_nobone)
+bone_vs_nobone
+```
+
+**Comment:**
+- The model stays stable
+- No bone model even gives better diagnostics $\Rightarrow$ mathematically cleaner
+- The compared metrics are nearly identical, no metric provides meaningful evidence that one model is better
+
+$\Rightarrow$ Prefer the no bone model, since it's simpler, easier to interpret, and mathematically cleaner without losing scientific accuracy.
+
+
+### Add tomb variables
+Additional variables:
+
+- sample_success_min: 
+  - The effective information for the pair is given by the minimum of the 2 tomb sizes. Because the larger sample can not compensate for the lack of information on the smaller side.
+  - Interpretation/Intuition: Pairs that has higher sample success are more likely to be related
+- analysed_ind_min:
+  - Interpretation/Intuition: Pairs that are evaluated in a higher analysed samples (richer context) are more likely to be related 
+  - This accounts for **contextual sampling depth**
+  - Concern: Wouldn't this cause multicollinearity with sample_success_min? Check: cor = 0.70 => pretty high. Support a sensitivity check with dropping sample_success_min
+- length_of_use_absdiff: account for **temporal context**
+  - Interpretation/Intuition: 
+    - If negative: tombs has smaller different length of use are more likely to be used to bury the related poeple (so like they have the same temporal context so they are more likely to be related). 
+    - If positive: not so intuitive 
+  
+  
+``` {r tomb var}
+imp_binary_separate_tombvar <- readRDS(here::here("unofficial work/models save/imp_binary_separate_tombvar.rds"))
+summary(imp_binary_separate_tombvar)
+```
+  
+**Comment:**
+
+- The model converges unexpectedly
+- The diagnostics are not as great as the normal model
+- Most of the old parameters stay stable
+- Parameter for sample_success_min is VERY NEGATIVE (=> do sensitivity analysis):
+  - Interpretation: Higher success rate => Lower probability of relatedness
+  - **How could this make sense:** 
+    - High success rate => analyse many random people from the tomb => higher unrelated pairs (since we have low related rate) => family members are diluted in large # random people
+    - Low success rate => only few bones survive the poor preservation context => those who survive might be clustered in a specific protected spot => could be a spot that is preserved for family => higher probability of relatedness
+  - Anyway this parameter is added to control this "diluted bias" more than to describe any reality
+- length_of_use_absdiff has very weak effect (even not significant) => also test sensitivity analysis for this
+
+#### Sensitivity analysis for tomb-level variables
+- Keep variables if: model quality metrics get worse when dropping them
+- Drop if: model quality metrics stay stable
+
+``` {r tomb var sen ana}
+imp_binary_separate_tombvar_nosamplesuccess <- readRDS(here::here("unofficial work/models save/imp_binary_separate_tombvar_nosamplesuccess.rds"))
+summary(imp_binary_separate_tombvar_nosamplesuccess)
+imp_binary_separate_tombvar_nosslengthuse <- readRDS(here::here("unofficial work/models save/imp_binary_separate_tombvar_nosslengthuse.rds"))
+summary(imp_binary_separate_tombvar_nosslengthuse)
+
+compare_everything <- readRDS(here::here("unofficial work/models save/compare_everything.rds"))
+compare_everything
+```
+
+**Comments:**
+
+- This result is unexpected (I expected to drop most of the tomb-level variable)
+- This result support keeping all of the tomb-level variable
+- The full model has the best predictive quality metrics, the model is also healthy
+- The tomb-level variables did really account for all the bias I listed above
+- Especially sample_success_min, it really controll for the "diluted bias" I mentioned above. It reveals the effect of same_tomb is even higher (if we don't control for sample success, the effect of family members in the same tomb gets drowned out (diluted) by the noise of all the unrelated people found in high success tombs) (this makes more sense and more intuitive now)
+- But is there any catch??? It still seems sus though
+
+
+
+
+
+
+
+
+
+
 
 
 

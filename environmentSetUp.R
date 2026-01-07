@@ -18,7 +18,8 @@ packages <- c("tidyr",
               "here",
               "janitor",
               "brms",
-              "gt")
+              "gt",
+              "modelsummary")
 
 for (pkg in packages) {
   if (!require(pkg, character.only = TRUE)) {
