@@ -16,26 +16,27 @@ library(igraph)
 library(ggraph)
 library(purrr)
 ```
+
 ## Denominator
+
 **Question:** MNI cannot be interpreted as the population unless sampling was random, but it wasn’t. So what should be the denominator (First selection layer)?
 
 **Before:** Using MNI to calculate the maximum number of pairs.
 
-Problem: 
+Problem:
 
-- Numerator = # observed related pairs only come from the **analysed individuals**
-- Using MNI creates sample selection bias, since we assume the population (MNI) have the similar kinship patterns with the analysed subset (the analysed subset is not randomly selected)
+-   Numerator = \# observed related pairs only come from the **analysed individuals**
+-   Using MNI creates sample selection bias, since we assume the population (MNI) have the similar kinship patterns with the analysed subset (the analysed subset is not randomly selected)
 
-$\Rightarrow$ **# Analysed individuals** as denominator *(= "after merging samples from same individual", column L in tomb_parameter)*
-
+$\Rightarrow$ **\# Analysed individuals** as denominator *(= "after merging samples from same individual", column L in tomb_parameter)*
 
 ## Nonsensical covariate combinations
+
 **Question:** Check for nonsensical covariate combinations to see if they are "even modelable" before running models.
 
 ### Check for nonsensical covariate combinations
 
-
-``` {r p, echo=FALSE} 
+```{r p, echo=FALSE}
 # Pre-processing data
 individual_metadata <- og_individual_metadata |> 
   filter(
@@ -58,8 +59,10 @@ individual_metadata <- bind_rows(individual_metadata, tomb_group_rows)
 ```
 
 #### Skeletal element
+
 **Absolute number of skeletal element in every tomb**
-``` {r 1, echo=FALSE}
+
+```{r 1, echo=FALSE}
 individual_metadata |>
   count(tomb, skeletal_element) |>
   group_by(tomb) |>
@@ -77,7 +80,8 @@ individual_metadata |>
 ```
 
 **Absolute number of skeletal element as Sex in every tomb**
-``` {r 2, echo=FALSE}
+
+```{r 2, echo=FALSE}
 individual_metadata |>
   count(tomb, skeletal_element, sex) |>
   ggplot(aes(x = skeletal_element, y = n, fill = sex)) +
@@ -89,7 +93,8 @@ individual_metadata |>
 ```
 
 **Relative number of skeletal element as Sex in every tomb**
-``` {r 3, echo=FALSE}
+
+```{r 3, echo=FALSE}
 individual_metadata |>
   count(tomb, skeletal_element, sex) |>
   group_by(tomb, skeletal_element) |>
@@ -103,9 +108,9 @@ individual_metadata |>
   xlab("Skeletal Element")
 ```
 
-
 **Absolute number of skeletal element as Age in every tomb**
-``` {r 4, echo=FALSE}
+
+```{r 4, echo=FALSE}
 individual_metadata |>
   count(tomb, skeletal_element, age_estimation) |>
   ggplot(aes(x = skeletal_element, y = n, fill = age_estimation)) +
@@ -117,7 +122,8 @@ individual_metadata |>
 ```
 
 **Relative number of skeletal element as Age in every tomb**
-``` {r 5, echo=FALSE}
+
+```{r 5, echo=FALSE}
 individual_metadata |>
   count(tomb, skeletal_element, age_estimation) |>
   group_by(tomb, skeletal_element) |>
@@ -131,11 +137,9 @@ individual_metadata |>
   xlab("Skeletal Element")
 ```
 
-
-
 **Absolute and Relative number of Sex as Age in every tomb**
 
-``` {r 6, echo=FALSE}
+```{r 6, echo=FALSE}
 individual_metadata |>
   count(tomb, age_estimation, sex) |>
   ggplot(aes(x = age_estimation, y = n, fill = sex)) +
@@ -160,44 +164,44 @@ individual_metadata |>
 
 ```
 
-
 #### Problems:
+
 Sparse data. In some tombs:
 
-- lack certain skeletal elements
-- some skeletal elements only appear in one sex or age
+-   lack certain skeletal elements
+-   some skeletal elements only appear in one sex or age
 
-$\Rightarrow$ Problem: 
+$\Rightarrow$ Problem:
 
-- Unstable model, effect of the missing skeletal element can not be estimated for that tomb
-- Collinearity: eg. Tomb 67 has only female phalanx $\Rightarrow$ perfect collinearity between skeletal element & sex?
+-   Unstable model, effect of the missing skeletal element can not be estimated for that tomb
+-   Collinearity: eg. Tomb 67 has only female phalanx $\Rightarrow$ perfect collinearity between skeletal element & sex?
 
 Previous problem with the GLM logistic model:
 
-- With-in tomb correlation (same preservation environment,...)
-- Too many parameters with too few observation (tomb-level data set)
+-   With-in tomb correlation (same preservation environment,...)
+-   Too many parameters with too few observation (tomb-level data set)
 
-**Solution: ** Mixed logistic modelling on individual-level data. Especially GLMM can handle categorical predictors with some levels missing in some cluster. It also assumes MAR, which is very realistic in our case.
+**Solution:** Mixed logistic modelling on individual-level data. Especially GLMM can handle categorical predictors with some levels missing in some cluster. It also assumes MAR, which is very realistic in our case.
 
 Source:
 
-https://stats.stackexchange.com/questions/626546/how-does-lme4-handle-participants-who-only-have-data-for-only-one-level-of-a-cat
+<https://stats.stackexchange.com/questions/626546/how-does-lme4-handle-participants-who-only-have-data-for-only-one-level-of-a-cat>
 
-https://www.sciencedirect.com/science/article/pii/S0015028224002371
+<https://www.sciencedirect.com/science/article/pii/S0015028224002371>
 
-
-<div style="color: red;">
+::: {style="color: red;"}
 #### Yichen's feedback:
+
 Conclusion is fine, but visualisation needs a smarter approach for presentation.
 
 Correction idea:
 
 Use heatmap to show exactly where the data is missing to justify the use of GLMM. Like instead of showing a bunch of bar charts, we show the audience the zeros directly in a heatmap for easier comparison.
-
-</div>
+:::
 
 ##### Absolute number of skeletal element as Sex in every tomb
-``` {r hm abs sex, echo=FALSE}
+
+```{r hm abs sex, echo=FALSE}
 # Create Tomb × Skeletal Element × Sex count matrix
 heat_df <- individual_metadata %>%
   count(tomb, sex, skeletal_element) %>%
@@ -225,7 +229,8 @@ ggplot(heat_df, aes(x = skeletal_element, y = tomb, fill = n)) +
 ```
 
 ##### Relative number of skeletal element as Sex in every tomb
-``` {r hm rel sex, echo=FALSE}
+
+```{r hm rel sex, echo=FALSE}
 # Count raw numbers and compute relative proportions
 heat_df <- individual_metadata %>%
   count(tomb, sex, skeletal_element) %>%
@@ -256,9 +261,9 @@ ggplot(heat_df, aes(x = skeletal_element, y = tomb, fill = prop)) +
   )
 ```
 
-
 ##### Absolute number of skeletal element as Age in every tomb
-``` {r abs age, echo = FALSE}
+
+```{r abs age, echo = FALSE}
 # Create Tomb × Skeletal Element × Age count matrix
 heat_df <- individual_metadata %>%
   count(tomb, age_estimation, skeletal_element) %>%
@@ -287,7 +292,8 @@ ggplot(heat_df, aes(x = skeletal_element, y = tomb, fill = n)) +
 ```
 
 ##### Relative number of skeletal element as Age in every tomb
-``` {r hm rel age, echo=FALSE}
+
+```{r hm rel age, echo=FALSE}
 # Count raw numbers and calculate proportions
 heat_df <- individual_metadata %>%
   count(tomb, age_estimation, skeletal_element) %>%
@@ -319,7 +325,8 @@ ggplot(heat_df, aes(x = skeletal_element, y = tomb, fill = prop)) +
 ```
 
 ##### Absolute number of Age as Sex in every tomb
-``` {r abs age sex, echo = FALSE}
+
+```{r abs age sex, echo = FALSE}
 # Create Tomb × Sex × Age count matrix
 heat_df <- individual_metadata %>%
   count(tomb, age_estimation, sex) %>%
@@ -345,9 +352,9 @@ ggplot(heat_df, aes(x = sex, y = tomb, fill = n)) +
 
 ```
 
-
 ##### Relative number of Sex as Age in every tomb
-``` {r hm rel sex age, echo=FALSE}
+
+```{r hm rel sex age, echo=FALSE}
 # Count raw numbers
 heat_df <- individual_metadata %>%
   count(tomb, age_estimation, sex) %>%
@@ -378,11 +385,14 @@ ggplot(heat_df, aes(x = sex, y = tomb, fill = prop)) +
 ```
 
 ##### Notes:
+
 Will only use relative plots
 
 ## Network visualization
+
 ### All tombs together
-``` {r kr 2, echo=FALSE}
+
+```{r kr 2, echo=FALSE}
 kinship_result <- og_kinship_result %>%
   mutate(
     individual1_id = substr(ind1, 1, 6),
@@ -470,7 +480,8 @@ ggraph(g, layout = "fr") +
 ```
 
 ### With kinship degrees
-``` {r, echo=FALSE}
+
+```{r, echo=FALSE}
 # --- Filter TRUE relationships and assign weights manually for plotting ---
 network_kr <- kinship_result %>%
   filter(rel %in% c("First Degree", "IdenticalTwins/SameIndividual", "Second Degree", "Third Degree")) %>%
@@ -514,7 +525,8 @@ ggraph(g, layout = "fr") +
 ```
 
 ### Separated tombs
-``` {r sep, echo=FALSE}
+
+```{r sep, echo=FALSE}
 
 # list of unique tombs
 tombs <- unique(nodes$tomb)
@@ -550,8 +562,9 @@ for(p in plots) print(p)
 
 ### Separated tombs with kinship degrees
 
-tombs <- unique(nodes$tomb)  # lowercase tomb
-``` {r, echo=FALSE}
+tombs \<- unique(nodes\$tomb) \# lowercase tomb
+
+```{r, echo=FALSE}
 plots <- map(tombs, function(t) {
   
   # select edges where either individual belongs to tomb t
@@ -583,9 +596,9 @@ plots <- map(tombs, function(t) {
 for(p in plots) print(p)
 ```
 
-
 #### Grouped tomb 46 56 62 version
-``` {r 3 tombs, echo=FALSE}
+
+```{r 3 tombs, echo=FALSE}
 # Grouped tombs
 kinship_result_grouped <- kinship_result %>%
   mutate(
@@ -630,7 +643,8 @@ ggraph(g_g, layout = "fr") +
 ```
 
 # With kinship degrees
-``` {r, echo=FALSE}
+
+```{r, echo=FALSE}
 network_grouped <- kinship_result %>%
   # group the 46/56/62 tombs
   mutate(
@@ -687,7 +701,7 @@ ggraph(g_g, layout = "fr") +
 
 #### Tomb 46 56 62 only
 
-``` {r only, echo=FALSE}
+```{r only, echo=FALSE}
 group_name <- "Tomb 46 56 62"
 
 network_grouped <- kinship_result_grouped %>%
@@ -728,7 +742,8 @@ ggraph(g_g, layout = "fr") +
 ```
 
 # With kinship degrees
-``` {r, echo=FALSE}
+
+```{r, echo=FALSE}
 group_name <- "Tomb 46 56 62"
 
 network_grouped <- kinship_result_grouped %>%
@@ -780,7 +795,8 @@ ggraph(g_g, layout = "fr") +
 ```
 
 ### Cross and within tomb relations
-``` {r, echo=FALSE}
+
+```{r, echo=FALSE}
 # --- Prepare kinship network with weights for plotting ---
 network_kr <- kinship_result %>%
   filter(rel %in% c("First Degree", "IdenticalTwins/SameIndividual", 
@@ -853,18 +869,123 @@ plots <- lapply(tombs, function(t) {
 for (p in plots) print(p)
 
 # Save each plot with the tomb name inside network_plots
-for (i in seq_along(plots)) {
-  tomb_name <- tombs[i]  # tombs is your vector of tomb names
-  ggsave(
-    filename = paste0("network_plots/", tomb_name, ".png"),
-    plot = plots[[i]],
-    width = 6, height = 4, dpi = 300
-  )
-}
+# for (i in seq_along(plots)) {
+#   tomb_name <- tombs[i]  # tombs is your vector of tomb names
+#   ggsave(
+#     filename = paste0("network_plots/", tomb_name, ".png"),
+#     plot = plots[[i]],
+#     width = 6, height = 4, dpi = 300
+#   )
+# }
 ```
 
+# Grouped tomb 46 56 62 version
+```{r, echo=FALSE}
+# --- Group definition ---
+grouped_tombs <- c("Elateia T46", "Elateia T56", "Elateia T62")
+group_label   <- "Elateia T46 56 62"
+
+# --- Prepare kinship network with grouping ---
+network_kr <- kinship_result %>%
+  mutate(
+    tomb1 = ifelse(tomb1 %in% grouped_tombs, group_label, tomb1),
+    tomb2 = ifelse(tomb2 %in% grouped_tombs, group_label, tomb2)
+  ) %>%
+  filter(rel %in% c(
+    "First Degree",
+    "IdenticalTwins/SameIndividual",
+    "Second Degree",
+    "Third Degree"
+  )) %>%
+  mutate(
+    edge_width = case_when(
+      rel %in% c("First Degree", "IdenticalTwins/SameIndividual") ~ 2.0,
+      rel == "Second Degree" ~ 1.2,
+      rel == "Third Degree" ~ 0.6
+    ),
+    degree_label = factor(
+      rel,
+      levels = c("First Degree", "Second Degree", "Third Degree"),
+      labels = c("1st Degree", "2nd Degree", "3rd Degree")
+    )
+  )
+
+# --- Create edges ---
+edges <- network_kr %>%
+  select(individual1_id, individual2_id, tomb1, tomb2, edge_width, degree_label) %>%
+  mutate(
+    edge_type = ifelse(tomb1 == tomb2, "Within-tomb", "Cross-tomb")
+  )
+
+# --- Create nodes ---
+nodes <- edges %>%
+  transmute(name = individual1_id, tomb = tomb1) %>%
+  bind_rows(edges %>% transmute(name = individual2_id, tomb = tomb2)) %>%
+  distinct(name, .keep_all = TRUE)
+
+# --- Add sex information ---
+nodes <- nodes %>%
+  left_join(
+    individual_metadata %>% select(individual_id, sex),
+    by = c("name" = "individual_id")
+  )
+
+nodes$tomb <- droplevels(factor(nodes$tomb))
+
+# --- Plot per tomb (grouped tomb included) ---
+tombs <- unique(nodes$tomb)
+
+plots <- lapply(tombs, function(t) {
+
+  edges_t <- edges %>% filter(tomb1 == t | tomb2 == t)
+
+  nodes_t <- nodes %>%
+    filter(name %in% unique(c(edges_t$individual1_id, edges_t$individual2_id))) %>%
+    distinct(name, .keep_all = TRUE)
+
+  g_t <- igraph::graph_from_data_frame(
+    d = edges_t,
+    vertices = nodes_t,
+    directed = FALSE
+  )
+
+  ggraph(g_t, layout = "fr") +
+    geom_edge_link(aes(width = edge_width, color = edge_type)) +
+    geom_node_point(aes(color = tomb, shape = sex), size = 3) +
+    geom_node_text(aes(label = name), vjust = -1, size = 2) +
+    scale_edge_width(range = c(0.5, 2), guide = "none") +
+    scale_edge_color_manual(
+      values = c("Within-tomb" = "black", "Cross-tomb" = "red"),
+      name = "Edge Type"
+    ) +
+    scale_color_brewer(palette = "Set2") +
+    scale_shape_manual(
+      values = c("XX" = 16, "XY" = 17),
+      labels = c("XX" = "Female", "XY" = "Male"),
+      name = "Sex"
+    ) +
+    ggtitle(paste("Tomb:", t)) +
+    theme_void()
+})
+
+# --- Print all plots ---
+for (p in plots) print(p)
+
+# # --- Save only the grouped tomb plot ---
+# group_plot <- plots[[which(tombs == "Elateia T46 56 62")]]
+# 
+# ggsave(
+#   filename = "network_plots/Tomb 46 56 62.png",
+#   plot = group_plot,
+#   width = 6,
+#   height = 4,
+#   dpi = 300
+# )
+
+
+```
 
 **Comment:**
 
-- Different ratio in whether the related pairs or in the same tombs or in different tombs
-- But just by looking, some tombs really point out that they tends to have internal relatedness more than random relatedness to different tombs.
+-   Different ratio in whether the related pairs or in the same tombs or in different tombs
+-   But just by looking, some tombs really point out that they tends to have internal relatedness more than random relatedness to different tombs.
