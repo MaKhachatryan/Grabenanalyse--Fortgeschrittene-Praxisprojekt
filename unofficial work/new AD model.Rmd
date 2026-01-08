@@ -287,10 +287,33 @@ compare_everything
 - But is there any catch??? It still seems sus though
 
 
+#### Try these models in grouped tomb version
+Expectation: 
 
+- Group version has larger same tomb effect (since for larger group of tomb we can expect to find more related pairs)
+- The rest of the parameters stay stable (compare to the separate data set)
+- The predictive metrics also give the same result (which favor the full model)
 
+``` {r group mod comparison}
+imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_cat.rds")
+imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
+imp_binary_group_sametomb <- readRDS("unofficial work/models save/imp_binary_group_sametomb.rds")
+imp_binary_group_tombvar <- readRDS("unofficial work/models save/imp_binary_group_tombvar.rds")
+imp_binary_group_tombvar_nosamplesuccess <- readRDS("unofficial work/models save/imp_binary_group_tombvar_nosamplesuccess.rds")
+imp_binary_group_tombvar_nosslengthuse <- readRDS("unofficial work/models save/imp_binary_group_tombvar_nosslengthuse.rds")
+compare_everything_group <- readRDS("unofficial work/models save/compare_everything_group.rds")
 
+imp_binary_group_tombvar
+imp_binary_group_tombvar_nosamplesuccess
+imp_binary_group_tombvar_nosslengthuse
+compare_everything_group
+```
 
+**Comments:**
+
+- The parameters behave as expected 
+- However the predictive metrics favor the "Model without sample success", eventhough the difference between it and the full model is not significant
+- The effect for sample_success_min is not significant anymore with a large CI => so maybe it really just a noise here (maybe the "dilution hypothesis" average out because of the grouped tomb or maybe it was also just a noise before (in seperate model also with huge CI already))
 
 
 
