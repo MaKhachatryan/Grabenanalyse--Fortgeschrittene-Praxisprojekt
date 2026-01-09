@@ -1,5 +1,5 @@
 ---
-format: 
+format:
   revealjs:
     html-math-method: mathjax
     logo: "../LMULogo.jpg"
@@ -7,25 +7,67 @@ format:
     embed-resources: true
     slide-number: c
     slide-number-position: "bottom-right"
+    preview: true
+    self-contained: false
 editor: visual
 ---
 
 ## Why We Cannot Use a Tomb-level Model
 
-- The dataset includes **only a small number of tombs**  
-  (Amfissa and 7 tombs from Elateia)
+-   The dataset includes **only a small number of tombs**\
+    (Amfissa and 7 tombs from Elateia)
 
-- At the tomb level, we would need to consider **too many factors for too few data**, for example:
-  - how long each tomb was used  
-  - how many individuals were analyzed  
-  - which skeletal elements were sampled (petrous bone, teeth, others)
+-   At the tomb level, we would need to consider **too many factors for too few data**, for example:
 
-- Because of this, any tomb-level model would be:
-  - unstable  
-  - strongly affected by individual tombs  
-  - hard to interpret
+    -   how long each tomb was used\
+    -   how many individuals were analyzed\
+    -   which skeletal elements were sampled (petrous bone, teeth, others)
+
+-   Because of this, any tomb-level model would be:
+
+    -   unstable\
+    -   strongly affected by individual tombs\
+    -   hard to interpret
 
 $\Rightarrow$ **With the available data, a meaningful tomb-level model is not possible**
+
+**While we can’t model the tombs, we can still summarize and visualize the data.**
+
+## Evidence against MNI-based inference
+
+**Note**
+
+With the tomb-level model out of the question, whether we use MNI-based or sample-based inference is irrelevant to our methodology.\
+The only difference is how to interpret those results.
+
+- **Prove statistical dependence**
+
+Correlation between overlapping SNPs and kinship coefficient (used to label the relationship):
+
+``` r
+> cor(pairs_ind$kinship_coefficient, pairs_ind$overlap_nsnps,
+      use = "complete.obs", method = "spearman")
+[1] -0.5327796
+```
+
+## Evidence against MNI-based inference
+
+- **The assumption is acknowledged as a simplification**  
+  [Royal Society B article](https://royalsocietypublishing.org/rstb/article/376/1816/20190719/31363/Sometimeshidden-but-always-there-the-assumptions)
+  (c) Sampling bias
+
+- **Kinship determines burial context**  
+  [Science article](https://www.science.org/doi/10.1126/science.aax6219)
+
+- **Burial context determines preservation**  
+  [JSTOR article](https://www.jstor.org/stable/280601)
+
+**True Kinship -\> Burial context -\> Preservation -\> Data quality -\> Being sampled -\> Observed kinship**\
+
+## Why quality variables are excluded
+
+-   the preservation bias is already taken care of from when we apply 15k threshold
+-   ⁠adding them (skeletal element & osnp) wont help to contribute anything more to the model, but only make the numerical fitting process harder (we already do sensitivity analysis to make sure that the model stays stable without them)
 
 ## DAG (**directed acyclic graph)**
 
@@ -62,3 +104,7 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 ## Cross and within tomb relations
 
 ![](network_plots/Tomb%2067.png)
+
+## Cross and within tomb relations
+
+![](network_plots/Tomb%2046%2056%2062.png)
