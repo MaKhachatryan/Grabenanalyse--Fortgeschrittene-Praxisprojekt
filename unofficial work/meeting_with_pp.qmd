@@ -40,7 +40,7 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 With the tomb-level model out of the question, whether we use MNI-based or sample-based inference is irrelevant to our methodology.\
 The only difference is how to interpret those results.
 
-- **Prove statistical dependence**
+-   **Prove statistical dependence**
 
 Correlation between overlapping SNPs and kinship coefficient (used to label the relationship):
 
@@ -52,15 +52,16 @@ Correlation between overlapping SNPs and kinship coefficient (used to label the 
 
 ## Evidence against MNI-based inference
 
-- **The assumption is acknowledged as a simplification**  
-  [Royal Society B article](https://royalsocietypublishing.org/rstb/article/376/1816/20190719/31363/Sometimeshidden-but-always-there-the-assumptions)
-  (c) Sampling bias
+-   **The assumption is acknowledged as a simplification**\
+    [Royal Society B article](https://royalsocietypublishing.org/rstb/article/376/1816/20190719/31363/Sometimeshidden-but-always-there-the-assumptions)
 
-- **Kinship determines burial context**  
-  [Science article](https://www.science.org/doi/10.1126/science.aax6219)
+    (c) Sampling bias
 
-- **Burial context determines preservation**  
-  [JSTOR article](https://www.jstor.org/stable/280601)
+-   **Kinship determines burial context**\
+    [Science article](https://www.science.org/doi/10.1126/science.aax6219)
+
+-   **Burial context determines preservation**\
+    [JSTOR article](https://www.jstor.org/stable/280601)
 
 **True Kinship -\> Burial context -\> Preservation -\> Data quality -\> Being sampled -\> Observed kinship**\
 
@@ -71,7 +72,7 @@ Correlation between overlapping SNPs and kinship coefficient (used to label the 
 
 ## DAG (**directed acyclic graph)**
 
-![](../images/DAGfinal.jpg)
+![](images/dag2.jpg)
 
 ## Cross and within tomb relations
 
