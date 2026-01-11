@@ -454,7 +454,7 @@ pairs_group <- pairs_group[pairs_group$overlap_nsnps >= 15000, ]
 imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_cat.rds")
 imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
 imp_binary_group_sametomb <- readRDS("unofficial work/models save/imp_binary_group_sametomb.rds")
-imp_binary_group_tombvar <- readRDS("unofficial work/models save/imp_binary_separate_tombvar.rds")
+imp_binary_group_tombvar <- update(imp_binary_separate_tombvar, newdata = pairs_group)
 imp_binary_group_tombvar_nosamplesuccess <- update(imp_binary_separate_tombvar_nosamplesuccess,
                                                    newdata = pairs_group)
 imp_binary_group_tombvar_nosslengthuse <- update(imp_binary_separate_tombvar_nosslengthuse,
@@ -470,7 +470,7 @@ compare_everything_group <- modelsummary(list(
 ))
 saveRDS(compare_everything_group, "unofficial work/models save/compare_everything_group.rds")
 
-
+# test commit
 
 
 
