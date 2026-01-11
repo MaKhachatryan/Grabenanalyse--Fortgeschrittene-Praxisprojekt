@@ -72,7 +72,7 @@ Correlation between overlapping SNPs and kinship coefficient (used to label the 
 
 ## DAG (**directed acyclic graph)**
 
-![](images/dag2.jpg)
+![](images/dagfinal (1).jpg)
 
 ## Cross and within tomb relations
 
