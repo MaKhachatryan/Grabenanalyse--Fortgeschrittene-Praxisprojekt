@@ -2,180 +2,134 @@
 source(here::here("environmentSetUp.R"))
 source(here::here("analysis", "pairsdata.R"))
 
+############### Amfissa and Elateia
 
-###################### Amfissa Tholos
-set.seed(123)
-
-# -------------------------
-# 1. Filter edges for Amfissa tholos
-# -------------------------
-amfissa_edges <- pairs_ind_og |>
-  filter(tomb1 == "Amfissa tholos" | tomb2 == "Amfissa tholos") |>
-  filter(rel %in% c("First Degree", "Second Degree", "Third Degree")) |>
-  mutate(
-    tomb_relation = ifelse(tomb1 == tomb2, "Within tomb", "Cross tomb"),
-    rel = factor(rel, levels = c("First Degree", "Second Degree", "Third Degree"))
-  )
-
-# -------------------------
-# 2. Create node table
-# -------------------------
-amfissa_nodes <- bind_rows(
-  amfissa_edges |>
-    select(individual_id = individual1_id,
-           tomb = tomb1,
-           sex = sex1),
-  amfissa_edges |>
-    select(individual_id = individual2_id,
-           tomb = tomb2,
-           sex = sex2)
-) |>
-  distinct()
-
-# -------------------------
-# 3. Build graph
-# -------------------------
-g_amfissa <- graph_from_data_frame(
-  d = amfissa_edges |>
-    select(from = individual1_id,
-           to   = individual2_id,
-           rel,
-           tomb_relation),
-  vertices = amfissa_nodes |>
-    select(name = individual_id, tomb, sex),
-  directed = FALSE
-)
-
-# -------------------------
-# 4. Plot network with legend
-# -------------------------
-p_amfissa <- ggraph(g_amfissa, layout = "fr") +
-  
-  geom_edge_link(
-    aes(width = rel, color = tomb_relation),
-    alpha = 0.8
-  ) +
-  
-  geom_node_point(
-    aes(shape = sex, color = tomb),
-    size = 4
-  ) +
-  
-  scale_edge_width_manual(
-    values = c(
-      "First Degree"  = 2,
-      "Second Degree" = 1.2,
-      "Third Degree"  = 0.6
-    ),
-    name = "Kinship Degree"
-  ) +
-  
-  scale_edge_color_manual(
-    values = c(
-      "Within tomb" = "black",
-      "Cross tomb"  = "red"
-    ),
-    name = "Tomb Relation"
-  ) +
-  
-  scale_color_discrete(name = "Tomb") +
-  
-  scale_shape_manual(
-    name = "Sex",
-    values = c("XX" = 16, "XY" = 17), 
-    labels = c("XX" = "Female", "XY" = "Male")
-  ) +
-  
-  theme_void() +
-  labs(title = "Amfissa Tholos")
-
-
-##################### Elateia 62
 
 set.seed(123)
 
 # -------------------------
-# 1. Filter edges for Elateia T62 only
+# Tombs to plot
 # -------------------------
-elateia62_edges <- pairs_ind_og |>
-  filter(rel %in% c("First Degree", "Second Degree", "Third Degree")) |>
-  filter(tomb1 == "Elateia T62" | tomb2 == "Elateia T62") |>
-  mutate(
-    tomb_relation = ifelse(tomb1 == tomb2, "Within tomb", "Cross tomb"),
-    rel = factor(rel, levels = c("First Degree", "Second Degree", "Third Degree"))
-  )
-
-# -------------------------
-# 2. Nodes: only individuals in these edges
-# -------------------------
-elateia62_nodes <- bind_rows(
-  elateia62_edges |>
-    select(individual_id = individual1_id,
-           tomb = tomb1,
-           sex = sex1),
-  elateia62_edges |>
-    select(individual_id = individual2_id,
-           tomb = tomb2,
-           sex = sex2)
-) |>
-  distinct()
-
-# -------------------------
-# 3. Build graph
-# -------------------------
-g_elateia62 <- graph_from_data_frame(
-  d = elateia62_edges |>
-    select(from = individual1_id,
-           to   = individual2_id,
-           rel,
-           tomb_relation),
-  vertices = elateia62_nodes |>
-    select(name = individual_id, tomb, sex),
-  directed = FALSE
+tombs <- c(
+  "Amfissa tholos",
+  "Elateia T31",
+  "Elateia T36",
+  "Elateia T46",
+  "Elateia T50",
+  "Elateia T56",
+  "Elateia T62",
+  "Elateia T67"
 )
 
 # -------------------------
-# 4. Plot network with legend
+# Manual filename map (fixed casing)
 # -------------------------
-p_elateia62 <- ggraph(g_elateia62, layout = "fr") +
+file_map <- c(
+  "Amfissa tholos" = "Amfissa_Tholos_network.png",
+  "Elateia T31"    = "Elateia_T31_network.png",
+  "Elateia T36"    = "Elateia_T36_network.png",
+  "Elateia T46"    = "Elateia_T46_network.png",
+  "Elateia T50"    = "Elateia_T50_network.png",
+  "Elateia T56"    = "Elateia_T56_network.png",
+  "Elateia T62"    = "Elateia_T62_network.png",
+  "Elateia T67"    = "Elateia_T67_network.png"
+)
+
+# -------------------------
+# Loop over tombs
+# -------------------------
+for (t in tombs) {
   
-  geom_edge_link(
-    aes(width = rel, color = tomb_relation),
-    alpha = 0.8
-  ) +
+  # 1. Filter edges
+  edges <- pairs_ind_og |>
+    filter(
+      rel %in% c("First Degree", "Second Degree", "Third Degree"),
+      tomb1 == t | tomb2 == t
+    ) |>
+    mutate(
+      tomb_relation = ifelse(tomb1 == tomb2, "Within tomb", "Cross tomb"),
+      rel = factor(rel, levels = c("First Degree", "Second Degree", "Third Degree"))
+    )
   
-  geom_node_point(
-    aes(shape = sex, color = tomb),
-    size = 4
-  ) +
+  # Skip if no relations
+  if (nrow(edges) == 0) {
+    message("No relations for ", t, " — skipped")
+    next
+  }
   
-  scale_edge_width_manual(
-    values = c(
-      "First Degree"  = 2,
-      "Second Degree" = 1.2,
-      "Third Degree"  = 0.6
-    ),
-    name = "Kinship Degree"
-  ) +
+  # 2. Nodes
+  nodes <- bind_rows(
+    edges |>
+      select(individual_id = individual1_id, tomb = tomb1, sex = sex1),
+    edges |>
+      select(individual_id = individual2_id, tomb = tomb2, sex = sex2)
+  ) |>
+    distinct()
   
-  scale_edge_color_manual(
-    values = c(
-      "Within tomb" = "black",
-      "Cross tomb"  = "red"
-    ),
-    name = "Tomb Relation"
-  ) +
+  # 3. Graph
+  g <- graph_from_data_frame(
+    d = edges |>
+      select(from = individual1_id, to = individual2_id, rel, tomb_relation),
+    vertices = nodes |>
+      select(name = individual_id, tomb, sex),
+    directed = FALSE
+  )
   
-  scale_color_discrete(name = "Tomb") +
+  # 4. Plot
+  p <- ggraph(g, layout = "fr") +
+    geom_edge_link(
+      aes(width = rel, color = tomb_relation),
+      alpha = 0.8
+    ) +
+    geom_node_point(
+      aes(shape = sex, color = tomb),
+      size = 4
+    ) +
+    scale_edge_width_manual(
+      values = c(
+        "First Degree"  = 2,
+        "Second Degree" = 1.2,
+        "Third Degree"  = 0.6
+      ),
+      name = "Kinship Degree"
+    ) +
+    scale_edge_color_manual(
+      values = c(
+        "Within tomb" = "black",
+        "Cross tomb"  = "red"
+      ),
+      name = "Tomb Relation"
+    ) +
+    scale_color_discrete(name = "Tomb") +
+    scale_shape_manual(
+      name = "Sex",
+      values = c("XX" = 16, "XY" = 17),
+      labels = c("XX" = "Female", "XY" = "Male")
+    ) +
+    theme_void() +
+    labs(title = t)
   
-  scale_shape_manual(
-    name = "Sex",
-    values = c("XX" = 16, "XY" = 17), 
-    labels = c("XX" = "Female", "XY" = "Male")
-  ) +
+  # 5. Save (only if file does NOT already exist)
+  out_file <- file.path(
+    "unofficial work",
+    "network_plots",
+    file_map[t]
+  )
   
-  theme_void() +
-  labs(title = "Elateia T62")
+  if (!file.exists(out_file)) {
+    ggsave(
+      filename = out_file,
+      plot  = p,
+      width = 8,
+      height = 6,
+      dpi   = 300
+    )
+  } else {
+    message("File exists, skipped: ", file_map[t])
+  }
+  
+}
+
 
 ################ All Tombs Together
 
@@ -263,6 +217,27 @@ p_all <- ggraph(g_all, layout = "fr") +
   theme_void() +
   labs(title = "All Tombs Together")
 
+# -------------------------
+# 5. Save 
+# -------------------------
+out_file <- file.path(
+  "unofficial work",
+  "network_plots",
+  "All_Tombs_network.png"
+)
+
+if (!file.exists(out_file)) {
+  ggsave(
+    filename = out_file,
+    plot  = p_all,
+    width = 8,
+    height = 6,
+    dpi   = 300
+  )
+} else {
+  message("File exists, skipped: All_Tombs_network.png")
+}
+
 
 ################### Grouped Elateia T46 56 62
 
@@ -274,7 +249,7 @@ set.seed(123)
 elateia_edges <- pairs_group_og |>
   filter(
     (tomb1 == "Elateia T46 56 62" | tomb2 == "Elateia T46 56 62") &
-      rel %in% c("First Degree", "Second Degree", "Third Degree")  # only main relations
+      rel %in% c("First Degree", "Second Degree", "Third Degree")
   ) |>
   mutate(
     tomb_relation = ifelse(tomb1 == tomb2, "Within tomb", "Cross tomb"),
@@ -353,32 +328,23 @@ p_elateia_group <- ggraph(g_elateia, layout = "fr") +
   theme_void() +
   labs(title = "Group Elateia T46 56 62")
 
+# -------------------------
+# 5. Save
+# -------------------------
+out_file <- file.path(
+  "unofficial work",
+  "network_plots",
+  "Elateia_T46_56_62_network.png"
+)
 
-###saving plots
-
-# plot_list <- list(
-#   p_amfissa,
-#   p_elateia62,
-#   p_all,
-#   p_elateia_group
-# )
-# 
-# file_names <- c(
-#   "amfissa_tholos_network.png",
-#   "elateia_T62_network.png",
-#   "all_tombs_network.png",
-#   "elateia_T46_56_62_grouped_network.png"
-# )
-# 
-# for (i in seq_along(plot_list)) {
-#   ggsave(
-#     filename = paste0(
-#       "unofficial work/network_plots/",
-#       file_names[i]
-#     ),
-#     plot = plot_list[[i]],
-#     width = 10,
-#     height = 8,
-#     dpi = 300
-#   )
-# }
+if (!file.exists(out_file)) {
+  ggsave(
+    filename = out_file,
+    plot  = p_elateia_group,
+    width = 8,
+    height = 6,
+    dpi   = 300
+  )
+} else {
+  message("File exists, skipped: Elateia_T46_56_62_network.png")
+}
