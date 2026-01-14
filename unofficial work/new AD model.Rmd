@@ -190,11 +190,12 @@ ogthreshold_vs_15k
 
 **Comment:**
 
-- Model with original threshold is distorted: high individual variance, most of the parameters are insignificant, worse diagnostics than the 15k threshold
+- Model with original threshold is not reliable: high individual variance, most of the parameters are insignificant, worse diagnostics than the 15k threshold
 - Comparison table point out that: 
   - Original threshold explains more variance (higher $R^2$)
   - 15k predicts new data better (ELPD, LOOIC, WAIC)
-  - $\Rightarrow$ Indicates using original threshold is more complex or overfitting.
+  - $\Rightarrow$ Indicates using original threshold is more complex and overfitting.
+- However most of the parameters give the same qualitative results (except b_bone_qualityhighMlow)
 
 
 
@@ -295,13 +296,13 @@ Expectation:
 - The predictive metrics also give the same result (which favor the full model)
 
 ``` {r group mod comparison}
-imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_cat.rds")
-imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
-imp_binary_group_sametomb <- readRDS("unofficial work/models save/imp_binary_group_sametomb.rds")
-imp_binary_group_tombvar <- readRDS("unofficial work/models save/imp_binary_group_tombvar.rds")
-imp_binary_group_tombvar_nosamplesuccess <- readRDS("unofficial work/models save/imp_binary_group_tombvar_nosamplesuccess.rds")
-imp_binary_group_tombvar_nosslengthuse <- readRDS("unofficial work/models save/imp_binary_group_tombvar_nosslengthuse.rds")
-compare_everything_group <- readRDS("unofficial work/models save/compare_everything_group.rds")
+imp_binary_group_cat <- readRDS(here::here("unofficial work/models save/imp_binary_group_cat.rds"))
+imp_binary_group_nobone <- readRDS(here::here("unofficial work/models save/imp_binary_group_nobone.rds"))
+imp_binary_group_sametomb <- readRDS(here::here("unofficial work/models save/imp_binary_group_sametomb.rds"))
+imp_binary_group_tombvar <- readRDS(here::here("unofficial work/models save/imp_binary_group_tombvar.rds"))
+imp_binary_group_tombvar_nosamplesuccess <- readRDS(here::here("unofficial work/models save/imp_binary_group_tombvar_nosamplesuccess.rds"))
+imp_binary_group_tombvar_nosslengthuse <- readRDS(here::here("unofficial work/models save/imp_binary_group_tombvar_nosslengthuse.rds"))
+compare_everything_group <- readRDS(here::here("unofficial work/models save/compare_everything_group.rds"))
 
 imp_binary_group_tombvar
 imp_binary_group_tombvar_nosamplesuccess

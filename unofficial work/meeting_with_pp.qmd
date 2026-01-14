@@ -12,26 +12,15 @@ format:
 editor: visual
 ---
 
-## Why We Cannot Use a Tomb-level Model
+## Cannot Fit a Tomb-level Model
 
--   The dataset includes **only a small number of tombs**\
-    (Amfissa and 7 tombs from Elateia)
+-   **Small number of tombs**: Amfissa and 7 tombs from Elateia
+-   For too many parameters: length of use, # analysed individuals, effect of 4 types of skeletal elements
 
--   At the tomb level, we would need to consider **too many factors for too few data**, for example:
-
-    -   how long each tomb was used\
-    -   how many individuals were analyzed\
-    -   which skeletal elements were sampled (petrous bone, teeth, others)
-
--   Because of this, any tomb-level model would be:
-
-    -   unstable\
-    -   strongly affected by individual tombs\
-    -   hard to interpret
 
 $\Rightarrow$ **With the available data, a meaningful tomb-level model is not possible**
 
-**While we can’t model the tombs, we can still summarize and visualize the data.**
+**Can still summarize and visualize the data.**
 
 ## Evidence against MNI-based inference
 
@@ -39,16 +28,6 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 
 With the tomb-level model out of the question, whether we use MNI-based or sample-based inference is irrelevant to our methodology.\
 The only difference is how to interpret those results.
-
--   **Prove statistical dependence**
-
-Correlation between overlapping SNPs and kinship coefficient (used to label the relationship):
-
-``` r
-> cor(pairs_ind$kinship_coefficient, pairs_ind$overlap_nsnps,
-      use = "complete.obs", method = "spearman")
-[1] -0.5327796
-```
 
 ## Evidence against MNI-based inference
 
@@ -65,12 +44,17 @@ Correlation between overlapping SNPs and kinship coefficient (used to label the 
 
 **True Kinship -\> Burial context -\> Preservation -\> Data quality -\> Being sampled -\> Observed kinship**\
 
-## Why quality variables are excluded
+$\Rightarrow$ Can not work with the assumption that kinship is not independent of the preservation/sampling
 
--   the preservation bias is already taken care of from when we apply 15k threshold
--   ⁠adding them (skeletal element & osnp) wont help to contribute anything more to the model, but only make the numerical fitting process harder (we already do sensitivity analysis to make sure that the model stays stable without them)
+$\Rightarrow$ Have to clearly state in the report as a limitation
 
-## DAG (**directed acyclic graph)**
+
+## Why bone quality variables are excluded
+
+-   The preservation bias is already taken care of from when we apply 15k threshold
+-   Adding them (skeletal element & OSNP) would not contribute anything further to the model but would only make the numerical fitting process harder 
+
+## DAG (**Directed acyclic graph)**
 
 ![](images/dagfinal (1).jpg)
 
