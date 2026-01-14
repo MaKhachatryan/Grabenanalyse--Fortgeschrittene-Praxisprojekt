@@ -190,11 +190,12 @@ ogthreshold_vs_15k
 
 **Comment:**
 
-- Model with original threshold is distorted: high individual variance, most of the parameters are insignificant, worse diagnostics than the 15k threshold
+- Model with original threshold is not reliable: high individual variance, most of the parameters are insignificant, worse diagnostics than the 15k threshold
 - Comparison table point out that: 
   - Original threshold explains more variance (higher $R^2$)
   - 15k predicts new data better (ELPD, LOOIC, WAIC)
-  - $\Rightarrow$ Indicates using original threshold is more complex or overfitting.
+  - $\Rightarrow$ Indicates using original threshold is more complex and overfitting.
+- However most of the parameters give the same qualitative results (except b_bone_qualityhighMlow)
 
 
 
