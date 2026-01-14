@@ -50,9 +50,7 @@ kinship_result <- og_kinship_result |>
   
   # cleaning rel based on original threshold
   rel = case_when(
-    rel == "First Degree"  & overlap_nsnps < 500   ~ "Uncertain",
-    rel == "Second Degree" & overlap_nsnps < 2000  ~ "Uncertain",
-    rel == "Third Degree"  & overlap_nsnps < 15000 ~ "Uncertain",
+    low_data == "yes" ~ "Uncertain",
     TRUE ~ rel
   ),
   
@@ -248,12 +246,12 @@ pairs_all <- kinship_result %>%
     length_of_use_absdiff = abs(length_of_use1 - length_of_use2)
   )
 
-pairs_ind <- pairs_all |> filter(tomb1 != "Elateia T46 56 62", tomb2 != "Elateia T46 56 62")
+pairs_ind_og <- pairs_all |> filter(tomb1 != "Elateia T46 56 62", tomb2 != "Elateia T46 56 62")
 
-pairs_group <- pairs_all |> filter(!tomb1 %in% c("Elateia T46", "Elateia T56", "Elateia T62"),
+pairs_group_og <- pairs_all |> filter(!tomb1 %in% c("Elateia T46", "Elateia T56", "Elateia T62"),
                                    !tomb2 %in% c("Elateia T46", "Elateia T56", "Elateia T62"))
 
-pairs_ind <- pairs_ind %>%
+pairs_ind_og <- pairs_ind_og %>%
   mutate(
     bone_quality = case_when(
       grepl("petrous", skeletal_element1) & grepl("petrous", skeletal_element2) ~ "high-high",
@@ -261,7 +259,7 @@ pairs_ind <- pairs_ind %>%
       TRUE ~ "low-low"
     )
   )
-pairs_group <- pairs_group |>
+pairs_group_og <- pairs_group_og |>
   mutate(
     bone_quality = case_when(
       grepl("petrous", skeletal_element1) & grepl("petrous", skeletal_element2) ~ "high-high",
