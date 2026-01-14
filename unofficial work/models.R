@@ -455,10 +455,15 @@ imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_ca
 imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
 imp_binary_group_sametomb <- readRDS("unofficial work/models save/imp_binary_group_sametomb.rds")
 imp_binary_group_tombvar <- update(imp_binary_separate_tombvar, newdata = pairs_group)
+saveRDS(imp_binary_group_tombvar, "unofficial work/models save/imp_binary_group_tombvar.rds")
 imp_binary_group_tombvar_nosamplesuccess <- update(imp_binary_separate_tombvar_nosamplesuccess,
                                                    newdata = pairs_group)
+saveRDS(imp_binary_group_tombvar_nosamplesuccess,
+        "unofficial work/models save/imp_binary_group_tombvar_nosamplesuccess.rds")
 imp_binary_group_tombvar_nosslengthuse <- update(imp_binary_separate_tombvar_nosslengthuse,
                                                  newdata = pairs_group)
+saveRDS(imp_binary_group_tombvar_nosslengthuse,
+        "unofficial work/models save/imp_binary_group_tombvar_nosslengthuse.rds")
 
 compare_everything_group <- modelsummary(list(
   "Normal with bone (group)" =  imp_binary_group_cat,
@@ -470,7 +475,6 @@ compare_everything_group <- modelsummary(list(
 ))
 saveRDS(compare_everything_group, "unofficial work/models save/compare_everything_group.rds")
 
-# test commit
 
 
 

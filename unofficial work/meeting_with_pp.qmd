@@ -49,7 +49,7 @@ $\Rightarrow$ Can not work with the assumption that kinship is not independent o
 $\Rightarrow$ Have to clearly state in the report as a limitation
 
 
-## Why quality variables are excluded
+## Why bone quality variables are excluded
 
 -   The preservation bias is already taken care of from when we apply 15k threshold
 -   Adding them (skeletal element & OSNP) would not contribute anything further to the model but would only make the numerical fitting process harder 
