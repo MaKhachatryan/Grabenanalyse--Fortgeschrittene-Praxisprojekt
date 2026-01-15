@@ -243,7 +243,23 @@ pairs_all <- kinship_result %>%
     
     analysed_ind_min = pmin(analysed_ind1, analysed_ind2, na.rm = TRUE),
     
-    length_of_use_absdiff = abs(length_of_use1 - length_of_use2)
+    length_of_use_absdiff = abs(length_of_use1 - length_of_use2), 
+    
+    length_of_use_average = (length_of_use1 + length_of_use2) / 2
+  ) %>%
+  mutate(
+    # normalization (min–max)
+    sample_success_min_norm = 
+      (sample_success_min - min(sample_success_min, na.rm = TRUE)) /
+      (max(sample_success_min, na.rm = TRUE) - min(sample_success_min, na.rm = TRUE)),
+    
+    analysed_ind_min_norm = 
+      (analysed_ind_min - min(analysed_ind_min, na.rm = TRUE)) /
+      (max(analysed_ind_min, na.rm = TRUE) - min(analysed_ind_min, na.rm = TRUE)),
+    
+    length_of_use_average_norm =
+      (length_of_use_average - min(length_of_use_average, na.rm = TRUE)) /
+      (max(length_of_use_average, na.rm = TRUE) - min(length_of_use_average, na.rm = TRUE))
   )
 
 pairs_ind_og <- pairs_all |> filter(tomb1 != "Elateia T46 56 62", tomb2 != "Elateia T46 56 62")
@@ -265,6 +281,61 @@ pairs_group_og <- pairs_group_og |>
       grepl("petrous", skeletal_element1) & grepl("petrous", skeletal_element2) ~ "high-high",
       grepl("petrous", skeletal_element1) | grepl("petrous", skeletal_element2) ~ "high-low",
       TRUE ~ "low-low"
+    )
+  )
+
+#pairs that only has over 15k nsnps
+pairs_ind <- pairs_ind_og[pairs_ind_og$overlap_nsnps >= 15000, ]
+pairs_group <- pairs_group_og[pairs_group_og$overlap_nsnps >= 15000, ]
+
+#pairs filter out by low data
+pairs_ind_all <- pairs_ind_og[is.na(pairs_ind_og$low_data), ]
+pairs_group_all <- pairs_group_og[is.na(pairs_group_og$low_data), ]
+
+#under 15k overlap NSNPs and treat 3rd degree as a unrelated 
+pairs_ind_unrel3rd <- pairs_ind_og %>%
+  filter(overlap_nsnps >= 15000) %>%
+  mutate(
+    # overwrite categorical relationship
+    rel = case_when(
+      rel == "Third Degree" ~ "Unrelated",
+      TRUE                  ~ rel
+    ),
+    
+    # overwrite binary outcome accordingly
+    related_binary = case_when(
+      rel %in% c("First Degree", "Second Degree") ~ 1,
+      rel == "Unrelated"                          ~ 0,
+      TRUE                                       ~ NA_real_
+    ),
+    
+    # overwrite global degree as well
+    global_degree = case_when(
+      global_degree == "Third Degree" ~ "Unrelated",
+      TRUE                            ~ global_degree
+    )
+  )
+
+pairs_group_unrel3rd <- pairs_group_og %>%
+  filter(overlap_nsnps >= 15000) %>%
+  mutate(
+    # overwrite categorical relationship
+    rel = case_when(
+      rel == "Third Degree" ~ "Unrelated",
+      TRUE                  ~ rel
+    ),
+    
+    # overwrite binary outcome accordingly
+    related_binary = case_when(
+      rel %in% c("First Degree", "Second Degree") ~ 1,
+      rel == "Unrelated"                          ~ 0,
+      TRUE                                       ~ NA_real_
+    ),
+    
+    # overwrite global degree as well
+    global_degree = case_when(
+      global_degree == "Third Degree" ~ "Unrelated",
+      TRUE                            ~ global_degree
     )
   )
 
