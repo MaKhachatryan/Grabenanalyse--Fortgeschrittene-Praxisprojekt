@@ -339,6 +339,13 @@ pairs_group_unrel3rd <- pairs_group_og %>%
     )
   )
 
+##data sets for within tomb only
+pairs_ind_withintomb <- pairs_ind_og %>%
+  filter(tomb1 == tomb2, overlap_nsnps >= 15000)
+
+pairs_group_withintomb <- pairs_group_og %>%
+  filter(tomb1 == tomb2, overlap_nsnps >= 15000)
+
 ###### Data preparation for modeling SNP overlap and MNAR considerations
 
 kinship_result_m <- og_kinship_result |>
