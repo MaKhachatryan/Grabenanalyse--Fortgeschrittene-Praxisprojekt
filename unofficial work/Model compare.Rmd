@@ -1,0 +1,262 @@
+---
+title: "Model compare"
+output: html_document
+---
+
+``` {r setup, include=FALSE}
+library(here)
+source(here("environmentSetUp.R"))
+imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
+all_binary_separate_cat <- readRDS(here::here("unofficial work/models save/all_binary_separate_cat.rds"))
+imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
+imp_binary_separate_nobone <- readRDS(here::here("unofficial work/models save/imp_binary_separate_nobone.rds"))
+imp_binary_separate_newtombvar <- readRDS(here::here("unofficial work/models save/imp_binary_separate_newtombvar.rds"))
+imp_binary_separate_withintomb <- readRDS(here("unofficial work/models save/imp_binary_separate_withintomb.rds"))
+imp_binary_separate_unrel3rd <- readRDS(here("unofficial work/models save/imp_binary_separate_unrel3rd.rds"))
+imp_binary_separate_sametomb <- readRDS(here("unofficial work/models save/imp_binary_separate_sametomb.rds"))
+
+imp_binary_group_cat <- readRDS(here::here("unofficial work/models save/imp_binary_group_cat.rds"))
+all_binary_group_cat <- readRDS(here::here("unofficial work/models save/all_binary_group_cat.rds"))
+imp_binary_group_cat <- readRDS(here::here("unofficial work/models save/imp_binary_group_cat.rds"))
+imp_binary_group_nobone <- readRDS(here::here("unofficial work/models save/imp_binary_group_nobone.rds"))
+imp_binary_group_newtombvar <- readRDS(here::here("unofficial work/models save/imp_binary_group_newtombvar.rds"))
+imp_binary_group_withintomb <- readRDS(here("unofficial work/models save/imp_binary_group_withintomb.rds"))
+imp_binary_group_unrel3rd <- readRDS(here("unofficial work/models save/imp_binary_group_unrel3rd.rds"))
+imp_binary_group_sametomb <- readRDS(here("unofficial work/models save/imp_binary_group_sametomb.rds"))
+
+## Define compare function
+compare_model <- function(
+  models,
+  ci_width = 0.95,
+  digits = 2,
+  output = c("gt", "data"),
+  title = "Model comparison"
+) {
+  output <- match.arg(output)
+  stopifnot(is.list(models), !is.null(names(models)))
+
+  extract_one <- function(fit, model_name) {
+    tidybayes::tidy_draws(fit) |>
+      tidyr::pivot_longer(
+        cols = dplyr::matches("^(b_|sd_)"),
+        names_to = "term",
+        values_to = "value"
+      ) |>
+      dplyr::group_by(term) |>
+      tidybayes::median_qi(value, .width = ci_width) |>
+      dplyr::transmute(
+        term,
+        model = model_name,
+        estimate = value,
+        ci_low = .lower,
+        ci_high = .upper
+      )
+  }
+
+  long <- purrr::imap_dfr(models, extract_one)
+
+  wide <- long |>
+    dplyr::mutate(
+      term = dplyr::case_when(
+        term == "b_Intercept" ~ "Intercept",
+        grepl("^b_", term) ~ gsub("^b_", "", term),
+        grepl("^sd_", term) ~ gsub("^sd_", "SD(RE): ", term),
+        TRUE ~ term
+      ),
+      CI = sprintf(
+        paste0("[%.", digits, "f, %.", digits, "f]"),
+        ci_low, ci_high
+      ),
+      row_order = dplyr::case_when(
+        term == "Intercept" ~ 1,
+        grepl("^SD\\(RE\\):", term) ~ 3,
+        TRUE ~ 2
+      )
+    ) |>
+    dplyr::select(term, model, estimate, CI, row_order) |>
+    tidyr::pivot_wider(
+      names_from = model,
+      values_from = c(estimate, CI),
+      names_glue = "{model}_{.value}"
+    )
+
+  col_order <- c(
+    "term",
+    unlist(
+      lapply(
+        names(models),
+        function(m) c(paste0(m, "_estimate"), paste0(m, "_CI"))
+      )
+    )
+  )
+
+  tab <- wide |>
+    dplyr::arrange(row_order, term) |>
+    dplyr::select(dplyr::all_of(col_order))
+
+  # ---- default: return gt table ----
+  if (output == "gt") {
+    gt_tab <- gt::gt(tab) |>
+      gt::tab_header(
+        title = title
+      ) |>
+      gt::cols_align(align = "left", term) |>
+      gt::cols_align(align = "center", -term)
+
+    # automatic column spanners per model
+    for (m in names(models)) {
+      gt_tab <- gt_tab |>
+        gt::tab_spanner(
+          label = m,
+          columns = c(paste0(m, "_estimate"), paste0(m, "_CI"))
+        )
+    }
+
+    return(gt_tab)
+  }
+
+  return(tab)
+}
+
+
+```
+
+### Remark
+Every models here are fitted with 15k threshold. Except the one was used to compare 2  threshold.
+
+### Compare between with and without bone quality
+``` {r compare bone}
+summary(imp_binary_separate_cat)
+summary(imp_binary_separate_nobone)
+compare_bone <- list("with bone" = imp_binary_separate_cat,
+                     "no bone" = imp_binary_separate_nobone)
+compare_model(compare_bone)
+```
+
+**Comment:**
+
+- The model stays stable, estimates and CI change minimally
+- No bone model even gives better diagnostics $\Rightarrow$ mathematically cleaner
+- $\Rightarrow$ Prefer the no bone model, since it's simpler, easier to interpret, and mathematically cleaner without losing scientific accuracy (also it's theoretically justified by DAG).
+
+### Compare between 15k threshold and original threhold
+#### Separated tomb
+``` {r compare threshold}
+# 15k threshold
+summary(imp_binary_separate_cat)
+
+# Standard threshold
+summary(all_binary_separate_cat)
+
+stdthreshold_vs_15k <- list("15k threshold" = imp_binary_separate_cat,
+                            "standard threshold" = all_binary_separate_cat)
+compare_model(stdthreshold_vs_15k)
+```
+
+**Comment:**
+
+- Model with original threshold: high individual variance, mostly larger CI
+- However most of the estimates give the same qualitative results (except b_bone_qualityhighMlow but we have decided not to include bone quality already)
+
+
+### Add tomb variables
+Additional tomb-level variables: sample_success_min_norm, analysed_ind_min_norm, 
+length_of_use_average_norm
+
+``` {r tomb var}
+imp_binary_separate_newtombvar
+
+normal_vs_tombvar <- list(
+  "Normal (no bone)" = imp_binary_separate_nobone,
+  "With tomb variables" = imp_binary_separate_newtombvar
+)
+
+compare_model(normal_vs_tombvar)
+```
+
+- Tomb variables have large estimates with huge CI
+- Old parameters mostly stay stable
+- Parameter for sample_success_min is strong NEGATIVE:
+  - Interpretation: Higher success rate => Lower probability of relatedness
+  - **How this could make sense:** 
+    - High success rate => analyse many random people from the tomb => higher unrelated pairs (since we have low related rate) => family members are diluted in large # random people
+    - Low success rate => only few bones survive the poor preservation context => those who survive might be clustered in a specific protected spot => could be a spot that is preserved for family => higher probability of relatedness
+  - Anyway this parameter is added to control this "diluted bias" more than to describe any reality
+
+### Robust check
+Now we do robust check with:
+
+- Only same_tomb as predictor
+- A data set with only "within tomb relationship"
+- New definition of relatedness: 3rd degree is categorized as unrelated
+
+``` {r robust}
+imp_binary_separate_withintomb
+imp_binary_separate_unrel3rd
+
+robustcheck_models <- list(
+  "Normal (no bone)" = imp_binary_separate_nobone,
+  "Only same_tomb" = imp_binary_separate_sametomb,
+  "Within tomb" = imp_binary_separate_withintomb,
+  "3rd as unrelated" = imp_binary_separate_unrel3rd
+)
+
+compare_model(robustcheck_models)
+```
+
+**Comment:**
+
+- **Context:** same_tomb is a very dominant predictor, we do robust check to see if the other variables are just artifacts of this same_tomb
+- The compare table shows that all estimates have the same qualitative result. 
+- All the estimates decrease toward 0. However MalexMale effect stays pretty strong through all the models
+- **Remark for "within tomb" model:** This model is only fitted with 2990 observations (compare to 13690 for all other models). So maybe the power is not as high.
+- **"3rd as unrelated" model:** same_tomb gets much higher. $\Rightarrow$ Share burial is a strong predictor for immediate kinship? (Intuition: 3rd degree is further kin, they might not live in the same immediate household or be buried in the exact same family crypt as strictly as a parent and child would. By including them in "Related", we dilute this effect (?))
+
+
+
+### Compare everything (separated tomb version)
+``` {r everything}
+every_model <- list(
+  "Normal (with bone)" = imp_binary_separate_cat,
+  "Normal (no bone)" = imp_binary_separate_nobone,
+  "With tomb variables" = imp_binary_separate_newtombvar,
+  "Only same_tomb" = imp_binary_separate_sametomb,
+  "Within tomb" = imp_binary_separate_withintomb,
+  "3rd as unrelated" = imp_binary_separate_unrel3rd
+)
+
+compare_model(every_model, title = "Model comparison (separated tombs)")
+```
+
+
+### Compare everything (grouped tomb version) 
+``` {r everything group}
+every_model_group <- list(
+  "G Normal (with bone)" = imp_binary_group_cat,
+  "G Normal (no bone)" = imp_binary_group_nobone,
+  "G With tomb variables" = imp_binary_group_newtombvar,
+  "G Only same_tomb" = imp_binary_group_sametomb,
+  "G Within tomb" = imp_binary_group_withintomb,
+  "G 3rd as unrelated" = imp_binary_group_unrel3rd
+)
+
+compare_model(every_model_group, title = "Model comparison (grouped tombs)")
+```
+
+**Comment:**
+
+- "G With tomb variables" model didn't converge. Possible reason: grouping tombs reduced the number of unique "tomb environments."
+- The other estimates stay stable along the grouped models and behave quite similar to the "separated version"
+- same_tomb is always stronger than in the corresponding separated models (since for larger group of tomb we can expect to find more related pairs). 
+  - Especially same_tomb rockets in the "Within tomb" model
+
+
+### Grouped version models' output
+``` {r group outputs}
+imp_binary_group_cat
+imp_binary_group_nobone
+imp_binary_group_newtombvar
+imp_binary_group_sametomb
+imp_binary_group_withintomb
+imp_binary_group_unrel3rd
+```
