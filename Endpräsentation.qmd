@@ -1,0 +1,262 @@
+---
+title: "Grave Analysis Project"
+subtitle: "Fortgeschrittenes Praxisprojekt - WS 25/26 LMU Munich"
+author:
+  - name: "Arsine Chinaryan, Anh Hoang Minh Dang, Felicia Francis Immanuel, Margarita Khachatryan"
+    affiliation: "Supervisor: Yichen Han"
+institute: "Project partners: Irene Högner, Alissa Mittnik"
+
+format: 
+  revealjs:
+    html-math-method: mathjax
+    logo: "LMULogo.jpg"
+    css: customstyle.css
+    embed-resources: true
+    slide-number: c
+    slide-number-position: "bottom-right"
+editor: visual
+---
+
+```{r setup, include=FALSE}
+source("environmentSetUp.R")
+source("Analysis/pairsdata.R")
+```
+
+## Outline
+
+<div style="font-size:0.8em; line-height:0.9em;">
+
+**1. Project Overview**
+
+-   Overview
+-   Research Questions
+
+**2. Data Description**
+
+-   Data Sets
+-   Process
+
+**3. Data Visualization**
+
+-   Descriptive Plots
+
+**4. Modelling Approach**
+
+-   Limitation
+-   Model Definition & Assumption
+-   Model Fitting (brms)
+
+**5. Discussion**
+
+</div>
+
+## Outline
+
+<div style="font-size:0.8em; line-height:0.9em;">
+
+**1. Project Overview**
+
+-   Overview
+-   Research Questions
+
+[**2. Data Description**]{style="color:lightgray;"}\
+
+[**3. Data Visualization**]{style="color:lightgray;"}\
+
+[**4. Modelling Approach**]{style="color:lightgray;"}\
+
+[**5. Discussion**]{style="color:lightgray;"}\
+
+</div>
+
+## Project Overview
+
+**Grave Analysis**: How do different factors influence the ratio of relatedness and unrelatedness in a collective tomb from Mycenaean times?
+
+::: {style="text-align: center;"}
+<img src="images/tombs.png" style="width: 60%;"/>
+:::
+
+## Project Overview
+
+-   **Two burial sites**
+    -   Amfissa (tholos)
+    -   Elateia (chamber tombs): T31, T36, T46, T50, T56, T62, T67\
+        **Note:** Analyze T46, T56, and T62 both as a group and as individual tombs
+
+::::: columns
+::: column
+![](images/tomb_photo.png){width="70%"}
+:::
+
+::: column
+![](images/tomb_photo2.png){width="70%"}
+:::
+:::::
+
+## Outline
+
+<div style="font-size:0.8em; line-height:0.9em;">
+
+[**1. Project Overview**]{style="color:lightgray;"}\
+
+**2. Data Description**
+
+-   Data Sets
+-   Process
+
+[**3. Data Visualization**]{style="color:lightgray;"}\
+
+[**4. Modelling Approach**]{style="color:lightgray;"}\
+
+[**5. Discussion**]{style="color:lightgray;"}\
+
+</div>
+
+## Data Description
+
+**1. Tomb parameters** - Summary information for each tomb:
+
+-   **Minimum number of individuals (MNI)**\
+
+-   **Number of analysed individuals**\
+
+-   **Length of tomb use (years)**\
+
+-   **Sample success rate (%)**
+
+-   Total number of samples taken per tomb\
+
+-   Sampled skeletal elements:\
+    petrous bone, teeth, talus/phalanx, other bones
+
+## Data Description
+
+**2. Individual metadata** - Information of each sampled individual:
+
+-   **Sex**
+
+-   **Age estimation**
+
+-   **Skeletal element sampled**
+
+-   **Tomb and site**
+
+-   Analysis ID\
+
+-   Individual ID\
+
+-   1240k SNP coverage (indicator of DNA data quality)
+
+## Data Description
+
+**3. Kinship results:** Pairwise relatedness results between individuals:
+
+-   **Relationship category** (1st / 2nd / 3rd degree)
+
+-   **Kinship coefficient** (genetic measure of relatedness)
+
+-   **Overlapping SNPs** (number of shared SNPs used to estimate relatedness)
+
+-   **Low-data indicator** (indicator that OverlapNSNPs is below the reliability threshold)
+
+-   Individual pair IDs\
+
+-   Upper and lower Z-scores\
+
+-   Allele-sharing statistics (P0 mean, unnormalized, standard error)\
+
+-   Kinship coefficient confidence intervals (min / max)\
+
+-   Kinship coefficient minimum and maximum
+
+## Research Questions
+
+1.  [Develop and validate statistical models to predict the **difference between observed and potential relatedness**, using **tomb parameters** (length of use, estimated number of burials, sample success rate) as predictor variables, while accounting for potential confounding factors]{style="font-size:1.1em;"}
+
+2.  [Build predictive models to estimate **relatedness** patterns using **individual-level covariates** (sex, age and skeletal element of sample), considering that some of these factors may be confounded with DNA preservation quality and sampling success]{style="font-size:1.1em;"}
+
+## Outline
+
+<div style="font-size:0.8em; line-height:0.9em;">
+
+[**1. Project Overview**]{style="color:lightgray;"}\
+
+[**2. Data Description**]{style="color:lightgray;"}\
+
+**3. Data Visualization**
+
+-   Descriptive Plots
+
+[**4. Modelling Approach**]{style="color:lightgray;"}\
+
+[**5. Discussion**]{style="color:lightgray;"}\
+
+</div>
+
+## Data Visualization
+
+### [Absolute relation of MNI and analysed individuals]{style="font-size:26px;"}
+
+![](Plots/plot_mni.png){width="70%"}
+
+## Data Visualization
+
+### [Relative number of analysed pairs per tomb]{style="font-size:26px;"}
+
+![](Plots/plot_pairs_rel.png){width="70%"}
+
+## Data Visualization
+
+### [Absolute number of analysed pairs per tomb]{style="font-size:26px;"}
+
+![](Plots/plot_pairs_abs.png){width="70%"}
+
+## Data Visualization
+
+### [Kinship Networks]{style="font-size:26px;"}
+
+<div style="display:flex; gap:20px;">
+  <img src="Plots/All_Tombs_network.png" style="width:48%;">
+  <img src="Plots/Amfissa_Tholos_network.png" style="width:48%;">
+</div>
+
+## Data Visualization
+
+### [Kinship Networks]{style="font-size:26px;"}
+
+<div style="display:flex; gap:20px;">
+  <img src="Plots/Elateia_T46_56_62_network.png" style="width:48%;">
+  <img src="Plots/Elateia_T62_network.png" style="width:48%;">
+</div>
+
+## Outline
+
+<div style="font-size:0.8em; line-height:0.9em;">
+
+[**1. Project Overview**]{style="color:lightgray;"}\
+
+[**2. Data Description**]{style="color:lightgray;"}\
+
+[**3. Data Visualization**]{style="color:lightgray;"}\
+
+**4. Modelling Approach**
+
+-   Limitation
+-   Model Definition And Assumption
+-   Fitting The Models With brms
+
+[**5. Discussion**]{style="color:lightgray;"}\
+
+</div>
+
+## Modeling Approach
+
+### Cannot Fit a Tomb-level Model
+
+-   **Small number of tombs**: Amfissa and 7 tombs from Elateia
+-   For too many parameters: length of use, analysed individuals, effect of 4 types of skeletal elements
+
+$\Rightarrow$ **With the available data, a meaningful tomb-level model is not possible**
+
+
