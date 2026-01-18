@@ -24,22 +24,24 @@ source("Analysis/pairsdata.R")
 
 ## Outline
 
-<div style="font-size:0.8em; line-height:0.9em;">
-
+::::: columns
+::: column
 **1. Project Overview**
 
 -   Overview
--   Research Questions
 
 **2. Data Description**
 
 -   Data Sets
+-   Research Questions
 -   Process
 
 **3. Data Visualization**
 
 -   Descriptive Plots
+:::
 
+::: column
 **4. Modelling Approach**
 
 -   Limitation
@@ -47,17 +49,14 @@ source("Analysis/pairsdata.R")
 -   Model Fitting (brms)
 
 **5. Discussion**
-
-</div>
+:::
+:::::
 
 ## Outline
-
-<div style="font-size:0.8em; line-height:0.9em;">
 
 **1. Project Overview**
 
 -   Overview
--   Research Questions
 
 [**2. Data Description**]{style="color:lightgray;"}\
 
@@ -66,8 +65,6 @@ source("Analysis/pairsdata.R")
 [**4. Modelling Approach**]{style="color:lightgray;"}\
 
 [**5. Discussion**]{style="color:lightgray;"}\
-
-</div>
 
 ## Project Overview
 
@@ -96,13 +93,12 @@ source("Analysis/pairsdata.R")
 
 ## Outline
 
-<div style="font-size:0.8em; line-height:0.9em;">
-
 [**1. Project Overview**]{style="color:lightgray;"}\
 
 **2. Data Description**
 
 -   Data Sets
+-   Research Questions
 -   Process
 
 [**3. Data Visualization**]{style="color:lightgray;"}\
@@ -110,8 +106,6 @@ source("Analysis/pairsdata.R")
 [**4. Modelling Approach**]{style="color:lightgray;"}\
 
 [**5. Discussion**]{style="color:lightgray;"}\
-
-</div>
 
 ## Data Description
 
@@ -125,11 +119,6 @@ source("Analysis/pairsdata.R")
 
 -   **Sample success rate (%)**
 
--   Total number of samples taken per tomb\
-
--   Sampled skeletal elements:\
-    petrous bone, teeth, talus/phalanx, other bones
-
 ## Data Description
 
 **2. Individual metadata** - Information of each sampled individual:
@@ -141,12 +130,6 @@ source("Analysis/pairsdata.R")
 -   **Skeletal element sampled**
 
 -   **Tomb and site**
-
--   Analysis ID\
-
--   Individual ID\
-
--   1240k SNP coverage (indicator of DNA data quality)
 
 ## Data Description
 
@@ -178,8 +161,6 @@ source("Analysis/pairsdata.R")
 
 ## Outline
 
-<div style="font-size:0.8em; line-height:0.9em;">
-
 [**1. Project Overview**]{style="color:lightgray;"}\
 
 [**2. Data Description**]{style="color:lightgray;"}\
@@ -192,13 +173,11 @@ source("Analysis/pairsdata.R")
 
 [**5. Discussion**]{style="color:lightgray;"}\
 
-</div>
-
 ## Data Visualization
 
-### [Absolute relation of MNI and analysed individuals]{style="font-size:26px;"}
+### [Absolute number of analysed pairs per tomb]{style="font-size:26px;"}
 
-![](Plots/plot_mni.png){width="70%"}
+![](Plots/plot_pairs_abs.png){width="70%"}
 
 ## Data Visualization
 
@@ -208,31 +187,45 @@ source("Analysis/pairsdata.R")
 
 ## Data Visualization
 
-### [Absolute number of analysed pairs per tomb]{style="font-size:26px;"}
+### [Kinship Networks]{style="font-size:26px;"}
 
-![](Plots/plot_pairs_abs.png){width="70%"}
+::: {style="display:flex; gap:20px;"}
+<img src="Plots/All_Tombs_network.png" style="width:48%;"/> <img src="Plots/Amfissa_Tholos_network.png" style="width:48%;"/>
+:::
 
 ## Data Visualization
 
 ### [Kinship Networks]{style="font-size:26px;"}
 
-<div style="display:flex; gap:20px;">
-  <img src="Plots/All_Tombs_network.png" style="width:48%;">
-  <img src="Plots/Amfissa_Tholos_network.png" style="width:48%;">
-</div>
+::: {style="display:flex; gap:20px;"}
+<img src="Plots/Elateia_T46_56_62_network.png" style="width:48%;"/> <img src="Plots/Elateia_T62_network.png" style="width:48%;"/>
+:::
 
 ## Data Visualization
 
 ### [Kinship Networks]{style="font-size:26px;"}
 
-<div style="display:flex; gap:20px;">
-  <img src="Plots/Elateia_T46_56_62_network.png" style="width:48%;">
-  <img src="Plots/Elateia_T62_network.png" style="width:48%;">
-</div>
+::: {style="display:flex; gap:20px;"}
+<img src="Plots/Elateia_T56_network.png" style="width:48%;"/> <img src="Plots/Elateia_T36_network.png" style="width:48%;"/>
+:::
+
+## Data Visualization
+
+### [Kinship Networks]{style="font-size:26px;"}
+
+::: {style="display:flex; gap:20px;"}
+<img src="Plots/Elateia_T46_network.png" style="width:48%;"/> <img src="Plots/Elateia_T50_network.png" style="width:48%;"/>
+:::
+
+## Data Visualization
+
+### [Kinship Networks]{style="font-size:26px;"}
+
+::: {style="display:flex; gap:20px;"}
+<img src="Plots/Elateia_T31_network.png" style="width:48%;"/> <img src="Plots/Elateia_T67_network.png" style="width:48%;"/>
+:::
 
 ## Outline
-
-<div style="font-size:0.8em; line-height:0.9em;">
 
 [**1. Project Overview**]{style="color:lightgray;"}\
 
@@ -248,8 +241,6 @@ source("Analysis/pairsdata.R")
 
 [**5. Discussion**]{style="color:lightgray;"}\
 
-</div>
-
 ## Modeling Approach
 
 ### Cannot Fit a Tomb-level Model
@@ -259,4 +250,8 @@ source("Analysis/pairsdata.R")
 
 $\Rightarrow$ **With the available data, a meaningful tomb-level model is not possible**
 
+## Appendix
 
+### [Absolute relation of MNI and analysed individuals]{style="font-size:26px;"}
+
+![](Plots/plot_mni.png){width="70%"}

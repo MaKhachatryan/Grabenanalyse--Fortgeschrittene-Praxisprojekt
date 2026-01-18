@@ -57,7 +57,7 @@ source("Analysis/pairsdata.R")
 **Grave Analysis**: How do different factors influence the ratio of relatedness and unrelatedness in a collective tomb from Mycenaean times?
 
 ::: {style="text-align: center;"}
-<img src="tombs.png" style="width: 60%;"/>
+<img src="images/tombs.png" style="width: 60%;"/>
 :::
 
 ## Description of Data sets
