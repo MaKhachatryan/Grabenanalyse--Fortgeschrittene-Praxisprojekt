@@ -475,8 +475,38 @@ compare_everything_group <- modelsummary(list(
 ))
 saveRDS(compare_everything_group, "unofficial work/models save/compare_everything_group.rds")
 
+### 15.1.2026 batch ----
+source("environmentSetUp.R")
+source("Analysis/pairsdata.R")
+### Fit model with data set contain only within-tomb kinship
+imp_binary_separate_withintomb <- update(imp_binary_separate_cat, 
+                                         formula. = related_binary ~ sex_pair + age_pair + 
+                                           (1 | mm(individual1_id, individual2_id)) + (1 | tomb1),
+                                         newdata = pairs_ind_withintomb)
+saveRDS(imp_binary_separate_withintomb, "unofficial work/models save/imp_binary_separate_withintomb.rds")
+imp_binary_group_withintomb <- update(imp_binary_separate_withintomb, newdata = pairs_group_withintomb)
+saveRDS(imp_binary_group_withintomb, "unofficial work/models save/imp_binary_group_withintomb.rds")
+
 
 ### Add again normalized tomb-level variables ------
+imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
+imp_binary_separate_newtombvar <- update(imp_binary_separate_nobone,
+                                         formula. = related_binary ~ sex_pair + age_pair + same_tomb +
+                                           sample_success_min_norm + analysed_ind_min_norm + length_of_use_average_norm +
+                                           (1 | mm(individual1_id, individual2_id)) +
+                                           (1 | mm(tomb1, tomb2)),
+                                         newdata = pairs_ind)
+saveRDS(imp_binary_separate_newtombvar, "unofficial work/models save/imp_binary_separate_newtombvar.rds")
+imp_binary_group_newtombvar <- update(imp_binary_separate_newtombvar, newdata = pairs_group_withintomb)
+saveRDS(imp_binary_group_newtombvar, "unofficial work/models save/imp_binary_group_newtombvar.rds")
+
+### New definition of relatedness: 3rd degree is categorized as unrelated ------
+imp_binary_separate_unrel3rd <- update(imp_binary_separate_nobone, newdata = pairs_ind_unrel3rd)
+saveRDS(imp_binary_separate_unrel3rd, "unofficial work/models save/imp_binary_separate_unrel3rd.rds")
+imp_binary_group_unrel3rd <- update(imp_binary_separate_unrel3rd, newdata = pairs_group_unrel3rd)
+saveRDS(imp_binary_group_unrel3rd, "unofficial work/models save/imp_binary_group_unrel3rd.rds")
+
+
 
 
 
