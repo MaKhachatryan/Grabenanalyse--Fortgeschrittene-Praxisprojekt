@@ -242,13 +242,54 @@ source("Analysis/pairsdata.R")
 [**5. Discussion**]{style="color:lightgray;"}\
 
 ## Modeling Approach
-
-### Cannot Fit a Tomb-level Model
+### Limitation
+#### 1. Tomb-level model not possible
 
 -   **Small number of tombs**: Amfissa and 7 tombs from Elateia
 -   For too many parameters: length of use, analysed individuals, effect of 4 types of skeletal elements
 
 $\Rightarrow$ **With the available data, a meaningful tomb-level model is not possible**
+
+## Modeling Approach
+### Limitation
+#### 2. MNAR
+%%Process graph (assign uncertain as standard threshold)
+
+## Modeling Approach
+### Limitation
+#### 2. MNAR
+![](images/MNAR.png){fig-align="center"}
+
+$X_O$ : Observed variables $\rightarrow$ Tomb, Age, Sex, Overlapping SNPs,...
+
+$X_M$ : Variables that are missing for some observations $\rightarrow$ Kinship status
+
+$R$ : Missingness indicator
+
+## Modeling Approach
+### Limitation - MNAR
+
+$$
+R =
+\begin{cases}
+1, & \text{if kinship is classified (1st/2nd/3rd)}, \\
+0, & \text{if kinship status is classified as "Uncertain".}
+\end{cases}
+$$
+
+Threshold:
+
+- 1st degree $\rightarrow$ needs $\ge 500 \text{ SNPs}$
+- 2nd degree $\rightarrow$ needs $\ge 2000 \text{ SNPs}$
+- 3rd degree $\rightarrow$ needs $\ge 15000 \text{ SNPs}$
+
+$$
+\Rightarrow R = \mathbb{I}\!\left( \mathrm{OSNP} \ge \text{threshold depending on Kinship status} \right)
+$$
+
+$$\Rightarrow P(R | X_O, X_M) \text{ depends on } X_M = \text{Kinship status}$$
+$\Rightarrow$ **MNAR**
+
 
 ## Appendix
 
