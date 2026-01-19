@@ -4,7 +4,7 @@ imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group
 
 # This script is to check the assumption of RE normality 
 
-plot_qq_both_effects <- function(model_object) {
+plot_qq_both_effects <- function(model_object, subtitle = "Separated tomb") {
   
   # Extract random effects
   re_list <- ranef(model_object)
@@ -24,7 +24,7 @@ plot_qq_both_effects <- function(model_object) {
       stat_qq(size = 2, color = "skyblue4", alpha = 0.8) +
       stat_qq_line(color = "red", linewidth = 1) +
       labs(title = paste("Q-Q Plot:", group_name),
-           subtitle = "Normality Assumption Check",
+           subtitle = subtitle,
            x = "Theoretical Quantiles",
            y = "Sample Quantiles (Standardized)") +
       theme_minimal() +
@@ -38,5 +38,5 @@ plot_qq_both_effects <- function(model_object) {
   return(invisible(plot_list))
 }
 
-plot_qq_both_effects(imp_binary_separate_nobone)
-plot_qq_both_effects(imp_binary_group_nobone)
+plot_qq_both_effects(imp_binary_separate_nobone, "Separated tombs")
+plot_qq_both_effects(imp_binary_group_nobone, "Grouped tombs")
