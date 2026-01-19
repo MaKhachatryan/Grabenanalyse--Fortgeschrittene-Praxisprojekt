@@ -20,7 +20,8 @@ packages <- c("tidyr",
               "brms",
               "gt",
               "modelsummary",
-              "tidybayes")
+              "tidybayes",
+              "gridExtra")
 
 for (pkg in packages) {
   if (!require(pkg, character.only = TRUE)) {
