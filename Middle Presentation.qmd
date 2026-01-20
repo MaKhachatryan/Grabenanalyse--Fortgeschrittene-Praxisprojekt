@@ -123,7 +123,7 @@ source("Analysis/pairsdata.R")
 
 ### DAG (**directed acyclic graph)**
 
-![](images/DAGfinal.jpg)
+![](images/DAG1version.jpg){fig-align="center"}
 
 ## Data Description
 
