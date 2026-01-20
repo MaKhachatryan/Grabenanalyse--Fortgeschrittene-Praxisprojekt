@@ -507,6 +507,45 @@ imp_binary_group_unrel3rd <- update(imp_binary_separate_unrel3rd, newdata = pair
 saveRDS(imp_binary_group_unrel3rd, "unofficial work/models save/imp_binary_group_unrel3rd.rds")
 
 
+### New models batch 20.1.2026 (after Yichen’s feedback per Mail) ----
+source("environmentSetUp.R")
+source("Analysis/pairsdata.R")
+
+### Fit main model with a weakly informative prior
+imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
+imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
+
+weak_prior <- set_prior("normal(0, 1)", class = "b")
+
+imp_binary_separate_nobone_prior <- update(imp_binary_separate_nobone,
+                                           prior = weak_prior)
+summary(imp_binary_separate_nobone_prior)
+saveRDS(imp_binary_separate_nobone_prior, "unofficial work/models save/imp_binary_separate_nobone_prior.rds")
+
+imp_binary_group_nobone_prior <- update(imp_binary_group_nobone,
+                                        prior = weak_prior)
+summary(imp_binary_group_nobone_prior)
+saveRDS(imp_binary_group_nobone_prior, "unofficial work/models save/imp_binary_group_nobone_prior.rds")
+
+
+### Fit within tomb + 3rd as unrelated
+pairs_ind_withintomb_unrel3rd <- pairs_ind_unrel3rd[pairs_ind_unrel3rd$same_tomb == TRUE, ]
+pairs_group_withintomb_unrel3rd <- pairs_group_unrel3rd[pairs_group_unrel3rd$same_tomb == TRUE, ]
+
+imp_binary_separate_withintomb <- readRDS("unofficial work/models save/imp_binary_separate_withintomb.rds")
+imp_binary_group_withintomb <- readRDS("unofficial work/models save/imp_binary_group_withintomb.rds")
+
+imp_binary_separate_withintomb_unrel3rd <- update(imp_binary_separate_withintomb,
+                                                  newdata = pairs_ind_withintomb_unrel3rd)
+saveRDS(imp_binary_separate_withintomb_unrel3rd, "unofficial work/models save/imp_binary_separate_withintomb_unrel3rd.rds")
+
+imp_binary_group_withintomb_unrel3rd <- update(imp_binary_group_withintomb,
+                                                  newdata = pairs_group_withintomb_unrel3rd)
+saveRDS(imp_binary_group_withintomb_unrel3rd, "unofficial work/models save/imp_binary_group_withintomb_unrel3rd.rds")
+
+
+
+
 
 
 
