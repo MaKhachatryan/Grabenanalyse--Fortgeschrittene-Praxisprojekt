@@ -572,6 +572,46 @@ compare_model(robustcheck_models_separate, title = "Model Robust Check (Separate
 compare_model(robustcheck_models_group, title = "Model Robust Check (Grouped)")
 ```
 
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; flex-direction:column; gap:20px; align-items:center;"}
+<img src="plots/robust_intercept_sep.png" style="width:70%;"/> <img src="plots/robust_intercept_gr.png" style="width:70%;"/>
+:::
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/robust_age_sep.png" style="width:48%;"/> <img src="plots/robust_age_gr.png" style="width:48%;"/>
+:::
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/robust_tomb_sep.png" style="width:48%;"/> <img src="plots/robust_tomb_gr.png" style="width:48%;"/>
+:::
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/robust_sex_sep.png" style="width:48%;"/> <img src="plots/robust_sex_gr.png" style="width:48%;"/>
+:::
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; flex-direction:column; gap:20px; align-items:center;"}
+<img src="plots/robust_random_sd_sep.png" style="width:60%;"/> <img src="plots/robust_random_sd_gr.png" style="width:60%;"/>
+:::
+
 ## Bibliography
 
 -   Charles E. McCulloch. John M. Neuhaus. "Misspecifying the Shape of a Random Effects Distribution: Why Getting It Wrong May Not Matter." Statist. Sci. 26 (3) 388 - 402, August 2011
