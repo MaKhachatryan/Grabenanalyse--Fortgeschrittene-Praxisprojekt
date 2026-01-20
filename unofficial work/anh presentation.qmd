@@ -48,7 +48,7 @@ $\Rightarrow$ **MNAR**
 
 ## Model Fitting
 ### Limitation - MNAR 
-Solution: Apply only one threshold 15000 for all degrees of kinship
+**Solution:** Apply only one threshold 15000 for all degrees of kinship
 
 $$
 R =

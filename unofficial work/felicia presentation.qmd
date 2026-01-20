@@ -1,0 +1,50 @@
+---
+title: "Felicia Presentation"
+format: revealjs
+editor: visual
+---
+
+## Model Fitting
+
+### Marginal effect
+
+-   Model coefficients are on the log-odds scale
+-   Marginal effects translate results to **predicted probabilities**
+-   Results shown are **population-level averages**
+
+## Model Fitting
+
+### Model Interpretation
+
+#### Sex Pair
+
+::: {style="display:flex; gap:20px;"}
+<img src="me_plots/me_sex_separate.png" style="width:48%;"/> <img src="me_plots/me_sex_grouped.png" style="width:48%;"/>
+:::
+
+## Model Fitting
+
+### Model Interpretation
+
+#### Age Pair
+
+::: {style="display:flex; gap:20px;"}
+<img src="me_plots/me_age_separate.png" style="width:48%;"/> <img src="me_plots/me_age_grouped.png" style="width:48%;"/>
+:::
+
+## Model Fitting
+
+### Model Interpretation
+
+#### Tomb
+
+::: {style="display:flex; gap:20px;"}
+<img src="me_plots/me_tomb_separate.png" style="width:48%;"/> <img src="me_plots/me_tomb_grouped.png" style="width:48%;"/>
+:::
+
+
+## Model Fitting
+
+### Model Interpretation
+
+![](me_tables/me_allpair.png){fig-align="center" width="90%"}
