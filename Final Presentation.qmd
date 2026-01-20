@@ -157,7 +157,7 @@ source("Models/models_comparison.R")
 
 READv2 (Relationship Estimation from Ancient DNA)
 
-![](images/READv2 Process1-01.png){fig-align="center"}
+![](images/READv2%20Process1-01.png){fig-align="center"}
 
 ## Confirming Group Assignments
 
@@ -173,7 +173,7 @@ Faceted with free y-axes to visualise distribution despite sample imbalance
 
 ### False Positive Rates and Classification Power
 
-![](images/READv2 FPR and Power.png)
+![](images/READv2%20FPR%20and%20Power.png)
 
 ::: {style="font-size: 0.75em; line-height: 1.2;"}
 **Coverage**: How much of the genome we actually managed to recover from the ancient sample\
@@ -289,7 +289,7 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 
 #### 2. MNAR
 
-![](images/READv2 Process2.png){fig-align="center"}
+![](images/READv2%20Process2.png){fig-align="center"}
 
 ## Model Fitting
 
@@ -453,6 +453,57 @@ imp_binary_group_nobone
 
 1.  R-hat = 1.00: Excellent, all chains have converged to the same distribution.
 2.  Effective Sample Size: Pretty large number of independent samples.
+
+## Model Fitting
+
+### Marginal effect
+
+-   Model coefficients are on the log-odds scale
+-   Marginal effects translate results to **predicted probabilities**
+-   Results shown are **population-level averages**
+
+```{r, echo=FALSE}
+me_combined <- readRDS("unofficial work/me_tables/me_combined.rds")
+me_combined
+```
+
+## Model Fitting
+
+### Model Interpretation
+
+#### Sex Pair
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/me_sex_separate.png" style="width:48%;"/> <img src="plots/me_sex_grouped.png" style="width:48%;"/>
+:::
+
+## Model Fitting
+
+### Model Interpretation
+
+#### Age Pair
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/me_age_separate.png" style="width:48%;"/> <img src="plots/me_age_grouped.png" style="width:48%;"/>
+:::
+
+## Model Fitting
+
+### Model Interpretation
+
+#### Tomb
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/me_tomb_separate.png" style="width:48%;"/> <img src="plots/me_tomb_grouped.png" style="width:48%;"/>
+:::
+
+
+## Model Fitting
+
+### Model Interpretation
+
+![](images/me_allpair.png){fig-align="center" width="90%"}
+
 
 ## Discussion
 
