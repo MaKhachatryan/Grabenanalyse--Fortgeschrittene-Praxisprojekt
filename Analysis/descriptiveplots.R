@@ -135,6 +135,85 @@ p_absolute <- ggplot(tomb_pairwise, aes(x = Rel_group, y = num_pairs, fill = Rel
 p_relative
 p_absolute
 
+
+
+
+
+
+###########################################################
+### Plot Error vs. SNP Count
+### Plot CV vs SNP Count
+###########################################################
+
+# 1. Calculate the CV for each pair
+kinship_p0_cv <- og_kinship_result %>%
+  mutate(CV = nonnormalized_p0_serr / nonnormalized_p0)
+
+custom_breaks <- c(15000, 200000, 400000, 600000, 800000)
+
+# 2. Plot Error vs. SNP Count (The "Decay Curve")
+ggplot(pairs_ind_cv, aes(x = overlap_nsnps, y = nonnormalized_p0_serr)) +
+  geom_point(alpha = 0.4, color = "steelblue") +
+  geom_vline(xintercept = 15000, linetype = "dashed", color = "red") +
+  scale_x_continuous(
+    labels = label_comma(), 
+    breaks = custom_breaks
+  ) +
+  labs(title = "Standard Error Decay by Overlap SNP Count",
+       x = "Number of Overlapping SNPs",
+       y = "Standard Error (P0_serr)") +
+  theme_minimal()
+
+# 3. Plot CV vs SNP Count (Relative Noise)
+plot_p0_overlap <- ggplot(kinship_p0_cv, aes(x = overlap_nsnps, y = CV)) +
+  geom_point(alpha = 0.3, color = "darkgreen") +
+  # Adds a bold baseline at 0
+  geom_hline(yintercept = 0, color = "black", linewidth = 0.8) +
+  geom_vline(xintercept = 15000, linetype = "dashed", color = "red") +
+  # Log scale spreads out the critical 0-50k SNP range
+  scale_x_log10(labels = label_comma(), 
+                breaks = c(100, 1000, 15000, 100000, 800000)) +
+  ylim(0, 0.5) +
+  labs(x = "Number of Overlapping SNPs (Log Scale)",
+       y = "Coefficient of Variation (Relative Error of P0)") +
+  theme_minimal() 
+
+
+
+
+###########################################################
+### P0 vs degree bar plot
+###########################################################
+
+
+# 1. Filter data to include only the degrees of interest
+df_p0_plot <- og_kinship_result %>%
+  filter(!rel %in% c("IdenticalTwins/SameIndividual", 
+                     "Unrelated/Consistent with Third Degree"))
+
+# 2. Create a Binned Bar Plot
+# We divide p0_mean into 0.05 increments to show distribution clearly
+plot_p0_reldegree <- ggplot(df_p0_plot, aes(x = p0_mean, fill = rel)) +
+  geom_histogram(binwidth = 0.01, color = "white") +
+  # Separate plots for each degree to handle the scale difference
+  facet_wrap(~rel, scales = "free_y") + 
+  scale_x_continuous(limits = c(0, 1.05), breaks = seq(0, 1, by = 0.2)) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    # This makes the degree names bold and larger
+    strip.text = element_text(face = "bold", size = 12), 
+    axis.title = element_text(face = "bold")
+  ) + 
+  labs(
+    x = "p0 mean (Normalized Mismatch Rate)",
+    y = "Count of Individual Pairs"
+  )
+
+
+
+
+
 #######################
 # Save plots
 #######################
@@ -157,4 +236,12 @@ if (!file.exists("Plots/plot_pairs_rel.png")) {
 
 if (!file.exists("Plots/plot_pairs_abs.png")) {
   ggsave("Plots/plot_pairs_abs.png", plot = p_absolute, width = 8, height = 5, dpi = 300)
+}
+
+if (!file.exists("Plots/plot_p0_overlap.png")) {
+  ggsave("Plots/plot_p0_overlap.png", plot = plot_p0_overlap, width = 8, height = 5, dpi = 300)
+}
+
+if (!file.exists("Plots/plot_p0_reldegree.png")) {
+  ggsave("Plots/plot_p0_reldegree.png", plot = plot_p0_reldegree, width = 8, height = 5, dpi = 300)
 }
