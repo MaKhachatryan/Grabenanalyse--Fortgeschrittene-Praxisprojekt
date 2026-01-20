@@ -151,7 +151,7 @@ source("Models/models_comparison.R")
 
 ## Kinship Estimation Framework (DAG)
 
-![](images/DAG-01.png)
+![](images/DAG2version.png){fig-align="center"}
 
 ## The READv2 Classification Process
 
@@ -173,7 +173,7 @@ Faceted with free y-axes to visualise distribution despite sample imbalance
 
 ### False Positive Rates and Classification Power
 
-![](images/READv2%20FPR%20and%20Power.png)
+![](images/READv2%20FPR%20and%20Power.png){fig-align="center"}
 
 ::: {style="font-size: 0.75em; line-height: 1.2;"}
 **Coverage**: How much of the genome we actually managed to recover from the ancient sample\
@@ -405,7 +405,7 @@ Where:
 
 ## Model Fitting
 
-![](images/DAG-02.png)
+![](images/DAG2version-01.png){fig-align="center"}
 
 ## Model Fitting
 
@@ -497,13 +497,11 @@ me_combined
 <img src="plots/me_tomb_separate.png" style="width:48%;"/> <img src="plots/me_tomb_grouped.png" style="width:48%;"/>
 :::
 
-
 ## Model Fitting
 
 ### Model Interpretation
 
 ![](images/me_allpair.png){fig-align="center" width="90%"}
-
 
 ## Discussion
 
@@ -573,6 +571,46 @@ compare_model(robustcheck_models_separate, title = "Model Robust Check (Separate
 ```{r robust group}
 compare_model(robustcheck_models_group, title = "Model Robust Check (Grouped)")
 ```
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; flex-direction:column; gap:20px; align-items:center;"}
+<img src="plots/robust_intercept_sep.png" style="width:70%;"/> <img src="plots/robust_intercept_gr.png" style="width:70%;"/>
+:::
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/robust_age_sep.png" style="width:48%;"/> <img src="plots/robust_age_gr.png" style="width:48%;"/>
+:::
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/robust_tomb_sep.png" style="width:48%;"/> <img src="plots/robust_tomb_gr.png" style="width:48%;"/>
+:::
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; gap:20px;"}
+<img src="plots/robust_sex_sep.png" style="width:48%;"/> <img src="plots/robust_sex_gr.png" style="width:48%;"/>
+:::
+
+## Discussion
+
+### Model Robust Check
+
+::: {style="display:flex; flex-direction:column; gap:20px; align-items:center;"}
+<img src="plots/robust_random_sd_sep.png" style="width:60%;"/> <img src="plots/robust_random_sd_gr.png" style="width:60%;"/>
+:::
 
 ## Bibliography
 
