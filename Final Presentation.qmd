@@ -151,7 +151,7 @@ source("Models/models_comparison.R")
 
 ## Kinship Estimation Framework (DAG)
 
-![](images/DAG-01.png)
+![](images/DAG2version.png){fig-align="center"}
 
 ## The READv2 Classification Process
 
@@ -173,7 +173,7 @@ Faceted with free y-axes to visualise distribution despite sample imbalance
 
 ### False Positive Rates and Classification Power
 
-![](images/READv2%20FPR%20and%20Power.png)
+![](images/READv2%20FPR%20and%20Power.png){fig-align="center"}
 
 ::: {style="font-size: 0.75em; line-height: 1.2;"}
 **Coverage**: How much of the genome we actually managed to recover from the ancient sample\
@@ -405,7 +405,7 @@ Where:
 
 ## Model Fitting
 
-![](images/DAG-02.png)
+![](images/DAG2version-01.png){fig-align="center"}
 
 ## Model Fitting
 
@@ -497,13 +497,11 @@ me_combined
 <img src="plots/me_tomb_separate.png" style="width:48%;"/> <img src="plots/me_tomb_grouped.png" style="width:48%;"/>
 :::
 
-
 ## Model Fitting
 
 ### Model Interpretation
 
 ![](images/me_allpair.png){fig-align="center" width="90%"}
-
 
 ## Discussion
 
