@@ -49,7 +49,7 @@ source("Models/models_comparison.R")
 -   Limitation
 -   Model Definition
 -   Model Output & Interpretation
-- Model Robust Check
+-   Model Robust Check
 
 **5. Discussion**
 :::
@@ -274,7 +274,7 @@ $$CV_{\hat{P_0}} = \frac{\text{nonnormalised p0 serr}}{\text{nonnormalised p0}}$
 -   Limitation
 -   Model Definition
 -   Model Output & Interpretation
-- Model Robust Check
+-   Model Robust Check
 
 [**5. Discussion**]{style="color:lightgray;"}\
 
@@ -475,54 +475,59 @@ imp_binary_group_nobone
 ![](images/me_allpair01.png){fig-align="center" width="90%"}
 
 ## Model Fitting
+
 ### Model Robust Check
+
 #### Within-tomb pairs only
-- **Context:** *same_tomb* is a very dominant predictor
-- Robust check to see if the other variables are just artifacts of this
-- Fit model to only within-tomb pairs
+
+-   **Context:** *same_tomb* is a very dominant predictor
+-   Robust check to see if the other variables are just artifacts of this
+-   Fit model to only within-tomb pairs
 
 ## Model Fitting
+
 ### Model Robust Check
+
 #### Within-tomb pairs only
 
-
-::: {.columns}
-
+::::: columns
 ::: {.column width="60%"}
-![](Plots/robust_main_withintomb.png){width=100%}
+![](Plots/robust_main_withintomb.png){width="100%"}
 :::
 
 ::: {.column width="40%"}
-- All estimates shrink towards 0
-- Direction unchanged
-- Male×Male still dominant
+-   All estimates shrink towards 0
+-   Direction unchanged
+-   Male×Male still dominant
 :::
-
-:::
+:::::
 
 ## Model Fitting
+
 ### Model Robust Check
+
 #### 3rd degree as unrelated
-- Fit model with new definition of relatedness: 
-  - 1st/2nd degree: related
-  - 3rd degree: unrelated
-  
+
+-   Fit model with new definition of relatedness:
+    -   1st/2nd degree: related
+    -   3rd degree: unrelated
+
 ## Model Fitting
+
 ### Model Robust Check
+
 #### 3rd degree as unrelated
 
-::: {.columns}
-
+::::: columns
 ::: {.column width="60%"}
 ![](Plots/robust_main_unrel3rd.png)
 :::
 
 ::: {.column width="40%"}
-- *same_tomb* shows a substantially larger estimated effect.
-- Shared burial context is a strong predictor of immediate kinship.
+-   *same_tomb* shows a substantially larger estimated effect.
+-   Shared burial context is a strong predictor of immediate kinship.
 :::
-
-:::
+:::::
 
 ## Outline
 
@@ -596,26 +601,49 @@ plot_qq_both_effects(imp_binary_group_nobone, "Grouped tombs")
 :::::
 
 ## Discussion
+
 ### Possible Selection Bias
-- 15k threshold for all kinship degrees to treat MNAR
-- Only analyse high-quality data subset
+
+-   15k threshold for all kinship degrees to treat MNAR
+-   Only analyse high-quality data subset
 
 $\Rightarrow$ Possible selection bias
 
+## Bibliography
+
+-   [Alaçamlı, Erkin, Thijessen Naidoo, Merve N. Güler, Ekin Sağlıcan, Şevval Aktürk, Igor Mapelli, Kıvılcım Başak Vural, Mehmet Somel, Helena Malmström, and Torsten Günther.\
+    *READv2: advanced and user-friendly detection of biological relatedness in archaeogenomics.*\
+    Genome Biology 25, no. 1 (2024): 216]{style="font-size:0.80em;"}
+
+-   [Boyd, Michael J.\
+    *Becoming Mycenaean? The living, the dead, and the ancestors in the transformation of society in second millennium BC southern Greece.*\
+    Death rituals, social order and the archaeology of immortality in the ancient world (2016): 200–220]{style="font-size:0.80em;"}
+
+-   [Charles E. McCulloch & John M. Neuhaus.\
+    *Misspecifying the Shape of a Random Effects Distribution: Why Getting It Wrong May Not Matter.*\
+    Statistical Science 26, no. 3 (2011): 388–402]{style="font-size:0.80em;"}
+
+-   [Crema, Enrico R.\
+    *Statistical modelling in archaeology: some recent trends and future perspectives.*\
+    Journal of Archaeological Science 180 (2025): 106295]{style="font-size:0.80em;"}
 
 ## Bibliography
 
--   Charles E. McCulloch. John M. Neuhaus. "Misspecifying the Shape of a Random Effects Distribution: Why Getting It Wrong May Not Matter." Statist. Sci. 26 (3) 388 - 402, August 2011
--   Maas, C. J. M., & Hox, J. J. (2005). Sufficient Sample Sizes for Multilevel Modeling. Methodology: European Journal of Research Methods for the Behavioral and Social Sciences, 1(3), 86–92
--   Crema, Enrico R. "Statistical modelling in archaeology: some recent trends and future perspectives." Journal of Archaeological Science 180 (2025): 106295
--   Otárola-Castillo, Erik, and Melissa G. Torquato. "Bayesian statistics in archaeology." Annual Review of Anthropology 47, no. 1 (2018): 435-453
+-   [Maas, C. J. M., & Hox, J. J.\
+    *Sufficient Sample Sizes for Multilevel Modeling.*\
+    Methodology: European Journal of Research Methods for the Behavioral and Social Sciences 1, no. 3 (2005): 86–92]{style="font-size:0.80em;"}
 
-## Bibliography
+-   [Millard, A. R.\
+    *What can Bayesian statistics do for archaeological predictive modelling.*\
+    In *Predictive modeling for archaeological heritage management: a research agenda*, Nederlandse Archeologische Rapporten 29 (2005): 169–182]{style="font-size:0.80em;"}
 
--   Alaçamlı, Erkin, Thijessen Naidoo, Merve N. Güler, Ekin Sağlıcan, Şevval Aktürk, Igor Mapelli, Kıvılcım Başak Vural, Mehmet Somel, Helena Malmström, and Torsten Günther. "READv2: advanced and user-friendly detection of biological relatedness in archaeogenomics." Genome biology 25, no. 1 (2024): 216
--   Millard, A. R. "What can Bayesian statistics do for archaeological predictive modelling." PM Van Leusen, PM y H. Kamermans, H.(eds.), Predictive modeling for archaeological heritage management: a research agenda, Nederlandse Archeologische Rapporten 29 (2005): 169-182
--   Moutafi, Ioanna. "Towards a social bioarchaeology of the Mycenaean period: A multi-disciplinary analysis of funerary remains from the Late Helladic chamber tomb cemetery of Voudeni, Achaea, Greece." PhD diss., University of Sheffield, 2015
--   Boyd, Michael J. "Becoming Mycenaean? The living, the dead, and the ancestors in the transformation of society in second millennium BC southern Greece." Death rituals, social order and the archaeology of immortality in the ancient world (2016): 200-220
+-   [Moutafi, Ioanna.\
+    *Towards a social bioarchaeology of the Mycenaean period: A multi-disciplinary analysis of funerary remains from the Late Helladic chamber tomb cemetery of Voudeni, Achaea, Greece.*\
+    PhD diss., University of Sheffield, 2015]{style="font-size:0.80em;"}
+
+-   [Otárola-Castillo, Erik, & Melissa G. Torquato.\
+    *Bayesian statistics in archaeology.*\
+    Annual Review of Anthropology 47, no. 1 (2018): 435–453]{style="font-size:0.80em;"}
 
 # Appendix
 
@@ -623,9 +651,9 @@ $\Rightarrow$ Possible selection bias
 
 ![](Plots/plot_mni.png){fig-align="center" width="70%"}
 
-# [Research findings]{style="font-size:26px;"}
+## Research findings
 
-::: {style="font-size: 0.75em; line-height: 1.2;"}
+::: {style="font-size: 1.1em; line-height: 1.2;"}
 -   Our result of significant male-to-male biological relatedness are consistent with recent archaeogenetic evidence from the Bronze Age, which identifies a social structure characterized by strict patrilocality and a unique system of intense first-cousin endogamy designed to maintain the integrity of family estates.
 
 -   Studies explains that children and infants were part of the "household" unit. Finding them clustered together in the data is a sign that the tomb was capturing the nuclear and extended siblings of a single household, before those individuals grew up and potentially moved or changed status.
