@@ -12,54 +12,11 @@ editor: visual
 -   **Marginal predicted probabilities** convert model results into **probabilities** of the outcome (*being related*)
 -   *“The average probability that a pair is related is obtained by averaging population-level predictions across all observations, holding other variables at their observed values.”*
 
-## Model Fitting (do not put this)
-
-### Model Interpretation
-
-#### Sex Pair
-
-::: {style="display:flex; gap:20px;"}
-<img src="me_plots/me_sex_separate.png" style="width:48%;"/> <img src="me_plots/me_sex_grouped.png" style="width:48%;"/>
-:::
-
-## Model Fitting (do not put this)
-
-### Model Interpretation
-
-#### Age Pair
-
-::: {style="display:flex; gap:20px;"}
-<img src="me_plots/me_age_separate.png" style="width:48%;"/> <img src="me_plots/me_age_grouped.png" style="width:48%;"/>
-:::
-
-## Model Fitting (do not put this)
-
-### Model Interpretation
-
-#### Tomb
-
-::: {style="display:flex; gap:20px;"}
-<img src="me_plots/me_tomb_separate.png" style="width:48%;"/> <img src="me_plots/me_tomb_grouped.png" style="width:48%;"/>
-:::
-
 ## Model Fitting
 
 ### Model Interpretation
 
-![](me_tables/me_allpair.png){fig-align="center" width="90%"}
-
-## Discussion
-### Model Robust Check
-** 2 robust check tables
-
-## New batch
-
-## Discussion
-### Possible Selection Bias
-- 15k threshold for all kinship degrees to treat MNAR
-- Only analyse high-quality data subset
-
-$\Rightarrow$ Possible selection bias
+![](me_tables/me_allpair01.png){fig-align="center" width="90%"}
 
 ## Model Fitting
 ### Model Robust Check
@@ -68,11 +25,24 @@ $\Rightarrow$ Possible selection bias
 - Robust check to see if the other variables are just artifacts of this
 - Fit model to only within-tomb pairs
 
-%% Plot to compare age and sex between main model and within tomb model
+## Model Fitting
+### Model Robust Check
+#### Within-tomb pairs only
 
+
+::: {.columns}
+
+::: {.column width="60%"}
+![](robust_plots/robust_main_withintomb.png){width=100%}
+:::
+
+::: {.column width="40%"}
 - All estimates shrink towards 0
 - Direction unchanged
-- MalexMale still dominant
+- Male×Male still dominant
+:::
+
+:::
 
 
 ## Model Fitting
@@ -81,8 +51,43 @@ $\Rightarrow$ Possible selection bias
 - Fit model with new definition of relatedness: 
   - 1st/2nd degree: related
   - 3rd degree: unrelated
+  
+## Model Fitting
+### Model Robust Check
+#### 3rd degree as unrelated
 
-%% Plot to compare age + sex + sametomb between main model and unrel3rd degree model
+::: {.columns}
 
-- *same_tomb* gets much higher
-- Share burial is a strong predictor for immediate kinship
+::: {.column width="60%"}
+![](robust_plots/robust_main_unrel3rd.png)
+:::
+
+::: {.column width="40%"}
+- *same_tomb* shows a substantially larger estimated effect.
+- Shared burial context is a strong predictor of immediate kinship.
+:::
+
+:::
+
+## Discussion
+
+### Model Assumption
+
+1.  Equal RE weight assumption ($w = 0.5$)
+
+$$
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
+    + \underbrace{(w_i u_i + w_j u_j)}_{\text{Individual RE}} 
+    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb RE}}
+$$
+
+-   Theoretically plausible (individual level)
+-   MM models robust to weight misspecification (Wolff Smith & Beretvas (2014))
+
+
+## Discussion
+### Possible Selection Bias
+- 15k threshold for all kinship degrees to treat MNAR
+- Only analyse high-quality data subset
+
+$\Rightarrow$ Possible selection bias

@@ -302,7 +302,7 @@ p_sep_main_vs_withintomb <- ggplot(robust_sep_main_vs_withintomb, aes(x = estima
 
 p_sep_main_vs_withintomb
 
-ggsave("Plots/robust_main_withintomb.png",   p_sep_main_vs_withintomb,  width = 6, height = 6, dpi = 400)
+ggsave("Plots/robust_main_withintomb.png",   p_sep_main_vs_withintomb,  width = 6, height = 5, dpi = 400)
 
 ## --- compare the main model with the 3 as unrelated ---
 
@@ -363,7 +363,7 @@ p_sep_main_vs_unrel3rd <- ggplot(
 
 p_sep_main_vs_unrel3rd
 
-ggsave("Plots/robust_main_unrel3rd.png",   p_sep_main_vs_unrel3rd,  width = 6, height = 6, dpi = 400)
+ggsave("Plots/robust_main_unrel3rd.png",   p_sep_main_vs_unrel3rd,  width = 6, height = 5, dpi = 400)
 
 
 
