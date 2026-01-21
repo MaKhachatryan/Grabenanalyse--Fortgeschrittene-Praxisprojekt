@@ -543,9 +543,30 @@ imp_binary_group_withintomb_unrel3rd <- update(imp_binary_group_withintomb,
                                                   newdata = pairs_group_withintomb_unrel3rd)
 saveRDS(imp_binary_group_withintomb_unrel3rd, "unofficial work/models save/imp_binary_group_withintomb_unrel3rd.rds")
 
+### New batch 21.1.2026
+source("environmentSetUp.R")
+source("Analysis/pairsdata.R")
+
+### Fit with original threshold again without the bone
+all_binary_separate_nobone <- update(imp_binary_separate_nobone,
+                                     newdata = pairs_ind_all)
+saveRDS(all_binary_separate_nobone, "unofficial work/models save/all_binary_separate_nobone.rds")
+
+all_binary_group_nobone <- update(imp_binary_group_nobone,
+                                     newdata = pairs_group_all)
+saveRDS(all_binary_group_nobone, "unofficial work/models save/all_binary_group_nobone.rds")
 
 
 
 
 
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
