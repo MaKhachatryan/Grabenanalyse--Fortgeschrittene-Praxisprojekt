@@ -61,4 +61,9 @@ html .reveal .slide-logo{
   z-index: 2 !important;
 }
 
+.reveal section:not(.title-slide) h4 {
+  font-size: 0.75em !important;
+  margin-top: 0.4em;
+  margin-bottom: 0.2em;
+}
 
