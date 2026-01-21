@@ -176,6 +176,44 @@ plot_qq_both_effects(imp_binary_separate_nobone)
 ### Model Robust Check
 ** 2 robust check tables
 
+## New batch
+
+## Discussion
+### Possible Selection Bias
+- 15k threshold for all kinship degrees to treat MNAR
+- Only analyse high-quality data subset
+
+$\Rightarrow$ Possible selection bias
+
+## Model Fitting
+### Model Robust Check
+#### Within-tomb pairs only
+- **Context:** *same_tomb* is a very dominant predictor
+- Robust check to see if the other variables are just artifacts of this
+- Fit model to only within-tomb pairs
+
+%% Plot to compare age and sex between main model and within tomb model
+
+- All estimates shrink towards 0
+- Direction unchanged
+- MalexMale still dominant
+
+
+## Model Fitting
+### Model Robust Check
+#### 3rd degree as unrelated
+- Fit model with new definition of relatedness: 
+  - 1st/2nd degree: related
+  - 3rd degree: unrelated
+
+%% Plot to compare age + sex + sametomb between main model and unrel3rd degree model
+
+- *same_tomb* gets much higher
+- Share burial is a strong predictor for immediate kinship
+
+
+
+
 
 
 
