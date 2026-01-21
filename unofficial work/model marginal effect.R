@@ -115,29 +115,6 @@ p_tomb_sep <- ggplot(me_tomb_sep, aes(x = estimate, y = term)) +
 
 
 ##save the plots 
-ggsave(
-  filename = "unofficial work/me_plots/me_sex_separate.png",
-  plot = p_sex_sep,
-  width = 6,
-  height = 4,
-  dpi = 300
-)
-
-ggsave(
-  filename = "unofficial work/me_plots/me_age_separate.png",
-  plot = p_age_sep,
-  width = 7,
-  height = 4,
-  dpi = 300
-)
-
-ggsave(
-  filename = "unofficial work/me_plots/me_tomb_separate.png",
-  plot = p_tomb_sep,
-  width = 7,
-  height = 4,
-  dpi = 300
-)
 
 
 ##marginal effects for grouped tombs (Elateia T46, 56, 62)
@@ -249,29 +226,7 @@ p_tomb_gr <- ggplot(me_tomb_gr, aes(x = estimate, y = term)) +
 
 
 ##save the plots 
-ggsave(
-  filename = "unofficial work/me_plots/me_sex_grouped.png",
-  plot = p_sex_gr,
-  width = 6,
-  height = 4,
-  dpi = 300
-)
 
-ggsave(
-  filename = "unofficial work/me_plots/me_age_grouped.png",
-  plot = p_age_gr,
-  width = 7,
-  height = 4,
-  dpi = 300
-)
-
-ggsave(
-  filename = "unofficial work/me_plots/me_tomb_grouped.png",
-  plot = p_tomb_gr,
-  width = 7,
-  height = 4,
-  dpi = 300
-)
 
 ##Making a combined table for visual
 me_all_sep_df <- me_all_sep |> 
@@ -318,4 +273,5 @@ me_combined
 
 #save the table 
 saveRDS(me_combined, "unofficial work/me_tables/me_combined.rds")
+
 

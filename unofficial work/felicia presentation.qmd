@@ -6,13 +6,13 @@ editor: visual
 
 ## Model Fitting
 
-### Marginal effect
+### Marginal Effect (Predicted Probabilities)
 
--   Model coefficients are on the log-odds scale
--   Marginal effects translate results to **predicted probabilities**
--   Results shown are **population-level averages**
+-   Logistic regression coefficients are on the **log-odds** scale (hard to interpret)
+-   **Marginal predicted probabilities** convert model results into **probabilities** of the outcome (*being related*)
+-   *“The average probability that a pair is related is obtained by averaging population-level predictions across all observations, holding other variables at their observed values.”*
 
-## Model Fitting
+## Model Fitting (do not put this)
 
 ### Model Interpretation
 
@@ -22,7 +22,7 @@ editor: visual
 <img src="me_plots/me_sex_separate.png" style="width:48%;"/> <img src="me_plots/me_sex_grouped.png" style="width:48%;"/>
 :::
 
-## Model Fitting
+## Model Fitting (do not put this)
 
 ### Model Interpretation
 
@@ -32,7 +32,7 @@ editor: visual
 <img src="me_plots/me_age_separate.png" style="width:48%;"/> <img src="me_plots/me_age_grouped.png" style="width:48%;"/>
 :::
 
-## Model Fitting
+## Model Fitting (do not put this)
 
 ### Model Interpretation
 
@@ -41,7 +41,6 @@ editor: visual
 ::: {style="display:flex; gap:20px;"}
 <img src="me_plots/me_tomb_separate.png" style="width:48%;"/> <img src="me_plots/me_tomb_grouped.png" style="width:48%;"/>
 :::
-
 
 ## Model Fitting
 
