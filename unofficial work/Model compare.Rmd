@@ -14,6 +14,8 @@ imp_binary_separate_newtombvar <- readRDS(here::here("unofficial work/models sav
 imp_binary_separate_withintomb <- readRDS(here("unofficial work/models save/imp_binary_separate_withintomb.rds"))
 imp_binary_separate_unrel3rd <- readRDS(here("unofficial work/models save/imp_binary_separate_unrel3rd.rds"))
 imp_binary_separate_sametomb <- readRDS(here("unofficial work/models save/imp_binary_separate_sametomb.rds"))
+imp_binary_separate_nobone_prior <- readRDS(here("unofficial work/models save/imp_binary_separate_nobone_prior.rds"))
+imp_binary_separate_withintomb_unrel3rd <- readRDS(here("unofficial work/models save/imp_binary_separate_withintomb_unrel3rd.rds"))
 
 imp_binary_group_cat <- readRDS(here::here("unofficial work/models save/imp_binary_group_cat.rds"))
 all_binary_group_cat <- readRDS(here::here("unofficial work/models save/all_binary_group_cat.rds"))
@@ -23,6 +25,8 @@ imp_binary_group_newtombvar <- readRDS(here::here("unofficial work/models save/i
 imp_binary_group_withintomb <- readRDS(here("unofficial work/models save/imp_binary_group_withintomb.rds"))
 imp_binary_group_unrel3rd <- readRDS(here("unofficial work/models save/imp_binary_group_unrel3rd.rds"))
 imp_binary_group_sametomb <- readRDS(here("unofficial work/models save/imp_binary_group_sametomb.rds"))
+imp_binary_group_nobone_prior <- readRDS(here("unofficial work/models save/imp_binary_group_nobone_prior.rds"))
+imp_binary_group_withintomb_unrel3rd <- readRDS(here("unofficial work/models save/imp_binary_group_withintomb_unrel3rd.rds"))
 
 ## Define compare function
 compare_model <- function(
@@ -260,3 +264,60 @@ imp_binary_group_sametomb
 imp_binary_group_withintomb
 imp_binary_group_unrel3rd
 ```
+
+
+### Compare between flat prior and weak informative prior
+- Sensitivity analysis to see if flat prior is justified. Or if our previous model was just "noise chasing". 
+- Now we use Weakly Informative Prior (Normal(0, 1)) to pulls estimate toward zero unless the data strongly disagrees.
+- If the flat prior was wrong: The coefficients in the Normal(0,1) model would have collapsed to zero or changed direction, proving the original results were just noise.
+
+``` {r prior}
+imp_binary_separate_nobone_prior
+compare_model(list("Main model with flat prior" = imp_binary_separate_nobone,
+                   "Main model with N(0,1) prior" = imp_binary_separate_nobone_prior))
+
+```
+
+**Comments:**
+
+- The coefficients shrank toward 0 (as expected because of N(0,1) regularization)
+- However they didn't change the direction
+- same_tomb remains the dominant predictor and barely affected by the prior
+
+### Try out the "strict family in internal structure" model
+- This model is fitted with the pairs in the same tomb only (within tomb relationship), and with the stricter definition of relatedness (1st/2nd as related, 3rd as unrelated)
+- Equivalent to a pure test for biological predictors like sex and age
+
+``` {r strict}
+imp_binary_separate_withintomb_unrel3rd
+
+compare_model(list(
+  "Within tomb" = imp_binary_separate_withintomb,
+  "3rd as unrelated" = imp_binary_separate_unrel3rd,
+  "Within tomb and 3rd as unrelated" = imp_binary_separate_withintomb_unrel3rd
+))
+
+```
+
+**Comments:**
+
+- All the coefficients shrunk strongly towards 0
+- Most of the CIs cross 0 now, maybe there is no biological structure in this setting??
+- Possible additional reason: power issue (only 2990 pairs), "rare event" (too few related pairs within one tomb, and now we even reduce the related pairs by couting 3rd degree as unrelated)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
