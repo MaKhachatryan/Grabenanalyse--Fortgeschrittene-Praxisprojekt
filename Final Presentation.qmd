@@ -441,7 +441,7 @@ pairs_ind_show |>
 
 ```{r mod sep, echo=FALSE, out.height="500px"}
 imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
-imp_binary_separate_cat
+imp_binary_separate_nobone
 ```
 
 ## Model Fitting
