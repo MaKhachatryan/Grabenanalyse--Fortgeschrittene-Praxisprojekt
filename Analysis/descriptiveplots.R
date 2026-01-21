@@ -110,21 +110,36 @@ tomb_pairwise <- kinship_result %>%
   mutate(prop = num_pairs / sum(num_pairs)) %>%
   ungroup()
 
-# Step 2: Relative proportions plot
-p_relative <- ggplot(tomb_pairwise, aes(x = Rel_group, y = prop, fill = Rel_group)) +
+
+# Step 2: Relative proportions plot (Modified)
+p_relative_rel <- ggplot(tomb_pairwise, aes(x = Rel_group, y = prop, fill = Rel_group)) +
   geom_bar(stat = "identity") +
+  # Add percentage labels
+  geom_text(aes(label = scales::percent(prop, accuracy = 0.1)), 
+            vjust = -0.5,     # Moves text slightly above the bar
+            color = "black",  # Basic black writing
+            size = 3) +       # Adjust text size if needed
   facet_wrap(~ tomb) +
-  scale_y_continuous(labels = percent_format()) +
+  # 'expand' adds 15% padding at the top so labels aren't cut off
+  scale_y_continuous(labels = percent_format(), expand = expansion(mult = c(0, 0.15))) +
   theme_minimal() +
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 45, hjust = 1)) +
   ylab("Proportion of analysed pairs") +
   xlab("Relationship")
 
-# Step 3: Absolute counts plot
-p_absolute <- ggplot(tomb_pairwise, aes(x = Rel_group, y = num_pairs, fill = Rel_group)) +
+
+# Step 3: Absolute counts plot (Modified)
+p_absolute_rel <- ggplot(tomb_pairwise, aes(x = Rel_group, y = num_pairs, fill = Rel_group)) +
   geom_bar(stat = "identity") +
+  # Add count labels
+  geom_text(aes(label = num_pairs), 
+            vjust = -0.5,     # Moves text slightly above the bar
+            color = "black", 
+            size = 3) +
   facet_wrap(~ tomb) +
+  # 'expand' adds 15% padding at the top
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
   theme_minimal() +
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -213,7 +228,6 @@ plot_p0_reldegree <- ggplot(df_p0_plot, aes(x = p0_mean, fill = rel)) +
 
 
 
-
 #######################
 # Save plots
 #######################
@@ -231,11 +245,11 @@ if (!file.exists("Plots/heatmap_age.png")) {
 }
 
 if (!file.exists("Plots/plot_pairs_rel.png")) {
-  ggsave("Plots/plot_pairs_rel.png", plot = p_relative, width = 8, height = 5, dpi = 300)
+  ggsave("Plots/plot_pairs_rel.png", plot = p_relative_rel, width = 8, height = 5, dpi = 300)
 }
 
 if (!file.exists("Plots/plot_pairs_abs.png")) {
-  ggsave("Plots/plot_pairs_abs.png", plot = p_absolute, width = 8, height = 5, dpi = 300)
+  ggsave("Plots/plot_pairs_abs.png", plot = p_absolute_rel, width = 8, height = 5, dpi = 300)
 }
 
 if (!file.exists("Plots/plot_p0_overlap.png")) {
