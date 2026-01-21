@@ -47,8 +47,9 @@ source("Models/models_comparison.R")
 **4. Model Fitting**
 
 -   Limitation
--   Model Definition & Assumption
+-   Model Definition
 -   Model Output & Interpretation
+- Model Robust Check
 
 **5. Discussion**
 :::
@@ -271,8 +272,9 @@ $$CV_{\hat{P_0}} = \frac{\text{nonnormalised p0 serr}}{\text{nonnormalised p0}}$
 **4. Model Fitting**
 
 -   Limitation
--   Model Definition & Assumption
+-   Model Definition
 -   Model Output & Interpretation
+- Model Robust Check
 
 [**5. Discussion**]{style="color:lightgray;"}\
 
@@ -460,52 +462,67 @@ imp_binary_group_nobone
 
 ## Model Fitting
 
-### Marginal effect
+### Marginal Effect (Predicted Probabilities)
 
--   Model coefficients are on the log-odds scale
--   Marginal effects translate results to **predicted probabilities**
--   Results shown are **population-level averages**
-
-```{r, echo=FALSE}
-me_combined <- readRDS("unofficial work/me_tables/me_combined.rds")
-me_combined
-```
+-   Logistic regression coefficients are on the **log-odds** scale (hard to interpret)
+-   **Marginal predicted probabilities** convert model results into **probabilities** of the outcome (*being related*)
+-   *“The average probability that a pair is related is obtained by averaging population-level predictions across all observations, holding other variables at their observed values.”*
 
 ## Model Fitting
 
 ### Model Interpretation
 
-#### Sex Pair
+![](images/me_allpair01.png){fig-align="center" width="90%"}
 
-::: {style="display:flex; gap:20px;"}
-<img src="plots/me_sex_separate.png" style="width:48%;"/> <img src="plots/me_sex_grouped.png" style="width:48%;"/>
+## Model Fitting
+### Model Robust Check
+#### Within-tomb pairs only
+- **Context:** *same_tomb* is a very dominant predictor
+- Robust check to see if the other variables are just artifacts of this
+- Fit model to only within-tomb pairs
+
+## Model Fitting
+### Model Robust Check
+#### Within-tomb pairs only
+
+
+::: {.columns}
+
+::: {.column width="60%"}
+![](Plots/robust_main_withintomb.png){width=100%}
+:::
+
+::: {.column width="40%"}
+- All estimates shrink towards 0
+- Direction unchanged
+- Male×Male still dominant
+:::
+
 :::
 
 ## Model Fitting
+### Model Robust Check
+#### 3rd degree as unrelated
+- Fit model with new definition of relatedness: 
+  - 1st/2nd degree: related
+  - 3rd degree: unrelated
+  
+## Model Fitting
+### Model Robust Check
+#### 3rd degree as unrelated
 
-### Model Interpretation
+::: {.columns}
 
-#### Age Pair
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/me_age_separate.png" style="width:48%;"/> <img src="plots/me_age_grouped.png" style="width:48%;"/>
+::: {.column width="60%"}
+![](Plots/robust_main_unrel3rd.png)
 :::
 
-## Model Fitting
-
-### Model Interpretation
-
-#### Tomb
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/me_tomb_separate.png" style="width:48%;"/> <img src="plots/me_tomb_grouped.png" style="width:48%;"/>
+::: {.column width="40%"}
+- *same_tomb* shows a substantially larger estimated effect.
+- Shared burial context is a strong predictor of immediate kinship.
 :::
 
-## Model Fitting
-
-### Model Interpretation
-
-![](images/me_allpair.png){fig-align="center" width="90%"}
+:::
 
 ## Outline
 
@@ -524,6 +541,12 @@ me_combined
 ### Model Assumption
 
 1.  Equal RE weight assumption ($w = 0.5$)
+
+$$
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
+    + \underbrace{(w_i u_i + w_j u_j)}_{\text{Individual RE}} 
+    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb RE}}
+$$
 
 -   Theoretically plausible (individual level)
 -   MM models robust to weight misspecification (Wolff Smith & Beretvas (2014))
@@ -573,60 +596,12 @@ plot_qq_both_effects(imp_binary_group_nobone, "Grouped tombs")
 :::::
 
 ## Discussion
+### Possible Selection Bias
+- 15k threshold for all kinship degrees to treat MNAR
+- Only analyse high-quality data subset
 
-### Model Robust Check
+$\Rightarrow$ Possible selection bias
 
-```{r robust sep}
-compare_model(robustcheck_models_separate, title = "Model Robust Check (Separated)")
-```
-
-## Discussion
-
-### Model Robust Check
-
-```{r robust group}
-compare_model(robustcheck_models_group, title = "Model Robust Check (Grouped)")
-```
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; flex-direction:column; gap:20px; align-items:center;"}
-<img src="plots/robust_intercept_sep.png" style="width:70%;"/> <img src="plots/robust_intercept_gr.png" style="width:70%;"/>
-:::
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/robust_age_sep.png" style="width:48%;"/> <img src="plots/robust_age_gr.png" style="width:48%;"/>
-:::
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/robust_tomb_sep.png" style="width:48%;"/> <img src="plots/robust_tomb_gr.png" style="width:48%;"/>
-:::
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/robust_sex_sep.png" style="width:48%;"/> <img src="plots/robust_sex_gr.png" style="width:48%;"/>
-:::
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; flex-direction:column; gap:20px; align-items:center;"}
-<img src="plots/robust_random_sd_sep.png" style="width:60%;"/> <img src="plots/robust_random_sd_gr.png" style="width:60%;"/>
-:::
 
 ## Bibliography
 
