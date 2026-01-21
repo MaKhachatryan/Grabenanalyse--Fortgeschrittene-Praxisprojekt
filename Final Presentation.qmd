@@ -1,6 +1,6 @@
 ---
 title: "Grave Analysis"
-subtitle: "Advanced practical project - WS 25/26 LMU Munich"
+subtitle: "Advanced Practical Project - WS 25/26 LMU Munich"
 author:
   - name: "Arsine Chinaryan, Anh Hoang Minh Dang, Felicia Francis Immanuel, Margarita Khachatryan"
     affiliation: "Supervisor: Yichen Han"
@@ -52,6 +52,9 @@ source("Models/models_comparison.R")
 -   Model Robust Check
 
 **5. Discussion**
+
+-   Model Assumption
+-   Selection Bias
 :::
 :::::
 
@@ -130,7 +133,7 @@ source("Models/models_comparison.R")
 
 -   **Age estimation**
 
--   **Skeletal element sampled**
+-   **Skeletal element**
 
 -   **Tomb and site**
 
@@ -185,7 +188,7 @@ Faceted with free y-axes to visualise distribution despite sample imbalance
 -   **Green**: 15K threshold
 :::
 
-## Empirical Precision of P0 vs. SNP Overlap
+## Empirical Precision of P0 vs. Overlapping SNP
 
 ![](Plots/plot_p0_overlap.png){fig-align="center"}
 
@@ -439,6 +442,8 @@ pairs_ind_show |>
 
 ### Model Output
 
+#### Separated Version
+
 ```{r mod sep, echo=FALSE, out.height="500px"}
 imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
 imp_binary_separate_nobone
@@ -447,6 +452,8 @@ imp_binary_separate_nobone
 ## Model Fitting
 
 ### Model Output
+
+#### Grouped Version
 
 ```{r mod group, echo=FALSE, out.height="500px"}
 imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
@@ -459,6 +466,12 @@ imp_binary_group_nobone
 
 1.  R-hat = 1.00: Excellent, all chains have converged to the same distribution.
 2.  Effective Sample Size: Pretty large number of independent samples.
+
+## Model Fitting
+
+### Model Estimates
+
+![](images/model_coefficients.png){fig-align="center" width="75%"}
 
 ## Model Fitting
 
@@ -496,7 +509,7 @@ imp_binary_group_nobone
 :::
 
 ::: {.column width="40%"}
--   All estimates shrink towards 0
+-   Estimates shrink towards 0
 -   Direction unchanged
 -   Male×Male still dominant
 :::
@@ -540,6 +553,9 @@ imp_binary_group_nobone
 [**4. Model Fitting**]{style="color:lightgray;"}
 
 **5. Discussion**
+
+-   Model Assumption
+-   Selection Bias
 
 ## Discussion
 
