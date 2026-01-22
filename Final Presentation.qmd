@@ -163,16 +163,6 @@ READv2 (Relationship Estimation from Ancient DNA)
 
 ![](images/READv2%20Process1-01.png){fig-align="center"}
 
-## Confirming Group Assignments
-
-#### P0 Distribution by Relationship Degree
-
-![](Plots/plot_p0_reldegree.png){fig-align="center"}
-
-::: {style="font-size: 0.75em; line-height: 1.2;"}
-Faceted with free y-axes to visualise distribution despite sample imbalance
-:::
-
 ## READv2 Performance & Statistical Validation
 
 #### False Positive Rates and Classification Power
@@ -391,7 +381,7 @@ where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
 $$
 \text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
     + \underbrace{(w_i u_i + w_j u_j)}_{\text{Individual RE}} 
-    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb MM}}
+    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb RE}}
 $$
 
 ## Model Fitting
@@ -465,7 +455,7 @@ imp_binary_group_nobone
 ### Sampling health (Diagnostic)
 
 1.  R-hat = 1.00: Excellent, all chains have converged to the same distribution.
-2.  Effective Sample Size: Pretty large number of independent samples.
+2.  Effective Sample Size: Pretty large number of independent samples (\>3000).
 
 ## Model Fitting
 
@@ -479,7 +469,7 @@ imp_binary_group_nobone
 
 -   Logistic regression coefficients are on the **log-odds** scale (hard to interpret)
 -   **Marginal predicted probabilities** convert model results into **probabilities** of the outcome (*being related*)
--   *“The average probability that a pair is related is obtained by averaging population-level predictions across all observations, holding other variables at their observed values.”*
+-   *“The marginal predicted probabilities tells us how the variable effects the average probability that a pair is related, holding other variables constant.”*
 
 ## Model Fitting
 
@@ -676,3 +666,50 @@ $\Rightarrow$ Possible selection bias
 
 -   Studies highlights that "sample success" in Mycenaean tombs is heavily affected by secondary burial practices, which were the norm rather than the exception. In mixed contexts, certain skeletal elements are much more likely to be recovered than others. Skulls and long bones were often prioritized and kept, while smaller bones (hand/foot bones, vertebrae) were frequently lost or discarded during the cleaning and moving of earlier burials.
 :::
+
+## Model Comparison
+
+### Standard threshold vs 15k threshold
+
+```{r compare threshold}
+compare_model(list(
+  "15k threshold" = imp_binary_separate_nobone,
+  "Standard threshold" = all_binary_separate_nobone
+))
+
+
+```
+
+## Model Comparison
+
+### Main model vs only same_tomb
+
+```{r compare sametomb}
+compare_model(list(
+  "Main model" = imp_binary_separate_nobone,
+  "Only same_tomb" = imp_binary_separate_sametomb
+))
+```
+
+## Model Comparison
+
+### Main model (flat prior) vs waek informative prior
+
+```{r compare prior}
+compare_model(list(
+  "Flat prior" = imp_binary_separate_nobone,
+  "Only same_tomb" = imp_binary_separate_nobone_prior
+))
+```
+
+## Model Comparison
+
+### Try out the “strict family in internal structure” model
+
+```{r strict}
+compare_model(list(
+  "Within tomb" = imp_binary_separate_withintomb,
+  "3rd as unrelated" = imp_binary_separate_unrel3rd,
+  "Within tomb and 3rd as unrelated" = imp_binary_separate_withintomb_unrel3rd
+))
+```
