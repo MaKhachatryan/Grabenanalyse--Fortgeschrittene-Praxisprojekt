@@ -134,43 +134,95 @@
 </section>
 <section id="model-fitting" class="slide level2">
 <h2>Model Fitting</h2>
-<h3 id="marginal-effect">Marginal effect</h3>
+<h3 id="marginal-effect-predicted-probabilities">Marginal Effect (Predicted Probabilities)</h3>
 <ul>
-<li>Model coefficients are on the log-odds scale</li>
-<li>Marginal effects translate results to <strong>predicted probabilities</strong></li>
-<li>Results shown are <strong>population-level averages</strong></li>
+<li>Logistic regression coefficients are on the <strong>log-odds</strong> scale (hard to interpret)</li>
+<li><strong>Marginal predicted probabilities</strong> convert model results into <strong>probabilities</strong> of the outcome (<em>being related</em>)</li>
+<li><em>“The average probability that a pair is related is obtained by averaging population-level predictions across all observations, holding other variables at their observed values.”</em></li>
 </ul>
 </section>
 <section id="model-fitting-1" class="slide level2">
 <h2>Model Fitting</h2>
 <h3 id="model-interpretation">Model Interpretation</h3>
-<h4 id="sex-pair">Sex Pair</h4>
-<div style="display:flex; gap:20px;">
-<p><img src="me_plots/me_sex_separate.png" style="width:48%;"> <img src="me_plots/me_sex_grouped.png" style="width:48%;"></p>
-</div>
-</section>
+
+<img data-src="me_tables/me_allpair01.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"></section>
 <section id="model-fitting-2" class="slide level2">
 <h2>Model Fitting</h2>
-<h3 id="model-interpretation-1">Model Interpretation</h3>
-<h4 id="age-pair">Age Pair</h4>
-<div style="display:flex; gap:20px;">
-<p><img src="me_plots/me_age_separate.png" style="width:48%;"> <img src="me_plots/me_age_grouped.png" style="width:48%;"></p>
-</div>
+<h3 id="model-robust-check">Model Robust Check</h3>
+<h4 id="within-tomb-pairs-only">Within-tomb pairs only</h4>
+<ul>
+<li><strong>Context:</strong> <em>same_tomb</em> is a very dominant predictor</li>
+<li>Robust check to see if the other variables are just artifacts of this</li>
+<li>Fit model to only within-tomb pairs</li>
+</ul>
 </section>
 <section id="model-fitting-3" class="slide level2">
 <h2>Model Fitting</h2>
-<h3 id="model-interpretation-2">Model Interpretation</h3>
-<h4 id="tomb">Tomb</h4>
-<div style="display:flex; gap:20px;">
-<p><img src="me_plots/me_tomb_separate.png" style="width:48%;"> <img src="me_plots/me_tomb_grouped.png" style="width:48%;"></p>
-</div>
+<h3 id="model-robust-check-1">Model Robust Check</h3>
+<h4 id="within-tomb-pairs-only-1">Within-tomb pairs only</h4>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p><img data-src="robust_plots/robust_main_withintomb.png" style="width:100.0%"></p>
+</div><div class="column" style="width:40%;">
+<ul>
+<li>All estimates shrink towards 0</li>
+<li>Direction unchanged</li>
+<li>Male×Male still dominant</li>
+</ul>
+</div></div>
 </section>
 <section id="model-fitting-4" class="slide level2">
 <h2>Model Fitting</h2>
-<h3 id="model-interpretation-3">Model Interpretation</h3>
+<h3 id="model-robust-check-2">Model Robust Check</h3>
+<h4 id="rd-degree-as-unrelated">3rd degree as unrelated</h4>
+<ul>
+<li>Fit model with new definition of relatedness:
+<ul>
+<li>1st/2nd degree: related</li>
+<li>3rd degree: unrelated</li>
+</ul></li>
+</ul>
+</section>
+<section id="model-fitting-5" class="slide level2">
+<h2>Model Fitting</h2>
+<h3 id="model-robust-check-3">Model Robust Check</h3>
+<h4 id="rd-degree-as-unrelated-1">3rd degree as unrelated</h4>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p><img data-src="robust_plots/robust_main_unrel3rd.png"></p>
+</div><div class="column" style="width:40%;">
+<ul>
+<li><em>same_tomb</em> shows a substantially larger estimated effect.</li>
+<li>Shared burial context is a strong predictor of immediate kinship.</li>
+</ul>
+</div></div>
+</section>
+<section id="discussion" class="slide level2">
+<h2>Discussion</h2>
+<h3 id="model-assumption">Model Assumption</h3>
+<ol type="1">
+<li>Equal RE weight assumption (<span class="math inline">\(w = 0.5\)</span>)</li>
+</ol>
+<p><span class="math display">\[
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta}
+    + \underbrace{(w_i u_i + w_j u_j)}_{\text{Individual RE}}
+    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb RE}}
+\]</span></p>
+<ul>
+<li>Theoretically plausible (individual level)</li>
+<li>MM models robust to weight misspecification (Wolff Smith &amp; Beretvas (2014))</li>
+</ul>
+</section>
+<section id="discussion-1" class="slide level2">
+<h2>Discussion</h2>
+<h3 id="possible-selection-bias">Possible Selection Bias</h3>
+<ul>
+<li>15k threshold for all kinship degrees to treat MNAR</li>
+<li>Only analyse high-quality data subset</li>
+</ul>
+<p><span class="math inline">\(\Rightarrow\)</span> Possible selection bias</p>
 
-
-<img data-src="me_tables/me_allpair.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"></section>
+</section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

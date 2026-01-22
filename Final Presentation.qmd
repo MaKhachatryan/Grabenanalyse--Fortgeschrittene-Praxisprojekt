@@ -1,6 +1,6 @@
 ---
 title: "Grave Analysis"
-subtitle: "Advanced practical project - WS 25/26 LMU Munich"
+subtitle: "Advanced Practical Project - WS 25/26 LMU Munich"
 author:
   - name: "Arsine Chinaryan, Anh Hoang Minh Dang, Felicia Francis Immanuel, Margarita Khachatryan"
     affiliation: "Supervisor: Yichen Han"
@@ -47,10 +47,14 @@ source("Models/models_comparison.R")
 **4. Model Fitting**
 
 -   Limitation
--   Model Definition & Assumption
+-   Model Definition
 -   Model Output & Interpretation
+-   Model Robust Check
 
 **5. Discussion**
+
+-   Model Assumption
+-   Selection Bias
 :::
 :::::
 
@@ -129,7 +133,7 @@ source("Models/models_comparison.R")
 
 -   **Age estimation**
 
--   **Skeletal element sampled**
+-   **Skeletal element**
 
 -   **Tomb and site**
 
@@ -159,16 +163,6 @@ READv2 (Relationship Estimation from Ancient DNA)
 
 ![](images/READv2%20Process1-01.png){fig-align="center"}
 
-## Confirming Group Assignments
-
-#### P0 Distribution by Relationship Degree
-
-![](Plots/plot_p0_reldegree.png){fig-align="center"}
-
-::: {style="font-size: 0.75em; line-height: 1.2;"}
-Faceted with free y-axes to visualise distribution despite sample imbalance
-:::
-
 ## READv2 Performance & Statistical Validation
 
 #### False Positive Rates and Classification Power
@@ -184,7 +178,7 @@ Faceted with free y-axes to visualise distribution despite sample imbalance
 -   **Green**: 15K threshold
 :::
 
-## Empirical Precision of P0 vs. SNP Overlap
+## Empirical Precision of P0 vs. Overlapping SNP
 
 ![](Plots/plot_p0_overlap.png){fig-align="center"}
 
@@ -210,15 +204,15 @@ $$CV_{\hat{P_0}} = \frac{\text{nonnormalised p0 serr}}{\text{nonnormalised p0}}$
 
 ## Data Visualization
 
-### [Absolute number of analysed pairs per tomb]{style="font-size:26px;"}
+### [Number of within-tomb pairs by relationship]{style="font-size:26px;"}
 
-![](Plots/plot_pairs_abs.png){fig-align="center" width="70%"}
+![](Plots/p_within_abs.png){fig-align="center" width="70%"}
 
 ## Data Visualization
 
-### [Relative number of analysed pairs per tomb]{style="font-size:26px;"}
+### [Proportion of within-tomb pairs by relationship]{style="font-size:26px;"}
 
-![](Plots/plot_pairs_rel.png){fig-align="center" width="70%"}
+![](Plots/p_within_rel.png){fig-align="center" width="70%"}
 
 ## Data Visualization
 
@@ -271,8 +265,9 @@ $$CV_{\hat{P_0}} = \frac{\text{nonnormalised p0 serr}}{\text{nonnormalised p0}}$
 **4. Model Fitting**
 
 -   Limitation
--   Model Definition & Assumption
+-   Model Definition
 -   Model Output & Interpretation
+-   Model Robust Check
 
 [**5. Discussion**]{style="color:lightgray;"}\
 
@@ -386,7 +381,7 @@ where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
 $$
 \text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
     + \underbrace{(w_i u_i + w_j u_j)}_{\text{Individual RE}} 
-    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb MM}}
+    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb RE}}
 $$
 
 ## Model Fitting
@@ -437,14 +432,18 @@ pairs_ind_show |>
 
 ### Model Output
 
+#### Separated Version
+
 ```{r mod sep, echo=FALSE, out.height="500px"}
 imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
-imp_binary_separate_cat
+imp_binary_separate_nobone
 ```
 
 ## Model Fitting
 
 ### Model Output
+
+#### Grouped Version
 
 ```{r mod group, echo=FALSE, out.height="500px"}
 imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
@@ -456,56 +455,82 @@ imp_binary_group_nobone
 ### Sampling health (Diagnostic)
 
 1.  R-hat = 1.00: Excellent, all chains have converged to the same distribution.
-2.  Effective Sample Size: Pretty large number of independent samples.
+2.  Effective Sample Size: Pretty large number of independent samples (\>3000).
 
 ## Model Fitting
 
-### Marginal effect
+### Model Estimates
 
--   Model coefficients are on the log-odds scale
--   Marginal effects translate results to **predicted probabilities**
--   Results shown are **population-level averages**
+![](images/model_coefficients.png){fig-align="center" width="75%"}
 
-```{r, echo=FALSE}
-me_combined <- readRDS("unofficial work/me_tables/me_combined.rds")
-me_combined
-```
+## Model Fitting
+
+### Marginal Effect (Predicted Probabilities)
+
+-   Logistic regression coefficients are on the **log-odds** scale (hard to interpret)
+-   **Marginal predicted probabilities** convert model results into **probabilities** of the outcome (*being related*)
+-   *“The marginal predicted probabilities tells us how the variable effects the average probability that a pair is related, holding other variables constant.”*
 
 ## Model Fitting
 
 ### Model Interpretation
 
-#### Sex Pair
+![](images/me_allpair01.png){fig-align="center" width="90%"}
 
-::: {style="display:flex; gap:20px;"}
-<img src="plots/me_sex_separate.png" style="width:48%;"/> <img src="plots/me_sex_grouped.png" style="width:48%;"/>
+## Model Fitting
+
+### Model Robust Check
+
+#### Within-tomb pairs only
+
+-   **Context:** *same_tomb* is a very dominant predictor
+-   Robust check to see if the other variables are just artifacts of this
+-   Fit model to only within-tomb pairs
+
+## Model Fitting
+
+### Model Robust Check
+
+#### Within-tomb pairs only
+
+::::: columns
+::: {.column width="60%"}
+![](Plots/robust_main_withintomb.png){width="100%"}
 :::
 
+::: {.column width="40%"}
+-   Effects are weaker
+-   Direction unchanged
+-   Male×Male still dominant
+:::
+:::::
+
 ## Model Fitting
 
-### Model Interpretation
+### Model Robust Check
 
-#### Age Pair
+#### 3rd degree as unrelated
 
-::: {style="display:flex; gap:20px;"}
-<img src="plots/me_age_separate.png" style="width:48%;"/> <img src="plots/me_age_grouped.png" style="width:48%;"/>
+-   Fit model with new definition of relatedness:
+    -   1st/2nd degree: related
+    -   3rd degree: unrelated
+
+## Model Fitting
+
+### Model Robust Check
+
+#### 3rd degree as unrelated
+
+::::: columns
+::: {.column width="60%"}
+![](Plots/robust_main_unrel3rd.png)
 :::
 
-## Model Fitting
-
-### Model Interpretation
-
-#### Tomb
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/me_tomb_separate.png" style="width:48%;"/> <img src="plots/me_tomb_grouped.png" style="width:48%;"/>
+::: {.column width="40%"}
+-   *same_tomb* shows a substantially larger estimated effect.
+-   Shared burial context is a strong predictor of immediate kinship.
 :::
-
-## Model Fitting
-
-### Model Interpretation
-
-![](images/me_allpair.png){fig-align="center" width="90%"}
+:::::
 
 ## Outline
 
@@ -519,11 +544,20 @@ me_combined
 
 **5. Discussion**
 
+-   Model Assumption
+-   Selection Bias
+
 ## Discussion
 
 ### Model Assumption
 
 1.  Equal RE weight assumption ($w = 0.5$)
+
+$$
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
+    + \underbrace{(w_i u_i + w_j u_j)}_{\text{Individual RE}} 
+    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb RE}}
+$$
 
 -   Theoretically plausible (individual level)
 -   MM models robust to weight misspecification (Wolff Smith & Beretvas (2014))
@@ -574,73 +608,50 @@ plot_qq_both_effects(imp_binary_group_nobone, "Grouped tombs")
 
 ## Discussion
 
-### Model Robust Check
+### Possible Selection Bias
 
-```{r robust sep}
-compare_model(robustcheck_models_separate, title = "Model Robust Check (Separated)")
-```
+-   15k threshold for all kinship degrees to treat MNAR
+-   Only analyse high-quality data subset
 
-## Discussion
+$\Rightarrow$ Possible selection bias
 
-### Model Robust Check
-
-```{r robust group}
-compare_model(robustcheck_models_group, title = "Model Robust Check (Grouped)")
-```
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; flex-direction:column; gap:20px; align-items:center;"}
-<img src="plots/robust_intercept_sep.png" style="width:70%;"/> <img src="plots/robust_intercept_gr.png" style="width:70%;"/>
-:::
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/robust_age_sep.png" style="width:48%;"/> <img src="plots/robust_age_gr.png" style="width:48%;"/>
-:::
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/robust_tomb_sep.png" style="width:48%;"/> <img src="plots/robust_tomb_gr.png" style="width:48%;"/>
-:::
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; gap:20px;"}
-<img src="plots/robust_sex_sep.png" style="width:48%;"/> <img src="plots/robust_sex_gr.png" style="width:48%;"/>
-:::
-
-## Discussion
-
-### Model Robust Check
-
-::: {style="display:flex; flex-direction:column; gap:20px; align-items:center;"}
-<img src="plots/robust_random_sd_sep.png" style="width:60%;"/> <img src="plots/robust_random_sd_gr.png" style="width:60%;"/>
-:::
+$\Rightarrow$ Cannot infer to the larger population
 
 ## Bibliography
 
--   Charles E. McCulloch. John M. Neuhaus. "Misspecifying the Shape of a Random Effects Distribution: Why Getting It Wrong May Not Matter." Statist. Sci. 26 (3) 388 - 402, August 2011
--   Maas, C. J. M., & Hox, J. J. (2005). Sufficient Sample Sizes for Multilevel Modeling. Methodology: European Journal of Research Methods for the Behavioral and Social Sciences, 1(3), 86–92
--   Crema, Enrico R. "Statistical modelling in archaeology: some recent trends and future perspectives." Journal of Archaeological Science 180 (2025): 106295
--   Otárola-Castillo, Erik, and Melissa G. Torquato. "Bayesian statistics in archaeology." Annual Review of Anthropology 47, no. 1 (2018): 435-453
+-   [Alaçamlı, Erkin, Thijessen Naidoo, Merve N. Güler, Ekin Sağlıcan, Şevval Aktürk, Igor Mapelli, Kıvılcım Başak Vural, Mehmet Somel, Helena Malmström, and Torsten Günther.\
+    *READv2: advanced and user-friendly detection of biological relatedness in archaeogenomics.*\
+    Genome Biology 25, no. 1 (2024): 216]{style="font-size:0.80em;"}
+
+-   [Boyd, Michael J.\
+    *Becoming Mycenaean? The living, the dead, and the ancestors in the transformation of society in second millennium BC southern Greece.*\
+    Death rituals, social order and the archaeology of immortality in the ancient world (2016): 200–220]{style="font-size:0.80em;"}
+
+-   [Charles E. McCulloch & John M. Neuhaus.\
+    *Misspecifying the Shape of a Random Effects Distribution: Why Getting It Wrong May Not Matter.*\
+    Statistical Science 26, no. 3 (2011): 388–402]{style="font-size:0.80em;"}
+
+-   [Crema, Enrico R.\
+    *Statistical modelling in archaeology: some recent trends and future perspectives.*\
+    Journal of Archaeological Science 180 (2025): 106295]{style="font-size:0.80em;"}
 
 ## Bibliography
 
--   Alaçamlı, Erkin, Thijessen Naidoo, Merve N. Güler, Ekin Sağlıcan, Şevval Aktürk, Igor Mapelli, Kıvılcım Başak Vural, Mehmet Somel, Helena Malmström, and Torsten Günther. "READv2: advanced and user-friendly detection of biological relatedness in archaeogenomics." Genome biology 25, no. 1 (2024): 216
--   Millard, A. R. "What can Bayesian statistics do for archaeological predictive modelling." PM Van Leusen, PM y H. Kamermans, H.(eds.), Predictive modeling for archaeological heritage management: a research agenda, Nederlandse Archeologische Rapporten 29 (2005): 169-182
--   Moutafi, Ioanna. "Towards a social bioarchaeology of the Mycenaean period: A multi-disciplinary analysis of funerary remains from the Late Helladic chamber tomb cemetery of Voudeni, Achaea, Greece." PhD diss., University of Sheffield, 2015
--   Boyd, Michael J. "Becoming Mycenaean? The living, the dead, and the ancestors in the transformation of society in second millennium BC southern Greece." Death rituals, social order and the archaeology of immortality in the ancient world (2016): 200-220
+-   [Maas, C. J. M., & Hox, J. J.\
+    *Sufficient Sample Sizes for Multilevel Modeling.*\
+    Methodology: European Journal of Research Methods for the Behavioral and Social Sciences 1, no. 3 (2005): 86–92]{style="font-size:0.80em;"}
+
+-   [Millard, A. R.\
+    *What can Bayesian statistics do for archaeological predictive modelling.*\
+    In *Predictive modeling for archaeological heritage management: a research agenda*, Nederlandse Archeologische Rapporten 29 (2005): 169–182]{style="font-size:0.80em;"}
+
+-   [Moutafi, Ioanna.\
+    *Towards a social bioarchaeology of the Mycenaean period: A multi-disciplinary analysis of funerary remains from the Late Helladic chamber tomb cemetery of Voudeni, Achaea, Greece.*\
+    PhD diss., University of Sheffield, 2015]{style="font-size:0.80em;"}
+
+-   [Otárola-Castillo, Erik, & Melissa G. Torquato.\
+    *Bayesian statistics in archaeology.*\
+    Annual Review of Anthropology 47, no. 1 (2018): 435–453]{style="font-size:0.80em;"}
 
 # Appendix
 
@@ -648,12 +659,59 @@ compare_model(robustcheck_models_group, title = "Model Robust Check (Grouped)")
 
 ![](Plots/plot_mni.png){fig-align="center" width="70%"}
 
-# [Research findings]{style="font-size:26px;"}
+## Research findings
 
-::: {style="font-size: 0.75em; line-height: 1.2;"}
+::: {style="font-size: 1.1em; line-height: 1.2;"}
 -   Our result of significant male-to-male biological relatedness are consistent with recent archaeogenetic evidence from the Bronze Age, which identifies a social structure characterized by strict patrilocality and a unique system of intense first-cousin endogamy designed to maintain the integrity of family estates.
 
 -   Studies explains that children and infants were part of the "household" unit. Finding them clustered together in the data is a sign that the tomb was capturing the nuclear and extended siblings of a single household, before those individuals grew up and potentially moved or changed status.
 
 -   Studies highlights that "sample success" in Mycenaean tombs is heavily affected by secondary burial practices, which were the norm rather than the exception. In mixed contexts, certain skeletal elements are much more likely to be recovered than others. Skulls and long bones were often prioritized and kept, while smaller bones (hand/foot bones, vertebrae) were frequently lost or discarded during the cleaning and moving of earlier burials.
 :::
+
+## Model Comparison
+
+### Standard threshold vs 15k threshold
+
+```{r compare threshold}
+compare_model(list(
+  "15k threshold" = imp_binary_separate_nobone,
+  "Standard threshold" = all_binary_separate_nobone
+))
+
+
+```
+
+## Model Comparison
+
+### Main model vs only same_tomb
+
+```{r compare sametomb}
+compare_model(list(
+  "Main model" = imp_binary_separate_nobone,
+  "Only same_tomb" = imp_binary_separate_sametomb
+))
+```
+
+## Model Comparison
+
+### Main model (flat prior) vs waek informative prior
+
+```{r compare prior}
+compare_model(list(
+  "Flat prior" = imp_binary_separate_nobone,
+  "Only same_tomb" = imp_binary_separate_nobone_prior
+))
+```
+
+## Model Comparison
+
+### Try out the “strict family in internal structure” model
+
+```{r strict}
+compare_model(list(
+  "Within tomb" = imp_binary_separate_withintomb,
+  "3rd as unrelated" = imp_binary_separate_unrel3rd,
+  "Within tomb and 3rd as unrelated" = imp_binary_separate_withintomb_unrel3rd
+))
+```
