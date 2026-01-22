@@ -681,10 +681,10 @@ $\Rightarrow$ Possible selection bias
 ### Standard threshold vs 15k threshold
 
 ``` {r compare threshold}
-#compare_model(list(
- # "15k threshold" = imp_binary_separate_nobone,
-  #"Standard threshold" = all_binary_separate_nobone
-#))
+compare_model(list(
+  "15k threshold" = imp_binary_separate_nobone,
+  "Standard threshold" = all_binary_separate_nobone
+))
 
 
 ```

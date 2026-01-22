@@ -11,6 +11,7 @@ imp_binary_separate_unrel3rd <- readRDS("unofficial work/models save/imp_binary_
 imp_binary_separate_sametomb <- readRDS("unofficial work/models save/imp_binary_separate_sametomb.rds")
 imp_binary_separate_nobone_prior <- readRDS("unofficial work/models save/imp_binary_separate_nobone_prior.rds")
 imp_binary_separate_withintomb_unrel3rd <- readRDS("unofficial work/models save/imp_binary_separate_withintomb_unrel3rd.rds")
+all_binary_separate_nobone <-  readRDS("unofficial work/models save/all_binary_separate_nobone.rds")
 
 ## Grouped tomb version ----
 imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_cat.rds")
@@ -22,6 +23,7 @@ imp_binary_group_unrel3rd <- readRDS("unofficial work/models save/imp_binary_gro
 imp_binary_group_sametomb <- readRDS("unofficial work/models save/imp_binary_group_sametomb.rds")
 imp_binary_group_nobone_prior <- readRDS("unofficial work/models save/imp_binary_group_nobone_prior.rds")
 imp_binary_group_withintomb_unrel3rd <- readRDS("unofficial work/models save/imp_binary_group_withintomb_unrel3rd.rds")
+all_binary_group_nobone <- readRDS("unofficial work/models save/all_binary_group_nobone.rds")
 
 # Define compare function ----
 compare_model <- function(models, ci_width = 0.95, digits = 2, output = c("gt", "data"),
