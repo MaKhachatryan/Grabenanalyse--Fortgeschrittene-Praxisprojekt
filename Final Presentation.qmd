@@ -499,7 +499,7 @@ imp_binary_group_nobone
 :::
 
 ::: {.column width="40%"}
--   Estimates shrink towards 0
+-   Effects are weaker
 -   Direction unchanged
 -   Male×Male still dominant
 :::
@@ -614,6 +614,8 @@ plot_qq_both_effects(imp_binary_group_nobone, "Grouped tombs")
 -   Only analyse high-quality data subset
 
 $\Rightarrow$ Possible selection bias
+
+$\Rightarrow$ Cannot infer to the larger population
 
 ## Bibliography
 
