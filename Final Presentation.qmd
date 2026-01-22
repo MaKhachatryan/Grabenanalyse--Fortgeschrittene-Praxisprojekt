@@ -381,7 +381,7 @@ where $\pi_{ij} = P(\text{related}_{ij} = 1)$.
 $$
 \text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
     + \underbrace{(w_i u_i + w_j u_j)}_{\text{Individual RE}} 
-    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb MM}}
+    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb RE}}
 $$
 
 ## Model Fitting
