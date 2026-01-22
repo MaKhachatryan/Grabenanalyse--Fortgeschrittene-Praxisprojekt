@@ -161,7 +161,7 @@ source("Models/models_comparison.R")
 
 READv2 (Relationship Estimation from Ancient DNA)
 
-![](images/Screenshot 2026-01-22 at 20.31.13.png){fig-align="center"}
+![](images/READv2Process1.png){fig-align="center"}
 
 ## READv2 Performance & Statistical Validation
 
@@ -288,7 +288,7 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 
 #### 2. Missing Not At Random (MNAR)
 
-![](images/Screenshot 2026-01-22 at 20.30.59.png){fig-align="center"}
+![](images/READv2Process2.png){fig-align="center"}
 
 ## Model Fitting
 
