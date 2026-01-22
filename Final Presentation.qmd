@@ -204,15 +204,15 @@ $$CV_{\hat{P_0}} = \frac{\text{nonnormalised p0 serr}}{\text{nonnormalised p0}}$
 
 ## Data Visualization
 
-### [Absolute number of analysed pairs per tomb]{style="font-size:26px;"}
+### [Number of within-tomb pairs by relationship]{style="font-size:26px;"}
 
-![](Plots/plot_pairs_abs.png){fig-align="center" width="70%"}
+![](Plots/p_within_abs.png){fig-align="center" width="70%"}
 
 ## Data Visualization
 
-### [Relative number of analysed pairs per tomb]{style="font-size:26px;"}
+### [Proportion of within-tomb pairs by relationship]{style="font-size:26px;"}
 
-![](Plots/plot_pairs_rel.png){fig-align="center" width="70%"}
+![](Plots/p_within_rel.png){fig-align="center" width="70%"}
 
 ## Data Visualization
 
