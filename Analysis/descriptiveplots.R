@@ -146,11 +146,71 @@ p_absolute_rel <- ggplot(tomb_pairwise, aes(x = Rel_group, y = num_pairs, fill =
   ylab("Number of analysed pairs") +
   xlab("Relationship")
 
-# Step 4: Print both plots
-p_relative
-p_absolute
 
 
+
+
+##############################################################
+### Number and proportion of within-tomb pairs by relationship
+##############################################################
+
+
+# --------------------------
+# Step 1: Filter within-tomb pairs
+# --------------------------
+within_tomb <- kinship_result %>%
+  filter(tomb1 == tomb2) %>%
+  mutate(
+    Rel_group = case_when(
+      related_binary == 1 ~ "Related",
+      related_binary == 0 ~ "Unrelated",
+      is.na(related_binary) ~ "Uncertain"
+    ),
+    # Set order of bars
+    Rel_group = factor(Rel_group, levels = c("Related", "Unrelated", "Uncertain"))
+  )
+
+# --------------------------
+# Step 2: Summarise counts per tomb and relationship
+# --------------------------
+tomb_within_summary <- within_tomb %>%
+  group_by(tomb = tomb1, Rel_group) %>%
+  summarise(num_pairs = n(), .groups = "drop") %>%
+  group_by(tomb) %>%
+  mutate(prop = num_pairs / sum(num_pairs)) %>%
+  ungroup()
+
+# --------------------------
+# Step 3: Absolute counts plot
+# --------------------------
+p_within_abs <- ggplot(tomb_within_summary, aes(x = Rel_group, y = num_pairs, fill = Rel_group)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = num_pairs), vjust = -0.5, size = 3) +
+  facet_wrap(~ tomb) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +  # extra space for labels
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  ylab("Number Of Within-tomb Pairs") +
+  xlab("Relationship")
+
+# --------------------------
+# Step 4: Relative proportions plot
+# --------------------------
+p_within_rel <- ggplot(tomb_within_summary, aes(x = Rel_group, y = prop, fill = Rel_group)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = scales::percent(prop, accuracy = 0.1)), vjust = -0.5, size = 3) +
+  facet_wrap(~ tomb) +
+  scale_y_continuous(labels = percent_format(), expand = expansion(mult = c(0, 0.2))) +  # same top padding
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  ylab("Proportion Of Within-tomb Pairs") +
+  xlab("Relationship")
 
 
 
@@ -227,7 +287,6 @@ plot_p0_reldegree <- ggplot(df_p0_plot, aes(x = p0_mean, fill = rel)) +
 
 
 
-
 #######################
 # Save plots
 #######################
@@ -258,4 +317,13 @@ if (!file.exists("Plots/plot_p0_overlap.png")) {
 
 if (!file.exists("Plots/plot_p0_reldegree.png")) {
   ggsave("Plots/plot_p0_reldegree.png", plot = plot_p0_reldegree, width = 8, height = 5, dpi = 300)
+}
+
+
+if (!file.exists("Plots/p_within_abs.png")) {
+  ggsave("Plots/p_within_abs.png", plot = p_within_abs, width = 8, height = 5, dpi = 300)
+}
+
+if (!file.exists("Plots/p_within_rel.png")) {
+  ggsave("Plots/p_within_rel.png", plot = p_within_rel, width = 8, height = 5, dpi = 300)
 }

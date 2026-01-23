@@ -161,7 +161,7 @@ source("Models/models_comparison.R")
 
 READv2 (Relationship Estimation from Ancient DNA)
 
-![](images/READv2%20Process1-01.png){fig-align="center"}
+![](images/READv2Process1.png){fig-align="center"}
 
 ## READv2 Performance & Statistical Validation
 
@@ -204,15 +204,15 @@ $$CV_{\hat{P_0}} = \frac{\text{nonnormalised p0 serr}}{\text{nonnormalised p0}}$
 
 ## Data Visualization
 
-### [Absolute number of analysed pairs per tomb]{style="font-size:26px;"}
+### [Number of within-tomb pairs by relationship]{style="font-size:26px;"}
 
-![](Plots/plot_pairs_abs.png){fig-align="center" width="70%"}
+![](Plots/p_within_abs.png){fig-align="center" width="70%"}
 
 ## Data Visualization
 
-### [Relative number of analysed pairs per tomb]{style="font-size:26px;"}
+### [Proportion of within-tomb pairs by relationship]{style="font-size:26px;"}
 
-![](Plots/plot_pairs_rel.png){fig-align="center" width="70%"}
+![](Plots/p_within_rel.png){fig-align="center" width="70%"}
 
 ## Data Visualization
 
@@ -286,15 +286,15 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 
 ### Limitation
 
-#### 2. MNAR
+#### 2. Missing Not At Random (MNAR)
 
-![](images/READv2%20Process2.png){fig-align="center"}
+![](images/READv2Process2.png){fig-align="center"}
 
 ## Model Fitting
 
 ### Limitation
 
-#### 2. MNAR
+#### 2. Missing Not At Random (MNAR)
 
 ![](images/MNAR.png){fig-align="center"}
 
@@ -306,7 +306,7 @@ $R$ : Missingness indicator
 
 ## Model Fitting
 
-### Limitation - MNAR
+### Limitation - Missing Not At Random (MNAR)
 
 $$
 R =
@@ -326,11 +326,11 @@ $$
 \Rightarrow R = \mathbb{I}\!\left( \mathrm{OSNP} \ge \text{threshold depending on Kinship status} \right)
 $$
 
-$$\Rightarrow P(R | X_O, X_M) \text{ depends on } X_M = \text{Kinship status}$$ $\Rightarrow$ **MNAR**
+$$\Rightarrow P(R | X_O, X_M) \text{ depends on } X_M = \text{Kinship status}$$ $\Rightarrow$ **Missing Not At Random (MNAR)**
 
 ## Model Fitting
 
-### Limitation - MNAR
+### Limitation - Missing Not At Random (MNAR)
 
 **Solution:** Apply only one threshold 15000 for all degrees of kinship
 
@@ -348,7 +348,7 @@ $$
 
 $$\Rightarrow P(R | X_O, X_M) \text{ depends on } X_O = \text{Overlapping SNPs}$$
 
-$\Rightarrow$ **MAR**
+$\Rightarrow$ **Missing At Random (MAR)**
 
 ## Model Fitting
 
