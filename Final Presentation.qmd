@@ -715,3 +715,11 @@ compare_model(list(
   "Within tomb and 3rd as unrelated" = imp_binary_separate_withintomb_unrel3rd
 ))
 ```
+
+## Model Robust Check 
+
+![](Plots/robust_group_main_withintomb.png){fig-align="center" width="70%"}
+
+## Model Robust Check 
+
+![](Plots/robust_group_main_unrel3rd.png){fig-align="center" width="70%"}

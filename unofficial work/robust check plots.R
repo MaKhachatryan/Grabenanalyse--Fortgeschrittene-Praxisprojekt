@@ -304,6 +304,64 @@ p_sep_main_vs_withintomb
 
 ggsave("Plots/robust_main_withintomb.png",   p_sep_main_vs_withintomb,  width = 6, height = 5, dpi = 400)
 
+##For the grouped tombs
+# ---- choose only the two grouped models (Main and Within tomb) ----
+models_grp_main_vs_withintomb <- list(
+  "Main model"   = imp_binary_group_nobone,
+  "Within tomb"  = imp_binary_group_withintomb
+)
+
+# ---- extract estimates ----
+robust_grp_main_vs_withintomb <- imap_dfr(
+  models_grp_main_vs_withintomb,
+  ~ extract_brms_estimates(.x, .y)
+)
+
+# ---- keep only age + sex fixed effects ----
+robust_grp_main_vs_withintomb <- robust_grp_main_vs_withintomb |>
+  filter(component == "Fixed effects") |>
+  mutate(
+    group = case_when(
+      str_detect(term, "^age_pair") ~ "Age pair",
+      str_detect(term, "^sex_pair") ~ "Sex pair",
+      TRUE                          ~ NA_character_
+    ),
+    model = factor(model, levels = names(models_grp_main_vs_withintomb))
+  ) |>
+  filter(!is.na(group))
+
+p_grp_main_vs_withintomb <- ggplot(
+  robust_grp_main_vs_withintomb,
+  aes(x = estimate, y = term, color = model)
+) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Main vs Within tomb (Grouped)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 11),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_grp_main_vs_withintomb
+
+ggsave(
+  "Plots/robust_group_main_withintomb.png",
+  p_grp_main_vs_withintomb,
+  width = 6, height = 5, dpi = 400
+)
+
 ## --- compare the main model with the 3 as unrelated ---
 
 models_sep_main_vs_unrel3rd <- list(
@@ -363,7 +421,67 @@ p_sep_main_vs_unrel3rd <- ggplot(
 
 p_sep_main_vs_unrel3rd
 
-ggsave("Plots/robust_main_unrel3rd.png",   p_sep_main_vs_unrel3rd,  width = 6, height = 5, dpi = 400)
+ggsave("Plots/robust_main_unrel3rd.png",   p_sep_main_vs_unrel3rd,  
+       width = 6, height = 5, dpi = 400)
 
+##Grouped tombs
+models_grp_main_vs_unrel3rd <- list(
+  "Main model"        = imp_binary_group_nobone,
+  "3rd as unrelated"  = imp_binary_group_unrel3rd
+)
 
+# ---- extract estimates ----
+robust_grp_main_vs_unrel3rd <- imap_dfr(
+  models_grp_main_vs_unrel3rd,
+  ~ extract_brms_estimates(.x, .y)
+)
+
+# ---- keep age + sex + same_tomb fixed effects ----
+robust_grp_main_vs_unrel3rd <- robust_grp_main_vs_unrel3rd |>
+  filter(component == "Fixed effects") |>
+  mutate(
+    group = case_when(
+      str_detect(term, "^age_pair")  ~ "Age pair",
+      str_detect(term, "^sex_pair")  ~ "Sex pair",
+      str_detect(term, "^same_tomb") ~ "Same tomb",
+      TRUE                           ~ NA_character_
+    ),
+    model = factor(model, levels = names(models_grp_main_vs_unrel3rd))
+  ) |>
+  filter(!is.na(group)) |>
+  mutate(
+    group = factor(group, levels = c("Age pair", "Sex pair", "Same tomb"))
+  )
+
+p_grp_main_vs_unrel3rd <- ggplot(
+  robust_grp_main_vs_unrel3rd,
+  aes(x = estimate, y = term, color = model)
+) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Main vs 3rd-as-unrelated (Grouped)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 12),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_grp_main_vs_unrel3rd
+
+ggsave(
+  "Plots/robust_group_main_unrel3rd.png",
+  p_grp_main_vs_unrel3rd,
+  width = 9, height = 5, dpi = 400
+)
 
