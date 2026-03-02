@@ -1,4 +1,5 @@
-source("environmentSetUp.R")
+# Load project environment
+source("environment_setup.R")
 library(tibble)
 
 ## -- load all the separate models --

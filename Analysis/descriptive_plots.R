@@ -1,6 +1,20 @@
-# Load environment and data
-source(here::here("environmentSetUp.R"))
-source(here::here("analysis", "pairsdata.R"))
+# This script creates descriptive plots based on the cleaned project datasets.
+# It generates visualizations for tomb characteristics, skeletal element
+# distributions, pairwise relatedness counts, SNP overlap quality measures,
+# and p0 distributions, and saves all plots as .png files in the Plots folder.
+
+# Load project environment and processed data
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 
 ######################################################
 ### Absolute relation of MNI and analysed individuals
@@ -226,20 +240,8 @@ kinship_p0_cv <- og_kinship_result %>%
 
 custom_breaks <- c(15000, 200000, 400000, 600000, 800000)
 
-# 2. Plot Error vs. SNP Count (The "Decay Curve")
-ggplot(pairs_ind_cv, aes(x = overlap_nsnps, y = nonnormalized_p0_serr)) +
-  geom_point(alpha = 0.4, color = "steelblue") +
-  geom_vline(xintercept = 15000, linetype = "dashed", color = "red") +
-  scale_x_continuous(
-    labels = label_comma(), 
-    breaks = custom_breaks
-  ) +
-  labs(title = "Standard Error Decay by Overlap SNP Count",
-       x = "Number of Overlapping SNPs",
-       y = "Standard Error (P0_serr)") +
-  theme_minimal()
 
-# 3. Plot CV vs SNP Count (Relative Noise)
+# 2. Plot CV vs SNP Count (Relative Noise)
 plot_p0_overlap <- ggplot(kinship_p0_cv, aes(x = overlap_nsnps, y = CV)) +
   geom_point(alpha = 0.3, color = "darkgreen") +
   # Adds a bold baseline at 0
@@ -285,6 +287,226 @@ plot_p0_reldegree <- ggplot(df_p0_plot, aes(x = p0_mean, fill = rel)) +
     y = "Count of Individual Pairs"
   )
 
+
+
+#######################################################
+### Network plots of genetic relatedness
+#######################################################
+
+plot_dir <- here::here("Plots")
+
+set.seed(123)
+
+# -------------------------
+# Tombs to plot
+# -------------------------
+tombs <- c(
+  "Amfissa tholos",
+  "Elateia T31",
+  "Elateia T36",
+  "Elateia T46",
+  "Elateia T50",
+  "Elateia T56",
+  "Elateia T62",
+  "Elateia T67"
+)
+
+# -------------------------
+# Filename map
+# -------------------------
+file_map <- c(
+  "Amfissa tholos" = "Amfissa_Tholos_network.png",
+  "Elateia T31"    = "Elateia_T31_network.png",
+  "Elateia T36"    = "Elateia_T36_network.png",
+  "Elateia T46"    = "Elateia_T46_network.png",
+  "Elateia T50"    = "Elateia_T50_network.png",
+  "Elateia T56"    = "Elateia_T56_network.png",
+  "Elateia T62"    = "Elateia_T62_network.png",
+  "Elateia T67"    = "Elateia_T67_network.png"
+)
+
+# -------------------------
+# Individual tomb networks
+# -------------------------
+for (t in tombs) {
+  
+  edges <- pairs_ind_og |>
+    dplyr::filter(
+      rel %in% c("First Degree", "Second Degree", "Third Degree"),
+      tomb1 == t | tomb2 == t
+    ) |>
+    dplyr::mutate(
+      tomb_relation = ifelse(tomb1 == tomb2,
+                             "Within tomb",
+                             "Cross tomb"),
+      rel = factor(
+        rel,
+        levels = c("First Degree",
+                   "Second Degree",
+                   "Third Degree")
+      )
+    )
+  
+  if (nrow(edges) == 0) {
+    message("No relations for ", t, " — skipped")
+    next
+  }
+  
+  nodes <- dplyr::bind_rows(
+    edges |>
+      dplyr::select(individual_id = individual1_id,
+                    tomb = tomb1,
+                    sex = sex1),
+    edges |>
+      dplyr::select(individual_id = individual2_id,
+                    tomb = tomb2,
+                    sex = sex2)
+  ) |>
+    dplyr::distinct()
+  
+  g <- igraph::graph_from_data_frame(
+    d = edges |>
+      dplyr::select(from = individual1_id,
+                    to   = individual2_id,
+                    rel,
+                    tomb_relation),
+    vertices = nodes |>
+      dplyr::select(name = individual_id,
+                    tomb,
+                    sex),
+    directed = FALSE
+  )
+  
+  p <- ggraph::ggraph(g, layout = "fr") +
+    ggraph::geom_edge_link(
+      aes(width = rel, color = tomb_relation),
+      alpha = 0.8
+    ) +
+    ggraph::geom_node_point(
+      aes(shape = sex, color = tomb),
+      size = 4
+    ) +
+    ggraph::scale_edge_width_manual(
+      values = c(
+        "First Degree"  = 2,
+        "Second Degree" = 1.2,
+        "Third Degree"  = 0.6
+      ),
+      name = "Kinship Degree"
+    ) +
+    ggraph::scale_edge_color_manual(
+      values = c(
+        "Within tomb" = "black",
+        "Cross tomb"  = "red"
+      ),
+      name = "Tomb Relation"
+    ) +
+    ggplot2::scale_color_discrete(name = "Tomb") +  
+    ggplot2::scale_shape_manual(
+      name = "Sex",
+      values = c("XX" = 16, "XY" = 17),
+      labels = c("XX" = "Female", "XY" = "Male")
+    ) +
+    ggplot2::theme_void() +
+    ggplot2::labs(title = t)
+  
+  out_file <- file.path(plot_dir, file_map[t])
+  
+  if (!file.exists(out_file)) {
+    ggplot2::ggsave(
+      filename = out_file,
+      plot = p,
+      width = 8,
+      height = 6,
+      dpi = 300
+    )
+  }
+}
+
+# -------------------------
+# All tombs together
+# -------------------------
+
+all_edges <- pairs_ind_og |>
+  dplyr::filter(
+    rel %in% c("First Degree",
+               "Second Degree",
+               "Third Degree")
+  ) |>
+  dplyr::mutate(
+    tomb_relation = ifelse(tomb1 == tomb2,
+                           "Within tomb",
+                           "Cross tomb"),
+    rel = factor(rel,
+                 levels = c("First Degree",
+                            "Second Degree",
+                            "Third Degree"))
+  )
+
+all_nodes <- dplyr::bind_rows(
+  all_edges |>
+    dplyr::select(individual_id = individual1_id,
+                  tomb = tomb1,
+                  sex = sex1),
+  all_edges |>
+    dplyr::select(individual_id = individual2_id,
+                  tomb = tomb2,
+                  sex = sex2)
+) |>
+  dplyr::distinct()
+
+g_all <- igraph::graph_from_data_frame(
+  d = all_edges |>
+    dplyr::select(from = individual1_id,
+                  to   = individual2_id,
+                  rel,
+                  tomb_relation),
+  vertices = all_nodes |>
+    dplyr::select(name = individual_id,
+                  tomb,
+                  sex),
+  directed = FALSE
+)
+
+p_all <- ggraph::ggraph(g_all, layout = "fr") +
+  ggraph::geom_edge_link(
+    aes(width = rel, color = tomb_relation),
+    alpha = 0.8
+  ) +
+  ggraph::geom_node_point(
+    aes(shape = sex, color = tomb),
+    size = 4
+  ) +
+  ggraph::scale_edge_width_manual(
+    values = c(
+      "First Degree"  = 2,
+      "Second Degree" = 1.2,
+      "Third Degree"  = 0.6
+    )
+  ) +
+  ggraph::scale_edge_color_manual(
+    values = c(
+      "Within tomb" = "black",
+      "Cross tomb"  = "red"
+    )
+  ) +
+  ggplot2::scale_shape_manual(
+    values = c("XX" = 16, "XY" = 17)
+  ) +
+  ggplot2::theme_void() +
+  ggplot2::labs(title = "All Tombs Together")
+
+out_file <- file.path(plot_dir, "All_Tombs_network.png")
+
+if (!file.exists(out_file)) {
+  ggplot2::ggsave(
+    filename = out_file,
+    plot = p_all,
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
 
 
 #######################

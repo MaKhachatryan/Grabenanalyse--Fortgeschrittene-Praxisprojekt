@@ -1,5 +1,9 @@
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+# Load project environment and processed data
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
 library(marginaleffects)
 library(collapse)
 

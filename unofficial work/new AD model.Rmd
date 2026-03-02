@@ -7,8 +7,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(here)
 library(loo)
-source(here::here("environmentSetUp.R"))
-source(here::here("Analysis/pairsdata.R"))
+source(here::here("environment_setup.R"))
+source(here::here("Analysis/pairs_data.R"))
 ```
 
 ```{r plot}

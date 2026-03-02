@@ -1,5 +1,15 @@
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+# Load project environment and processed data
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 
 # Try fit and save model
 
@@ -202,7 +212,11 @@ for (m in model_names) {
 
 ### NEW MODEL SENSITIVITY ANALYSIS for threshold ------
 # Now we try to see if the model works without the strict (15k only) threshold
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 pairs_ind_all <- pairs_ind[is.na(pairs_ind$low_data), ]
 pairs_group_all <- pairs_group[is.na(pairs_group$low_data), ]
 
@@ -313,7 +327,11 @@ saveRDS(bone_vs_nobone, "unofficial work/models save/bone_vs_nobone.rds")
 
 
 ### Only use same_tomb parameter ------
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 pairs_ind <- pairs_ind[pairs_ind$overlap_nsnps >= 15000, ]
 pairs_group <- pairs_group[pairs_group$overlap_nsnps >= 15000, ]
 
@@ -372,7 +390,11 @@ saveRDS(normal_vs_only_sametomb, "unofficial work/models save/normal_vs_only_sam
 
 ### Add tomb-level variables ------
 ##### Separate version
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 pairs_ind <- pairs_ind[pairs_ind$overlap_nsnps >= 15000, ]
 pairs_group <- pairs_group[pairs_group$overlap_nsnps >= 15000, ]
 
@@ -446,8 +468,17 @@ saveRDS(compare_everything, "unofficial work/models save/compare_everything.rds"
 
 
 #### Do every sensitivity analysis and compare everything again but with group data ----
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 pairs_ind <- pairs_ind[pairs_ind$overlap_nsnps >= 15000, ]
 pairs_group <- pairs_group[pairs_group$overlap_nsnps >= 15000, ]
 
@@ -476,8 +507,17 @@ compare_everything_group <- modelsummary(list(
 saveRDS(compare_everything_group, "unofficial work/models save/compare_everything_group.rds")
 
 ### 15.1.2026 batch ----
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 ### Fit model with data set contain only within-tomb kinship
 imp_binary_separate_withintomb <- update(imp_binary_separate_cat, 
                                          formula. = related_binary ~ sex_pair + age_pair + 
@@ -508,8 +548,17 @@ saveRDS(imp_binary_group_unrel3rd, "unofficial work/models save/imp_binary_group
 
 
 ### New models batch 20.1.2026 (after Yichen’s feedback per Mail) ----
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 
 ### Fit main model with a weakly informative prior
 imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
@@ -544,8 +593,17 @@ imp_binary_group_withintomb_unrel3rd <- update(imp_binary_group_withintomb,
 saveRDS(imp_binary_group_withintomb_unrel3rd, "unofficial work/models save/imp_binary_group_withintomb_unrel3rd.rds")
 
 ### New batch 21.1.2026
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 
 ### Fit with original threshold again without the bone
 all_binary_separate_nobone <- update(imp_binary_separate_nobone,

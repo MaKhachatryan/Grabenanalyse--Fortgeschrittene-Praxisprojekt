@@ -19,55 +19,59 @@ editor: visual
 ![](me_tables/me_allpair01.png){fig-align="center" width="90%"}
 
 ## Model Fitting
+
 ### Model Robust Check
+
 #### Within-tomb pairs only
-- **Context:** *same_tomb* is a very dominant predictor
-- Robust check to see if the other variables are just artifacts of this
-- Fit model to only within-tomb pairs
+
+-   **Context:** *same_tomb* is a very dominant predictor
+-   Robust check to see if the other variables are just artifacts of this
+-   Fit model to only within-tomb pairs
 
 ## Model Fitting
+
 ### Model Robust Check
+
 #### Within-tomb pairs only
 
-
-::: {.columns}
-
+::::: columns
 ::: {.column width="60%"}
-![](robust_plots/robust_main_withintomb.png){width=100%}
+![](robust_plots/robust_main_withintomb.png){width="100%"}
 :::
 
 ::: {.column width="40%"}
-- All estimates shrink towards 0
-- Direction unchanged
-- Male×Male still dominant
+-   All estimates shrink towards 0
+-   Direction unchanged
+-   Male×Male still dominant
 :::
-
-:::
-
+:::::
 
 ## Model Fitting
+
 ### Model Robust Check
+
 #### 3rd degree as unrelated
-- Fit model with new definition of relatedness: 
-  - 1st/2nd degree: related
-  - 3rd degree: unrelated
-  
+
+-   Fit model with new definition of relatedness:
+    -   1st/2nd degree: related
+    -   3rd degree: unrelated
+
 ## Model Fitting
+
 ### Model Robust Check
+
 #### 3rd degree as unrelated
 
-::: {.columns}
-
+::::: columns
 ::: {.column width="60%"}
 ![](robust_plots/robust_main_unrel3rd.png)
 :::
 
 ::: {.column width="40%"}
-- *same_tomb* shows a substantially larger estimated effect.
-- Shared burial context is a strong predictor of immediate kinship.
+-   *same_tomb* shows a substantially larger estimated effect.
+-   Shared burial context is a strong predictor of immediate kinship.
 :::
-
-:::
+:::::
 
 ## Discussion
 
@@ -84,10 +88,11 @@ $$
 -   Theoretically plausible (individual level)
 -   MM models robust to weight misspecification (Wolff Smith & Beretvas (2014))
 
-
 ## Discussion
+
 ### Possible Selection Bias
-- 15k threshold for all kinship degrees to treat MNAR
-- Only analyse high-quality data subset
+
+-   15k threshold for all kinship degrees to treat MNAR
+-   Only analyse high-quality data subset
 
 $\Rightarrow$ Possible selection bias

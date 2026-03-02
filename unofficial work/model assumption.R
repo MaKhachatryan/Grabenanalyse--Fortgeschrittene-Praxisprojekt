@@ -1,4 +1,9 @@
-source("environmentSetUp.R")
+# Load project environment and processed data
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
 # Check assumption of normality RE
 
 library(dplyr)
