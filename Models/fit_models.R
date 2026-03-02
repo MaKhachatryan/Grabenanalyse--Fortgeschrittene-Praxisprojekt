@@ -1,8 +1,20 @@
-# Load environment and packages
-source("environmentSetUp.R")
+# This script loads the prepared pair datasets and fits the statistical models
+# used in the analysis. It runs Bayesian mixed models for binary relatedness
+# and a Gaussian regression model for SNP overlap, and saves all fitted models
+# as .rds files in the folder Models/saved_models.
 
-# Load processed data
-source("Analysis/pairsdata.R")
+# Load project environment and processed data
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 
 # Keep only pairs with 15000 SNP overlap
 pairs_ind <- pairs_ind[pairs_ind$overlap_nsnps >= 15000, ]

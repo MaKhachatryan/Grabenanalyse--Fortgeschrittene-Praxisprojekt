@@ -6,7 +6,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(here)
-source(here::here("environmentSetUp.R"))
+source(here::here("environment_setup.R"))
 library(readxl)
 library(ggplot2)
 library(dplyr)

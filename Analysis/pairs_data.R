@@ -1,5 +1,13 @@
-library(here)
-source(here::here("environmentSetUp.R"))
+# This script cleans and processes the raw individual, tomb, and kinship data.
+# It creates pairwise datasets, derives analysis variables, and prepares
+# filtered datasets that are used as input for the statistical models.
+
+# Load project environment and processed data
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
 
 ##Individual Metadata
 ##- Filtering out the Lapoutsi

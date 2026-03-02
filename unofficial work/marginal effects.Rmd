@@ -8,11 +8,11 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(here)
-source(here::here("environmentSetUp.R"))
+source(here::here("environment_setup.R"))
 library(marginaleffects)
 library(collapse)
 
-source(here::here("Analysis", "pairsdata.R"))
+source(here::here("Analysis", "pairs_data.R"))
 imp_binary_group_cat <- readRDS(
   here::here("unofficial work", "models save", "imp_binary_group_cat.rds")
 )

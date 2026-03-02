@@ -5,7 +5,7 @@ output: html_document
 
 ``` {r setup, include=FALSE}
 library(here)
-source(here("environmentSetUp.R"))
+source(here("environment_setup.R"))
 imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
 all_binary_separate_cat <- readRDS(here::here("unofficial work/models save/all_binary_separate_cat.rds"))
 imp_binary_separate_cat <- readRDS(here::here("unofficial work/models save/imp_binary_separate_cat.rds"))
