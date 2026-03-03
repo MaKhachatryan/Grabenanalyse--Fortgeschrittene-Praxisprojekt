@@ -1,5 +1,13 @@
-source("environmentSetUp.R")
+# This script compares multiple models
+# Input: fitted model objects
+# Output: tables of estimates and CI per model
 
+# Load project environment
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
 # Load models ----
 ## Separated tomb version ----
 imp_binary_separate_cat <- readRDS("unofficial work/models save/imp_binary_separate_cat.rds")

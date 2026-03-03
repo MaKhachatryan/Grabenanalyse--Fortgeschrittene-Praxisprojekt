@@ -1,6 +1,15 @@
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+# Load project environment and processed data
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
 
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 
 kinship_result_m <- og_kinship_result |>
   mutate(related_binary = case_when(

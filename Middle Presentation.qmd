@@ -9,7 +9,7 @@ institute: "Project partners: Irene Högner, Alissa Mittnik"
 format: 
   revealjs:
     html-math-method: mathjax
-    logo: "LMULogo.jpg"
+    logo: "Images/LMULogo.jpg"
     css: customstyle.css
     embed-resources: true
     slide-number: c
@@ -18,8 +18,17 @@ editor: visual
 ---
 
 ```{r setup, include=FALSE}
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 ```
 
 ## Outline
@@ -57,7 +66,7 @@ source("Analysis/pairsdata.R")
 **Grave Analysis**: How do different factors influence the ratio of relatedness and unrelatedness in a collective tomb from Mycenaean times?
 
 ::: {style="text-align: center;"}
-<img src="images/tombs.png" style="width: 60%;"/>
+<img src="Images/tombs.png" style="width: 60%;"/>
 :::
 
 ## Description of Data sets
@@ -123,7 +132,7 @@ source("Analysis/pairsdata.R")
 
 ### DAG (**directed acyclic graph)**
 
-![](images/DAG1version.jpg){fig-align="center"}
+![](Images/DAG1version.jpg){fig-align="center"}
 
 ## Data Description
 
@@ -363,7 +372,7 @@ In logistic regression, $\beta$ are given in Log-Odds
 
 $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 
-![](model%20interpretation.png){fig-align="center" width="90%"}
+![](Images/model interpretation.png){fig-align="center" width="90%"}
 
 ## Outline
 
@@ -540,7 +549,7 @@ m_related
 
 ### Proposal to handle MNAR: Interpretation
 
-![](images/Screenshot%202025-12-07%20at%2005.13.48-01.png)
+![](Images/parameters.png)
 
 ## Appendix
 

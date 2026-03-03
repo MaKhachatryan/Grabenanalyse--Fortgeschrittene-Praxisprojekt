@@ -1,6 +1,15 @@
 # Load environment and data
-source(here::here("environmentSetUp.R"))
-source(here::here("analysis", "pairsdata.R"))
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 
 # --------------------------------------------
 # Plot overlap_nsnps vs bone_quality

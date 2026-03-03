@@ -9,7 +9,7 @@ institute: "Project partners: Irene Högner, Alissa Mittnik"
 format: 
   revealjs:
     html-math-method: mathjax
-    logo: "LMULogo.jpg"
+    logo: "Images/LMULogo.jpg"
     css: customstyle.css
     embed-resources: true
     slide-number: c
@@ -18,8 +18,17 @@ editor: visual
 ---
 
 ```{r setup, include=FALSE}
-source("environmentSetUp.R")
-source("Analysis/pairsdata.R")
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 source("Analysis/model_assumption.R")
 source("Models/models_comparison.R")
 ```
@@ -77,7 +86,7 @@ source("Models/models_comparison.R")
 **Grave Analysis**: How do different factors influence the ratio of relatedness and unrelatedness in a collective tomb from Mycenaean times?
 
 ::: {style="text-align: center;"}
-<img src="images/tombs.png" style="width: 60%;"/>
+<img src="Images/tombs.png" style="width: 60%;"/>
 :::
 
 ## Project Overview
@@ -89,11 +98,11 @@ source("Models/models_comparison.R")
 
 ::::: columns
 ::: column
-![](images/tomb_photo.png){width="70%"}
+![](Images/tomb_photo.png){width="70%"}
 :::
 
 ::: column
-![](images/tomb_photo2.png){width="70%"}
+![](Images/tomb_photo2.png){width="70%"}
 :::
 :::::
 
@@ -155,19 +164,19 @@ source("Models/models_comparison.R")
 
 ## Kinship Estimation Framework (DAG)
 
-![](images/DAG2version.png){fig-align="center"}
+![](Images/DAG2version.png){fig-align="center"}
 
 ## The READv2 Classification Process
 
 READv2 (Relationship Estimation from Ancient DNA)
 
-![](images/READv2Process1.png){fig-align="center"}
+![](Images/READv2Process1.png){fig-align="center"}
 
 ## READv2 Performance & Statistical Validation
 
 #### False Positive Rates and Classification Power
 
-![](images/READv2%20FPR%20and%20Power.png){fig-align="center"}
+![](Images/READv2 FPR and Power.png){fig-align="center"}
 
 ::: {style="font-size: 0.75em; line-height: 1.2;"}
 **Coverage**: How much of the genome we actually managed to recover from the ancient sample\
@@ -288,7 +297,7 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 
 #### 2. Missing Not At Random (MNAR)
 
-![](images/READv2Process2.png){fig-align="center"}
+![](Images/READv2Process2.png){fig-align="center"}
 
 ## Model Fitting
 
@@ -296,7 +305,7 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 
 #### 2. Missing Not At Random (MNAR)
 
-![](images/MNAR.png){fig-align="center"}
+![](Images/MNAR.png){fig-align="center"}
 
 $X_O$ : Observed variables $\rightarrow$ Tomb, Age, Sex, Overlapping SNPs,...
 
@@ -354,7 +363,7 @@ $\Rightarrow$ **Missing At Random (MAR)**
 
 ### Model Definition
 
-![](images/data_structure.png){fig-align="center" width="90%"}
+![](Images/data_structure.png){fig-align="center" width="90%"}
 
 -   Observation: 1 pair (belongs to 2 tombs + 2 individuals)
 -   Each individual appears in many pairs
@@ -404,7 +413,7 @@ Where:
 
 ## Model Fitting
 
-![](images/DAG2version-01.png){fig-align="center"}
+![](Images/DAG2version-01.png){fig-align="center"}
 
 ## Model Fitting
 
@@ -461,7 +470,7 @@ imp_binary_group_nobone
 
 ### Model Estimates
 
-![](images/model_coefficients.png){fig-align="center" width="75%"}
+![](Images/model_coefficients.png){fig-align="center" width="75%"}
 
 ## Model Fitting
 
@@ -475,7 +484,7 @@ imp_binary_group_nobone
 
 ### Model Interpretation
 
-![](images/me_allpair01.png){fig-align="center" width="90%"}
+![](Images/me_allpair01.png){fig-align="center" width="90%"}
 
 ## Model Fitting
 
@@ -716,10 +725,10 @@ compare_model(list(
 ))
 ```
 
-## Model Robust Check 
+## Model Robust Check
 
 ![](Plots/robust_group_main_withintomb.png){fig-align="center" width="70%"}
 
-## Model Robust Check 
+## Model Robust Check
 
 ![](Plots/robust_group_main_unrel3rd.png){fig-align="center" width="70%"}

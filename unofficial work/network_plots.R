@@ -1,6 +1,15 @@
-# Load environment and data
-source(here::here("environmentSetUp.R"))
-source(here::here("analysis", "pairsdata.R"))
+# Load project environment and processed data
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
 
 ############### Amfissa and Elateia
 
