@@ -74,6 +74,113 @@ Universitat Autònoma de Barcelona\\
 
 \section{Data and Methods}\label{data-and-methods}
 
+\subsection{Data Description}\label{data-description}
+
+This project is based on genetic and osteological data obtained from
+human remains recovered from Mycenaean collective burial contexts in
+Greece, dated to approximately 1500--1000 BCE. The material derives from
+two archaeological sites: Amfissa, which consists of a single tholos
+tomb, and Elateia, a large chamber tomb complex containing 85 chambers.
+From Elateia, eight chambers were selected for detailed genetic
+investigation. DNA preserved in skeletal material was extracted and
+analyzed to infer biological relationships among individuals buried
+within and between tombs.
+
+The analysis draws on three interconnected datasets that capture
+information at different levels of resolution. One dataset summarizes
+characteristics at the tomb level. It includes variables such as the
+minimum number of individuals identified, the number of individuals
+successfully analyzed genetically, the estimated duration over which the
+tomb was used, the proportion of successful DNA samples, the total
+number of samples taken, and the distribution of sampled skeletal
+elements (including petrous bones, teeth, talus or phalanx, and other
+elements). These variables highlight differences between tombs in
+preservation, sampling, and burial practices.
+
+A second dataset contains metadata describing the sampled individuals.
+Each entry represents a single individual and records the associated
+tomb, estimated biological sex, age category, and the skeletal element
+used for DNA extraction. This information provides the biological and
+contextual background necessary to evaluate how individual
+characteristics relate to genetic data quality and inferred
+relationships.
+
+The third dataset reports pairwise genetic relationships between
+individuals based on ancient DNA analyses. For each pair, it includes
+estimates of genetic relatedness, the number of overlapping single
+nucleotide polymorphisms (SNPs), and a categorical classification of
+relationship degree following established criteria. Since individuals
+can be involved in multiple pairwise comparisons, observations in this
+dataset are not independent, resulting in a complex relational
+structure.
+
+\subsection{Data Preparation for
+Model}\label{data-preparation-for-model}
+
+Prior to statistical modeling, the raw datasets were processed and
+integrated to obtain consistent pairwise datasets suitable for analysis.
+Data preparation involved filtering relevant observations, harmonizing
+variable definitions, combining information across different levels, and
+constructing derived variables required for modeling.
+
+At the individual level, metadata were first restricted to the burial
+sites and tombs included in the analysis. Individuals from Lapoutsi were
+excluded, and only samples from Amfissa tholos and selected tombs at
+Elateia were retained. Age estimates were harmonized by collapsing
+ambiguous or overlapping categories into two broad groups, namely
+subadult and adult or undefined, to ensure sufficient sample sizes per
+category.
+
+Tomb-level parameters were prepared separately and standardized to
+ensure consistency across datasets. These parameters include the minimum
+number of individuals, the number of genetically analyzed individuals,
+the estimated duration of tomb use, and the proportion of successful DNA
+samples. To allow analyses at different spatial resolutions, an
+additional set of tomb-level parameters was constructed in which Tombs
+46, 56, and 62 at Elateia were treated as a single combined burial unit.
+Corresponding values for this grouped tomb were derived from the
+original data and added alongside the individual tomb records.
+
+Pairwise genetic kinship data were then processed to generate the main
+analytical datasets. Relationship classifications were cleaned by
+distinguishing between confidently assigned relationships and uncertain
+cases. Pairs with insufficient genetic information were marked as
+uncertain, and a binary relatedness indicator was derived that
+distinguishes related and unrelated pairs while excluding uncertain
+observations. In addition, a global relationship classification based on
+a stricter minimum SNP overlap threshold of 15,000 was created to reduce
+bias associated with low-quality genetic data.
+
+Individual-level metadata were merged into the kinship dataset for both
+members of each pair, adding information on tomb affiliation, sex, age
+category, and sampled skeletal element. Based on these merged data, two
+parallel analytical datasets were constructed. The first dataset retains
+the original tomb structure, in which Tombs 46, 56, and 62 are treated
+as separate burial contexts. The second dataset includes an additional
+set of observations in which pairs involving individuals from these
+tombs are duplicated and reassigned to a combined tomb category. This
+approach preserves information at the individual tomb level while
+enabling sensitivity analyses that assess the impact of treating closely
+related burial contexts as a single unit.
+
+Finally, both datasets were augmented with tomb-level characteristics by
+linking each individual's tomb to the corresponding sampling success,
+number of analyzed individuals, and length of use. From these variables,
+pairwise summaries were derived, including the minimum sampling success,
+the minimum number of analyzed individuals, and the absolute difference
+in tomb use duration between the two burial contexts. Additional
+pair-level variables were constructed to describe sex composition, age
+composition, shared tomb membership, combined skeletal element types,
+and an indicator of bone quality based on the presence of petrous bone
+samples.
+
+The resulting datasets consist of pairwise observations enriched with
+individual- and tomb-level information and derived covariates. Together,
+they allow the evaluation of genetic relatedness patterns under
+alternative representations of burial organization and provide the basis
+for the multi-membership modeling strategy applied in the subsequent
+analysis.
+
 \subsection{The Multi-Membership Generalized Linear Mixed
 Model}\label{the-multi-membership-generalized-linear-mixed-model}
 
@@ -274,6 +381,38 @@ differences between burial sites. Crucially, the fixed effects remained
 consistent across both models, proving that the results are not
 dependent on how the tombs were categorized.
 
+\subsection{Model Interpretation}\label{model-interpretation}
+
+The model output is reported in log-odds, as is standard in logistic
+regression. However, coefficients expressed on the log-odds scale are
+not directly intuitive to interpret. To make the results more
+accessible, we therefore calculate marginal predicted probabilities.
+These convert the model estimates into probabilities of the outcome,
+which in this case, the probability that a pair of individuals is
+biologically related.
+
+\textbf{Marginal Effect (Predicted Probabilities)}:
+
+Marginal predicted probabilities indicate how each explanatory variable
+affects the average probability of relatedness, while holding all other
+variables constant (ceteris paribus). This approach allows for a more
+accessible interpretation of the model results by expressing effects in
+terms of probabilities rather than log-odds.
+
+??? me plots
+
+The average predicted probabilities in the figure highlight several key
+patterns across sex pairings, age compositions, and burial contexts.
+Female--female pairs show relatively low average predicted probabilities
+of relatedness (0.21\% in the separate tombs model and 0.31\% in the
+grouped tombs model, ceteris paribus), while male--male pairs exhibit
+higher probabilities compared to other sex combinations. For age
+composition, pairs consisting of two subadults display higher predicted
+probabilities than mixed or adult--adult pairs. The most pronounced
+effect, however, is observed for burial context: pairs interred in the
+same tomb show substantially higher predicted probabilities of
+relatedness than any other category in both model specifications
+
 \subsection{Model Robustness Check}\label{model-robustness-check}
 
 To ensure that the results obtained in the primary MM-GLMM are not
@@ -344,6 +483,8 @@ in the family crypt as strictly as parent-child pairs. By including
 3rd-degree relatives in the primary ``Related'' category, we effectively
 ``diluted'' the interment effect.
 
+\section{Discussion}\label{discussion}
+
 \subsection{Model assumption}\label{model-assumption}
 
 While the MM-GLMM provides a robust framework for analyzing pairwise
@@ -392,6 +533,104 @@ model therefore remains a valid tool to interpret the influence of the
 fixed-effect variables.
 
 ??? Put QQ Plots
+
+\subsection{Selection Bias}\label{selection-bias}
+
+A threshold of 15,000 overlapping SNPs was applied across all kinship
+degrees to address the issue of missing not at random (MNAR) data. By
+restricting the analysis to observations that meet this quality
+criterion, the focus is placed exclusively on a high-quality subset of
+the available genetic data. Although this procedure increases the
+reliability of kinship estimates, it may introduce selection bias, as
+individuals with lower data quality are systematically excluded from the
+analysis. As a result, the findings may not be fully generalizable to
+the broader population under study.
+
+\subsection{Outlook for Future
+Studies}\label{outlook-for-future-studies}
+
+Future research should aim to expand the empirical basis of the analysis
+by incorporating a substantially larger number of tombs across multiple
+archaeological contexts. A broader sample would allow for the estimation
+of robust tomb-level or multilevel models with a sufficient number of
+higher-level units. This would enable a more reliable assessment of
+tomb-specific characteristics---such as length of use, number of
+interred individuals, and skeletal preservation patterns---and their
+influence on genetic relatedness structures. With increased statistical
+power, contextual variation between burial units could be modeled more
+systematically.
+
+In addition, future research should further address the issue of missing
+data. In the present study, applying a single SNP threshold helped
+reduce bias in the classification of kinship degrees. However, this
+decision also meant that only individuals with sufficiently high genetic
+data quality were included in the analysis. As a result, part of the
+available information had to be excluded. Future studies could benefit
+from improved sequencing quality and broader genomic coverage, which
+would reduce the need for strict thresholds and allow more individuals
+to be retained in the analysis. Moreover, applying alternative
+statistical approaches to evaluate how different missing data
+assumptions affect the results could help assess the stability and
+robustness of the findings.
+
+From a methodological perspective, future research could explore
+extensions of the multi-membership generalized linear mixed model.
+Relaxing assumptions such as equal random-effect weights or normally
+distributed random effects may allow for a more flexible representation
+of individual- and tomb-level heterogeneity. Furthermore, larger
+datasets would permit more stable estimation of variance components,
+particularly at the tomb level, thereby improving inference regarding
+contextual effects.
+
+Finally, future work should evaluate the potential impact of selection
+processes introduced by quality thresholds. Comparing results obtained
+from high-quality subsamples with those from broader inclusion criteria
+or alternative imputation strategies may help assess the
+generalizability of the findings to the wider population under study.
+
+\section{A Acknowledgment}\label{a-acknowledgment}
+
+We would like to express our sincere gratitude to Irene Högner and
+Alissa Mittnik for their valuable collaboration and support as our
+project partners. Their expertise, insightful feedback, and continuous
+engagement significantly contributed to the development and successful
+completion of this project.
+
+We are especially grateful to our supervisor, Yichen Han, for the
+dedicated guidance, constructive comments, and academic support
+throughout the entire project. His supervision greatly helped us refine
+our methodology, strengthen our analysis, and improve the overall
+quality of this work.
+
+\section{B Use of AI tools}\label{b-use-of-ai-tools}
+
+\#\#\#Report ChatGPT (GPT-5.2) were used to support the drafting and
+revision of the written report. The tools assisted in improving clarity,
+structure, and linguistic precision, particularly in reformulating
+paragraphs, refining academic wording, and ensuring coherence between
+sections. All conceptual content, interpretations, statistical
+reasoning, and conclusions were developed independently by the authors.
+The AI tool did not generate original scientific arguments but served as
+a language and structure support tool. All outputs were critically
+reviewed, edited, and verified by the authors. ??Latex??
+
+\#\#\#Code ChatGPT (GPT-5.2) and Gemini? were used to assist in
+troubleshooting, refining, and optimizing statistical code (e.g., for
+logistic regression models and data visualization). This included
+suggestions for improving code structure, debugging errors, and
+clarifying model implementation. However, all analytical decisions,
+model specifications, variable selections, and interpretations of
+results were made independently. The correctness and functionality of
+all code were manually tested and validated before inclusion in the
+analysis.
+
+\#\#\#Literature Research ChatGPT (GPT-5.2) was used to support the
+development of literature search strategies and to clarify theoretical
+concepts. All academic sources cited in the report were independently
+identified, accessed through scholarly databases, and critically
+evaluated. No references were included without independent verification.
+The interpretation and integration of the literature were conducted
+manually.
 
 \bibliography{ajs-template.bib}
 
