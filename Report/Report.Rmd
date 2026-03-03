@@ -36,187 +36,130 @@ keywords:
 header-includes:
  - \usepackage{amsmath}
 bibliography: ajs-template.bib
-output: rticles::ajs_article
+output:
+ rticles::ajs_article:
+   latex_engine: xelatex
+  
 ---
 
 ```{r, setup, include=FALSE}
 options(prompt = 'R> ', continue = '+ ')
 ```
 
+# Placeholder!! can be deleted 
 
-Before we look at style in more detail, the most common mistakes and errors are described:
+# Data and Methods
+## The Multi-Membership Generalized Linear Mixed Model 
+### Model Definition and Motivation
+To analyze the kinship patterns within the dataset, we require a modeling framework that can account for the inherent dependencies within our observations. In this study, an observation is defined as a pair of individuals $(i,j)$, where the response variable $Y_{ij}$ indicates whether the pair shares a biological relationship.
 
-# Frequently made style mistakes
+**Motivation: The Complexity of Pairwise Data**
 
+The data structure presents two primary challenges that traditional regression models cannot handle:
+Multiple Membership of Individuals: Each individual appears in multiple pairs. For example, if individual $i$ is compared to $j$, $k$, and $l$, the errors associated with those three observations will be correlated because they all share the unique genetic and environmental traits of individual $i$.
+Tomb-Level Dependencies: Pairs can exist both within the same tomb or across different tombs. Because individuals within a tomb may share common environmental or social factors, we must account for the random "tomb effect." A pair ${i,j}$ effectively "belongs" to the tombs $T(i)$ and $T(j)$.
 
-- AJS style is not used
-- Title in Capitalized style. See the title of the guidelines for illustration.
-- Subsection in lower case style. See the subsection of the guidelines for illustration
-- Capitalized Titles for references. E.g. \cite{fleet20} should appear in the reference list as "Fleet Management in Free-Floating Bike Sharing Systems Using
-  Predictive Modelling and Exploratory Tools" and NOT as "Fleet management in free-floating bike sharing systems using
-  predictive modelling and exploratory tools".
-- Include DOI numbers for each citation (if possible)
-- Use vector-based graphics such as \texttt{pdf}. Do not use pixel-based graphics like \texttt{png}, \texttt{jpeg}, and do not convert from \texttt{png} or \texttt{jpeg} to \texttt{pdf}
+To address this, we utilize a Multi-Membership Generalized Linear Mixed Model (MM-GLMM). This model is specifically designed for cases where an observation does not belong to a single cluster, but rather "members" multiple clusters (in our case, two individuals and two tombs) simultaneously @browne2001multiple.
 
+**Model Definition**
 
-# Introduction
+Let $Y_{ij}$ be a binary indicator where $Y_{ij} = 1$ if individuals $i$ and $j$ are related, and $Y_{t,ij} = 0$ otherwise. We assume $Y_{ij}$ follows a Bernoulli distribution:
 
-The style file of the Austrian Journal of Statistics is based on the style file of the Journal of Statistical Software (JSS) including minor modifications. We thank Achim Zeileis for his great work on the JSS style file.
+$$
+Y_{t,ij} \sim \text{Bernoulli}(\pi_{ij})
+$$
 
-The Austrian Journal of Statistics is freely available over the net. Free and open-source tools used for production of your manuscript are therefore also highly supported. Code to reproduce the figures and tables in manuscripts as well as methods implemented in software can be published as supplementary material. This increases usually the number of downloads of your article.
+where $\pi_{ij} = P(\text{related}_{ij} = 1)$ is the probability of a relationship existing between the pair. We model this probability using a logit link function to accommodate the complex random effects structure:
 
+$$
+\text{logit}(\pi_{ij}) = \alpha + \mathbf{X}_{ij}^{\top}\boldsymbol{\beta} 
+    + \underbrace{(w_i u_i + w_j u_j)}_{\text{Individual RE}} 
+    + \underbrace{(w_{T(i)} v_{T(i)} + w_{T(j)} v_{T(j)})}_{\text{Tomb RE}}
+$$
 
-# Writing your manuscript
+Components of the Model:
 
-The Journal is produced on the basis of computer readable manuscripts provided by the authors. 
+-   $\alpha$: The global intercept, representing the baseline log-odds of two individuals being related.
+-   $\mathbf{X}_{ij} \beta$: The fixed effects component, where $\mathbf{X}_{ij}$ contains pair-level covariates.
+-   $u_i, u_j$: Random effects for the two individuals, where $u \sim \mathcal{N}(0, \sigma^2_{\text{ind}})$
+-   $v_{T(i)}, v_{T(j)}$: Random effects for the tombs associated with individuals $i$ and $j$, where $v \sim \mathcal{N}(0, \sigma^2_{\text{tomb}})$
+-   $w$: Weights assigned to the random effects. Following standard multi-membership notation @browne2001multiple, we set equal weights $w_i = w_j = 0.5$ and $w_{T(i)} = w_{T(j)} = 0.5$. This ensures that the total variance contributed by the individual or tomb level remains consistent and equal.
 
-Footnotes should be avoided.
+### Fitting the Model with brms
+Following the theoretical definition of the MM-GLMM, this section details the practical implementation, predictor selection, and the Bayesian framework used for estimation.
 
-The article should be structured by enumerated sections and
-subsections. The title should be in title case style, sections and subsections in section case style. Graphics and tables must contain captions, above
-tables and below graphics (figures). Examples are (see Figure~\ref{Fig3.4} and Table~\ref{Tab3.4}).
-Graphics \textbf{should be produced in \textbf{pdf} format} and included 
- at suitable places of the manuscript. 
+*Predictor Selection and the Causal Framework*
+The selection of covariates is guided by the Directed Acyclic Graph (DAG) presented in Section [2.3.1. DAG]. To estimate the probability of relatedness, we focus on variables situated along the social, biological branches of our causal model. Specifically, the following predictors are included in the model: Pairwise Sex Combination, Pairwise Age Category, and Same Tomb Indicator.
 
-\begin{figure}[hbt]
-\begin{center}
-\includegraphics{ajs-download20180210.pdf}
-\caption{\label{Fig3.4}Download statistics of articles per month at the Austrian Journal of Statistics.} 
-\end{center}
-\end{figure}
+Notably, DNA preservation variables (Number of Overlapping SNPs, Analyzed skeletal element,...) are excluded from the model. While preservation significantly influences data quality and the initial ability to identify SNPs, it does not exert a causal influence on true biological relatedness itself. Because a rigorous quality filter, a 15,000 SNP threshold, was applied during data preprocessing, the influence of preservation bias is effectively mitigated. Once a pair meets this threshold, variation in kinship outcomes is no longer explained by preservation quality. 
 
-\begin{table}[hbt]
-\caption{\label{Tab3.4}80 measured values of access time.}
-\vspace*{-5mm}
-\small
-\hspace{1.5cm}
-\begin{center}
-\begin{tabular}{|llllllll|}
-\toprule
-70.0 & 68.6 & 67.9 & 66.3 & 71.0 & 64.2 & 69.6 & 71.0\\
-... & ... & ... & ... & ... & ... & ... & ...\\
-%69.7 & 69.0 & 73.4 & 69.0 & 70.1 & 69.8 & 69.0 & 73.0\\
-%70.0 & 69.1 & 69.5-& 67.9 & 72.8 & 72.1 & 69.5+& 70.1\\
-%70.2 & 69.1 & 68.9 & 68.3 & 74.9 & 68.4 & 69.1 & 66.6\\
-%71.1 & 69.2 & 71.2 & 68.9 & 70.9 & 70.6 & 69.9 & 69.9\\
-%69.4 & 69.5+& 68.5+& 70.9 & 71.6 & 68.9 & 72.0 & 70.3\\
-%68.6 & 68.5-& 67.8 & 72.2 & 68.7 & 70.6 & 66.9 & 69.3\\
-%71.4 & 68.7 & 74.2 & 68.8 & 71.4 & 71.8 & 67.5-& 70.4\\
-%71.4 & 67.4 & 69.5-& 72.4 & 70.4 & 69.3 & 68.2 & 67.0\\
-71.7 & 70.5+& 72.5-& 68.2 & 67.6 & 68.6 & 70.5-& 65.8\\
-\bottomrule
-\end{tabular}
-\end{center}
-\end{table}
+*Bayesian Implementation via brms*
+The model is fitted using the brms package in R. The brms package acts as an interface to Stan, utilizing Hamiltonian Monte Carlo (HMC) algorithms to perform Bayesian inference. This approach is particularly robust for Multi-Membership models, as it allows for flexible specification of complex random effect structures that often struggle to estimate using frequentist Maximum Likelihood methods @burkner2017advanced.
 
-Mathematical formulas should be enumerated as far as they are
-referenced \textbf{only}. E.g.~Equation~(\ref{form3.1}) shows the density 
-\begin{equation}\label{form3.1}
-f(x) =
-\frac1{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu)^2}{2\sigma^2}}\,.
-\end{equation}
+Two distinct versions of the model are implemented
 
-Please consider 
+Separated Tomb Model: Every tomb is treated as an individual level within the random effect $v_t$.
+Grouped Tomb Model: In this version, three specific tombs, Elateia T46, T56, and T62, are treated as a single pooled tomb.
 
-- capitalized title case for titles and for all references and 
-- sentence, non-capitalized case for sections and subsections.
+# Result
+Following the model specification, this chapter presents the findings from the Bayesian Multi-Membership Generalized Linear Mixed Model.
 
+## Model Diagnostics
+Before interpreting the relationship between burial patterns and kinship, it is essential to assess the "sampling health" of the model. Because the MM-GLMM was fitted using Hamiltonian Monte Carlo (HMC) via Stan, we evaluate the reliability of the posterior distributions using two primary metrics: the potential scale reduction factor ($\hat{R}$) and the Effective Sample Size (ESS).
 
+**Convergence and Chain Stability**:
+A primary indicator of model health is the $\hat{R}$ (R-hat) statistic, which compares the variance within individual MCMC chains to the variance between chains. For all parameters in our model, the $\hat{R}$ values were consistently **1.00**. Following modern Bayesian standards, an $\hat{R} < 1.01$ indicates that all four chains have successfully converged to the same posterior distribution, confirming that the model has reached stability and is not sensitive to the starting values of the chains @vehtari2021rank.
 
-Cited literature should be summarized at the end of the article in
-form of a non-enumerated section. \cite{leisch02} is a reference
-to an article. If the citation is in parentheses, it
-should look like \citep{leisch02}.
-References should be in title case.
+**Sampling Efficiency**:
+The Effective Sample Size (ESS) provides an estimate of the number of independent draws contained in the posterior distribution, accounting for autocorrelation between consecutive MCMC steps. In accordance with the standards implemented in the brms framework, we report two measures:
 
-Correspondence addresses of author(s) should be added at the end
-of the manuscript. 
+- Bulk-ESS: Measures the sampling efficiency for the mean and median of the distribution.
+- Tail-ESS: Measures the efficiency for the tails of the distribution, which is critical for the reliability of the 95% credible intervals.
 
+As shown in the model output, both the Bulk-ESS and Tail-ESS for all key predictors are well above the recommended thresholds (typically >400 per chain). Many parameters reached between 3,000 and 22,000 independent samples. For instance, the "Same Tomb" predictor achieved a Bulk-ESS of 22,386, indicating an exceptionally high degree of precision in the estimation of the interment effect. These metrics provide a high degree of confidence that the posterior estimates discussed in the following sections are robust and represent truly independent information from the data @vehtari2021rank.
 
-# Submission and refereeing
+## Model Output
+Following the diagnostic verification, we present the posterior estimates for the two versions of our model: the Separated Tomb Model (8 tombs) and the Grouped Tomb Model (6 tombs). Both versions show remarkable stability in their regression coefficients, confirming that the pooling of the Elateia tombs does not fundamentally alter the estimated relationships. For a visual representation of the full effect estimations and their associated 95% Credible Intervals (CI), please refer to the plot in ??Figure. 
 
+A primary observation is the dominance of Same Tomb Indicator, which yielded the highest estimate in both models (2.30 and 2.64, respectively). This signifies that shared burial space is the strongest predictor of biological kinship in this dataset. Regarding biological predictors, the Male-Male (XY-XY) combination stands out with a consistent estimate of 1.94, significantly higher than the Female-Male (XX-XY) estimate of $\approx 0.90$. Furthermore, the Both Subadult category (1.51 and 1.46) suggests a strong horizontal kinship signal among children.
 
-## Submission
+The multilevel hyperparameters reveal substantial variation at the individual level ($sd \approx 2.29$), which suggests that the density of kinship ties is not uniform across the population, but rather concentrated around specific individuals. At the tomb level, the estimated standard deviation increases from 1.16 in the Separated Model to 1.86 in the Grouped Model. This increase suggests that grouping the Elateia (T46, T56, and T62) tombs allows the model to better account for differences between burial sites. Crucially, the fixed effects remained consistent across both models, proving that the results are not dependent on how the tombs were categorized.
 
-Consideration of the previously stated rules are of great help for
-the editing process. Whenever technically possible, manuscripts
-should be submitted through the editorial system at \href{www.ajs.or.at}{www.ajs.or.at}. The authors must be registered at this website.
+## Model Robustness Check
+To ensure that the results obtained in the primary MM-GLMM are not artifacts of specific data distributions, prior specifications, or classification choices, we performed three sensitivity analyses. These tests evaluate whether our findings, particularly the dominant role of the tomb effect and sex-specific patterns, remain consistent under alternative model conditions.
 
-## Refereing
+### Sensitivity to Prior Specification
+In the primary model, we utilized flat (uninformative) priors, which allow the data to drive the estimates entirely. To ensure the model was not "noise chasing", which means fitting patterns that do not truly exist, we re-fitted the model using Weakly Informative Priors $N(0,1)$. This approach applies a form of regularization, pulling estimates toward zero unless the data provides strong evidence to the contrary.
 
-All contributions will be anonymously refereed. Cited literature which is
-hardly available should accompany the submitted manuscript. It
-should also be considered to place used and analyzed data at
-disposal for the referees (if there are no legal or technical
-arguments against).
+As expected with Priors $N(0,1)$, the coefficients experienced a slight shrinkage toward zero. No coefficients changed direction, and the variable Same Tomb Indicator remained the dominant predictor, largely unaffected by the prior. This confirms that the observed effects are driven by strong signals in the data rather than being an artifact of the prior choice. 
 
-Editor and referees must trust that the contribution has not been
-submitted for publication at the same time at another place. It is
-fair that the submitting author notifies if an earlier version has
-already been submitted somewhere before.
+### Sensitivity to the "Same Tomb" Predictor (Within-Tomb Analysis)
+Because the Same Tomb Indicator emerged as an exceptionally dominant predictor in our primary model, it was necessary to conduct a robustness check to ensure that other biological and demographic variables were not merely statistical artifacts of this effect.
 
-## Copyrights and fees
+To isolate the influence of sex and age from the overwhelming signal of shared burial space, we fitted a secondary model restricted exclusively to within-tomb pairs. This approach effectively removes the across-tomb variance, providing a focused look at the internal organization of the burial units. The model was restricted to the 2,990 observations involving individuals interred in the same tomb, compared to the 13,690 observations in the full dataset. Consequently, the estimated effects appear weaker, with coefficients shrinking toward zero.
 
-The Austrian Journal of Statistics is free of
-charge. Generally, we use the Creative Commons Attribution License (CC-BY).
+Despite the reduced power, the qualitative results remained consistent. The direction of all effects was unchanged, and the Male-Male (XY-XY) pair combination remained the dominant predictor of relatedness within the tomb. This confirms that the sex-biased patterns identified in the primary analysis are a fundamental characteristic of the kinship structure within these tombs and are not driven by the broader "Same Tomb" effect.
 
-For copyright issues, publication ethics and malpractice statements, please have a look at 
-<www.ajs.or.at>
+### Redefining the Relatedness Threshold (3rd Degree as Unrelated)
+In our primary analysis, we collapsed 1st, 2nd, and 3rd-degree relatives into a single "Related" category. However, 3rd-degree relationships represent more distant biological ties. We conducted a robustness check by redefining the response variable $Y_{ij}$ to count only 1st and 2nd-degree relatives as "Related."
+
+Under this stricter definition, the "Same Tomb" effect showed a substantially larger estimated coefficient. This suggests that shared burial context is an even stronger predictor for immediate kinship than for distant relatives. From an archaeological perspective, 3rd-degree kinmay not have resided in the same immediate household or been interred in the family crypt as strictly as parent-child pairs. By including 3rd-degree relatives in the primary "Related" category, we effectively "diluted" the interment effect.
 
 
+## Model assumption
+While the MM-GLMM provides a robust framework for analyzing pairwise kinship, the validity of its inferences depends on the underlying statistical assumptions. This section discusses the theoretical and empirical justifications for our model choices, as well as the potential impacts of deviations from these assumptions.
 
+### Equal Weighting of Random Effects (w = 0.5)
+In the multi-membership structure, we assumed equal weights ($w_i = w_j = 0.5$ and $w_{T(i)} = w_{T(j)} = 0.5$) for the random effects of individuals and tombs, respectively. This assumption is theoretically plausible at the individual level, as there is no a priori reason to believe one individual in a pair contributes more to the shared probability of relatedness than the other. Furthermore, simulation studies by @smith2014impact suggest that multi-membership models are generally robust to weight misspecification, meaning that even if the "true" weights were slightly unequal, the resulting fixed-effect estimates remain reliable.
 
+### Normality of Random Effects
+A standard assumption of GLMMs is that the random effects ($u$ and $v$) are independently and identically distributed following a normal distribution: $u,v \sim \mathcal{N}(0, \sigma^2)$. We evaluated this through Q-Q plots for both the Individual and Tomb random effects across our model variants.
 
-# Specifics to markdown
+For individual random effect diagnostic plots, the distribution is somewhat skewed. Non-normality in random effects can potentially lead to a biased global intercept and an inaccurate estimation of the random effect distribution's shape. However, literature on mixed models @mcculloch2011misspecifying demonstrates that fixed-effect estimates and variance components are stable even when the normality assumption for random effects is violated.
 
-## Code formatting
+The diagnostic for the tomb-level effects is limited by the low number of levels. According to @maas2005sufficient, the estimation of the random effect variance ($\sigma^2_{tomb}$ can be biased or imprecise when the number of clusters is small (typically $<30$). However the fixed-effect regression coefficients remain unbiased. The model therefore remains a valid tool to interpret the influence of the fixed-effect variables.
 
-In general, don't use Markdown, but use the more precise LaTeX commands instead:
-
-* \proglang{Java}
-* \pkg{plyr}
-
-One exception is inline code, which can be written inside a pair of backticks (i.e., using the Markdown syntax).
-
-If you want to use LaTeX commands in headers, you need to provide a `short-title` attribute. You can also provide a custom identifier if necessary. See the header of Section \ref{r-code} for example.
-
-# \proglang{R} code {short-title="R code" #r-code}
-
-Can be inserted in regular R markdown blocks.
-
-```{r}
-x <- 1:10
-x
-```
-
-## Features specific to \pkg{rticles} {short-title="Features specific to rticles"}
-
-* Adding short titles to section headers is a feature specific to \pkg{rticles} (implemented via a Pandoc Lua filter). This feature is currently not supported by Pandoc and we will update this template if [it is officially supported in the future](https://github.com/jgm/pandoc/issues/4409).
-* Using the `\AND` syntax in the `author` field to add authors on a new line. This is a specific to the `rticles::ajs_article` format.
-
-
-# Checklist
-
-We list the most common mistakes when submitting manuscripts to the journal and formulate them in form of questions.
-
-- Did you upload a pdf of your manuscript for review? (no Word, no .tex, ...)
-- Did you use the style of AJS?  
-- Are your graphics produced in pdf format? 
-- Is your title captialized?
-- Are the titles of your cited papers in your references capitalized?
-- Are your section and subsection headers non-capitalized form?
-- Are your tables produced with \LaTeX ? (no screenshots)
-- Have you cited the software you used, e.g. R itself and R packages used? To not cite software is plagiarism and violates intellectual properties of the authors of the software.
-- Did you proposed at least three independent reviewers?
-
-
-# Frequently asked questions
-
-
-- *My citation shows all authors and not the typically shown et al.*. Answer: this is ok. We like to show all authors in the text.
-- *When I submit a paper, how long does it take to be published?*.  Answer: The average time from submission to publication is approx. 132 days. But it heavily depends if you can make satisfying revisions in time. 
-- *In which databases is AJS indexed.* Answer: we are indexed in many of them, most notable is Scopus (from Elsevier). More information can be found at the website of AJS. 
-- *Can I upload my paper on \href{https://arxiv.org/}{https://arxiv.org/} and distribute before the paper is online at AJS?*  Answer: Of course, you can do it. However, please clearly point out in the header of the paper that this paper is under review in the Austrian Journal of Statistics and will likely be published there. Note that the readers should check if the paper is already be published at AJS for correct citation, i.e. finally the journal should be cited. Update and upload  \href{https://arxiv.org/}{https://arxiv.org/} or similar sites with the final version in AJS style after the paper is published  in AJS. 
+??? Put QQ Plots
 
 
 
