@@ -2,12 +2,8 @@
 # It creates pairwise datasets, derives analysis variables, and prepares
 # filtered datasets that are used as input for the statistical models.
 
-# Load project environment and processed data
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
+# Load project environment
+source("environment_setup.R")
 
 ##Individual Metadata
 ##- Filtering out the Lapoutsi

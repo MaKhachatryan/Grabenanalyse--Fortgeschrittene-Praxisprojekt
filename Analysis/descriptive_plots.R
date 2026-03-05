@@ -4,17 +4,8 @@
 # and p0 distributions, and saves all plots as .png files in the Plots folder.
 
 # Load project environment and processed data
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
-
-suppressMessages(
-  suppressWarnings(
-    source(here::here("Analysis", "pairs_data.R"))
-  )
-)
+source("environment_setup.R")
+source("Analysis/pairs_data.R")
 
 ######################################################
 ### Absolute relation of MNI and analysed individuals

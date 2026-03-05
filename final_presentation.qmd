@@ -9,7 +9,7 @@ institute: "Project partners: Irene Högner, Alissa Mittnik"
 format: 
   revealjs:
     html-math-method: mathjax
-    logo: "Images/LMULogo.jpg"
+    logo: "Images/LMU_logo.jpg"
     css: customstyle.css
     embed-resources: true
     slide-number: c
@@ -18,17 +18,8 @@ editor: visual
 ---
 
 ```{r setup, include=FALSE}
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
-
-suppressMessages(
-  suppressWarnings(
-    source(here::here("Analysis", "pairs_data.R"))
-  )
-)
+source("environment_setup.R")
+source("Analysis/pairs_data.R")
 source("Analysis/model_assumption.R")
 source("Models/models_comparison.R")
 ```
@@ -164,19 +155,19 @@ source("Models/models_comparison.R")
 
 ## Kinship Estimation Framework (DAG)
 
-![](Images/DAG2version.png){fig-align="center"}
+![](Images/DAG_2version.png){fig-align="center"}
 
 ## The READv2 Classification Process
 
 READv2 (Relationship Estimation from Ancient DNA)
 
-![](Images/READv2Process1.png){fig-align="center"}
+![](Images/READv2_process1.png){fig-align="center"}
 
 ## READv2 Performance & Statistical Validation
 
 #### False Positive Rates and Classification Power
 
-![](Images/READv2 FPR and Power.png){fig-align="center"}
+![](Images/READv2_FPR_and_Power.png){fig-align="center"}
 
 ::: {style="font-size: 0.75em; line-height: 1.2;"}
 **Coverage**: How much of the genome we actually managed to recover from the ancient sample\
@@ -297,7 +288,7 @@ $\Rightarrow$ **With the available data, a meaningful tomb-level model is not po
 
 #### 2. Missing Not At Random (MNAR)
 
-![](Images/READv2Process2.png){fig-align="center"}
+![](Images/READv2_process2.png){fig-align="center"}
 
 ## Model Fitting
 
@@ -413,7 +404,7 @@ Where:
 
 ## Model Fitting
 
-![](Images/DAG2version-01.png){fig-align="center"}
+![](Images/DAG_2version_01.png){fig-align="center"}
 
 ## Model Fitting
 
@@ -444,7 +435,7 @@ pairs_ind_show |>
 #### Separated Version
 
 ```{r mod sep, echo=FALSE, out.height="500px"}
-imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
+imp_binary_separate_nobone <- readRDS("Models/Saved models/imp_binary_separate_nobone.rds")
 imp_binary_separate_nobone
 ```
 
@@ -455,7 +446,7 @@ imp_binary_separate_nobone
 #### Grouped Version
 
 ```{r mod group, echo=FALSE, out.height="500px"}
-imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
+imp_binary_group_nobone <- readRDS("Models/Saved models/imp_binary_group_nobone.rds")
 imp_binary_group_nobone
 ```
 
@@ -484,7 +475,7 @@ imp_binary_group_nobone
 
 ### Model Interpretation
 
-![](Images/me_allpair01.png){fig-align="center" width="90%"}
+![](Images/me_all_pair_01.png){fig-align="center" width="90%"}
 
 ## Model Fitting
 

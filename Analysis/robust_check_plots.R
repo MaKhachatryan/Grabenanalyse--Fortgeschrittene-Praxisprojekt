@@ -2,18 +2,18 @@
 source("environment_setup.R")
 
 ## -- load all the separate models --
-imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
+imp_binary_separate_nobone <- readRDS("Models/Saved models/imp_binary_separate_nobone.rds")
 imp_binary_separate_withintomb <- readRDS("unofficial work/models save/imp_binary_separate_withintomb.rds")
-imp_binary_separate_unrel3rd <- readRDS("unofficial work/models save/imp_binary_separate_unrel3rd.rds")
-imp_binary_separate_sametomb <- readRDS("unofficial work/models save/imp_binary_separate_sametomb.rds")
-imp_binary_separate_nobone_prior <- readRDS("Models/saved_models/imp_binary_separate_nobone_prior.rds")
+imp_binary_separate_unrel3rd <- readRDS("Models/Saved models/imp_binary_separate_unrel3rd.rds")
+imp_binary_separate_sametomb <- readRDS("Models/Saved models/imp_binary_separate_sametomb.rds")
+imp_binary_separate_nobone_prior <- readRDS("Models/Saved models/imp_binary_separate_nobone_prior.rds")
 
 ## -- load all the grouped models -- 
-imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
+imp_binary_group_nobone <- readRDS("Models/Saved models/imp_binary_group_nobone.rds")
 imp_binary_group_withintomb <- readRDS("unofficial work/models save/imp_binary_group_withintomb.rds")
-imp_binary_group_unrel3rd <- readRDS("unofficial work/models save/imp_binary_group_unrel3rd.rds")
-imp_binary_group_sametomb <- readRDS("unofficial work/models save/imp_binary_group_sametomb.rds")
-imp_binary_group_nobone_prior <- readRDS("Models/saved_models/imp_binary_group_nobone_prior.rds")
+imp_binary_group_unrel3rd <- readRDS("Models/Saved models/imp_binary_group_unrel3rd.rds")
+imp_binary_group_sametomb <- readRDS("Models/Saved models/imp_binary_group_sametomb.rds")
+imp_binary_group_nobone_prior <- readRDS("Models/Saved models/imp_binary_group_nobone_prior.rds")
 
 
 extract_brms_estimates <- function(model, model_name, probs = c(.025, .975)) {

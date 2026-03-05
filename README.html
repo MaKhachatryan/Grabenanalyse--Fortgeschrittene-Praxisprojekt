@@ -369,9 +369,8 @@ display: none;
 <p>This repository contains the Grave Analysis Project. Please read
 these instructions carefully to ensure that all scripts run
 smoothly.</p>
-<p>We use R version 4.4.2 (or higher). Some packages may require the
-latest R version, so please ensure it is installed before
-proceeding.</p>
+<p>We use R version 4.5.2. Some packages may require the latest R
+version, so please ensure it is installed before proceeding.</p>
 </div>
 <div id="usage" class="section level2">
 <h2>Usage</h2>
@@ -405,12 +404,12 @@ comparisons using the processed datasets and saved models:</p>
 data.<br />
 </li>
 <li>Saves the fitted models into
-<strong><code>Models/saved_models.R</code></strong> for later use.<br />
+<strong><code>Models/Saved models</code></strong> for later use.<br />
 </li>
 <li><strong>Note:</strong> Running this script can take a long
 time.</li>
 </ul></li>
-<li><strong><code>Model/model_comparison.R</code></strong>
+<li><strong><code>Models/model_comparison.R</code></strong>
 <ul>
 <li>Compares fitted models by summarizing parameter estimates and
 credible intervals.</li>
@@ -425,6 +424,24 @@ saves them in the Plots folder.</li>
 <li>Creates Q-Q plots to check random effects normality of fitted
 models.</li>
 </ul></li>
+<li><strong><code>Analysis/model_marginal_effect.R</code></strong>
+<ul>
+<li>Calculates marginal effects and predicted probabilities from the
+fitted models and generates plots comparing effects across sex pair, age
+pair, and burial context for both separated and grouped tomb
+models.</li>
+</ul></li>
+<li><strong><code>Analysis/model_output_plot.R</code></strong>
+<ul>
+<li>Extracts fixed and random effect estimates from the fitted models
+and generates coefficient plots with credible intervals to visualize and
+compare model parameters.</li>
+</ul></li>
+<li><strong><code>Analysis/robust_check_plots.R</code></strong>
+<ul>
+<li>Performs robustness checks by comparing alternative model
+specifications.</li>
+</ul></li>
 </ol>
 </div>
 <div id="directory-structure" class="section level2">
@@ -436,10 +453,10 @@ models.</li>
 <li><p><code>environment_setup.R</code></p></li>
 <li><p><strong>Files for the presentation</strong></p>
 <ul>
-<li><code>Middle Presentation.qmd</code></li>
-<li><code>Middle Presentation.html</code></li>
-<li><code>Final Presentation.qmd</code></li>
-<li><code>Final Presentation.html</code></li>
+<li><code>middle_presentation.qmd</code></li>
+<li><code>middle_presentation.html</code></li>
+<li><code>final_presentation.qmd</code></li>
+<li><code>final_presentation.html</code></li>
 <li><code>customstyle.css</code></li>
 </ul></li>
 <li><p><code>Additional materials/</code><br />
@@ -460,8 +477,11 @@ Raw initial datasets used in the project.</p></li>
 diagnostics.</p>
 <ul>
 <li><code>descriptive_plots.R</code></li>
-<li><code>pairs_data.R</code></li>
 <li><code>model_assumption.R</code></li>
+<li><code>model_marginal_effect.R</code></li>
+<li><code>model_output_plot.R</code></li>
+<li><code>pairs_data.R</code></li>
+<li><code>robust_check_plots.R</code></li>
 </ul>
 </div>
 <div id="models" class="section level3">
@@ -470,7 +490,7 @@ diagnostics.</p>
 <ul>
 <li><code>fit_models.R</code></li>
 <li><code>model_comparison.R</code></li>
-<li><code>saved_models/</code>: Stored fitted model objects (.rds
+<li><code>Saved models/</code>: Stored fitted model objects (.rds
 files).</li>
 </ul>
 </div>

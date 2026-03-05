@@ -1,20 +1,11 @@
 # This script loads the prepared pair datasets and fits the statistical models
 # used in the analysis. It runs Bayesian mixed models for binary relatedness
 # and a Gaussian regression model for SNP overlap, and saves all fitted models
-# as .rds files in the folder Models/saved_models.
+# as .rds files in the folder Models/Saved models.
 
 # Load project environment and processed data
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
-
-suppressMessages(
-  suppressWarnings(
-    source(here::here("Analysis", "pairs_data.R"))
-  )
-)
+source("environment_setup.R")
+source("Analysis/pairs_data.R")
 
 # Keep only pairs with 15000 SNP overlap
 pairs_ind <- pairs_ind_og[pairs_ind_og$overlap_nsnps >= 15000, ]
@@ -48,7 +39,7 @@ summary(imp_binary_separate_nobone)
 # Save fitted model
 saveRDS(
   imp_binary_separate_nobone,
-  file = "Models/saved_models/imp_binary_separate_nobone.rds"
+  file = "Models/Saved models/imp_binary_separate_nobone.rds"
 )
 
 
@@ -63,7 +54,7 @@ summary(imp_binary_group_nobone)
 # Save fitted model
 saveRDS(
   imp_binary_group_nobone,
-  file = "Models/saved_models/imp_binary_group_nobone.rds"
+  file = "Models/Saved models/imp_binary_group_nobone.rds"
 )
 
 # 3. Robust check model (separated): only use "same_tomb" as predictor ----
@@ -79,7 +70,7 @@ summary(imp_binary_separate_sametomb)
 # Save fitted model
 saveRDS(
   imp_binary_separate_sametomb,
-  file = "Models/saved_models/imp_binary_separate_sametomb.rds"
+  file = "Models/Saved models/imp_binary_separate_sametomb.rds"
 )
 
 # 4. Robust check model (grouped): only use "same_tomb" as predictor ----
@@ -93,7 +84,7 @@ summary(imp_binary_group_sametomb)
 # Save fitted model
 saveRDS(
   imp_binary_group_sametomb,
-  file = "Models/saved_models/imp_binary_group_sametomb.rds"
+  file = "Models/Saved models/imp_binary_group_sametomb.rds"
 )
 
 
@@ -108,7 +99,7 @@ summary(imp_binary_separate_unrel3rd)
 # Save fitted model
 saveRDS(
   imp_binary_separate_unrel3rd,
-  file = "Models/saved_models/imp_binary_separate_unrel3rd.rds"
+  file = "Models/Saved models/imp_binary_separate_unrel3rd.rds"
 )
 
 # 6. Robust check model (grouped): set 3rd degree kinship as unrelated ----
@@ -122,7 +113,7 @@ summary(imp_binary_group_unrel3rd)
 # Save fitted model
 saveRDS(
   imp_binary_group_unrel3rd,
-  file = "Models/saved_models/imp_binary_group_unrel3rd.rds"
+  file = "Models/Saved models/imp_binary_group_unrel3rd.rds"
 )
 
 # 7. Robust check model (separated): set prior N(0,1)
@@ -138,7 +129,7 @@ summary(imp_binary_separate_nobone_prior)
 # Save fitted model
 saveRDS(
   imp_binary_separate_nobone_prior,
-  file = "Models/saved_models/imp_binary_separate_nobone_prior.rds"
+  file = "Models/Saved models/imp_binary_separate_nobone_prior.rds"
 )
 
 # 8. Robust check model (grouped): set prior N(0,1)
@@ -152,7 +143,7 @@ summary(imp_binary_group_nobone_prior)
 # Save fitted model
 saveRDS(
   imp_binary_group_nobone_prior,
-  file = "Models/saved_models/imp_binary_group_nobone_prior.rds"
+  file = "Models/Saved models/imp_binary_group_nobone_prior.rds"
 )
 
 # 9. Model Overlap GLM
@@ -171,7 +162,7 @@ summary(m_overlap_glm)
 # Save fitted model
 saveRDS(
   m_overlap_glm,
-  file = "Models/saved_models/m_overlap_glm.rds"
+  file = "Models/Saved models/m_overlap_glm.rds"
 )
 
 # 10. Relatedness Bayesian Regression Modeling (BRM)
@@ -205,6 +196,6 @@ summary(m_related)
 
 # Save fitted model
 saveRDS(m_related,
-        file = "Models/saved_models/m_related1.rds"
+        file = "Models/Saved models/m_related1.rds"
 )
 

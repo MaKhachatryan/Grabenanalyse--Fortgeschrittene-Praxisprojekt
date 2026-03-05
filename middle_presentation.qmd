@@ -9,7 +9,7 @@ institute: "Project partners: Irene Högner, Alissa Mittnik"
 format: 
   revealjs:
     html-math-method: mathjax
-    logo: "Images/LMULogo.jpg"
+    logo: "Images/LMU_logo.jpg"
     css: customstyle.css
     embed-resources: true
     slide-number: c
@@ -18,17 +18,8 @@ editor: visual
 ---
 
 ```{r setup, include=FALSE}
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
-
-suppressMessages(
-  suppressWarnings(
-    source(here::here("Analysis", "pairs_data.R"))
-  )
-)
+source("environment_setup.R")
+source("Analysis/pairs_data.R")
 ```
 
 ## Outline
@@ -132,7 +123,7 @@ suppressMessages(
 
 ### DAG (**directed acyclic graph)**
 
-![](Images/DAG1version.jpg){fig-align="center"}
+![](Images/DAG_1version.jpg){fig-align="center"}
 
 ## Data Description
 
@@ -301,7 +292,7 @@ pairs_ind_show |>
 ### Separated tombs
 
 ```{r mod sep, echo=FALSE, out.height="500px"}
-imp_binary_separate_cat <- readRDS("Models/saved_models/imp_binary_separate_cat.rds")
+imp_binary_separate_cat <- readRDS("Models/Saved models/imp_binary_separate_cat.rds")
 imp_binary_separate_cat
 ```
 
@@ -310,7 +301,7 @@ imp_binary_separate_cat
 ### Grouped tombs
 
 ```{r mod group, echo=FALSE, out.height="500px"}
-imp_binary_group_cat <- readRDS("Models/saved_models/imp_binary_group_cat.rds")
+imp_binary_group_cat <- readRDS("Models/Saved models/imp_binary_group_cat.rds")
 imp_binary_group_cat
 ```
 
@@ -372,7 +363,7 @@ In logistic regression, $\beta$ are given in Log-Odds
 
 $\Rightarrow$ Interpret as $\text{Odds Ratio} = e^{\beta}$
 
-![](Images/model interpretation.png){fig-align="center" width="90%"}
+![](Images/model_interpretation.png){fig-align="center" width="90%"}
 
 ## Outline
 
@@ -478,7 +469,7 @@ GLM was chosen because:
 ### Model
 
 ```{r mod ov, echo=FALSE, warning=FALSE, out.height="500px"}
-m_overlap <- readRDS("Models/saved_models/m_overlap_glm.rds") 
+m_overlap <- readRDS("Models/Saved models/m_overlap_glm.rds") 
 m_overlap
 ```
 
@@ -527,7 +518,7 @@ brms library:
 ### Proposal to handle MNAR: Model
 
 ```{r mod r, echo=FALSE, warning=FALSE, out.height="500px"}
-m_related <- readRDS("Models/saved_models/m_related1.rds") 
+m_related <- readRDS("Models/Saved models/m_related1.rds") 
 m_related
 ```
 
