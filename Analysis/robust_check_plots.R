@@ -1,19 +1,19 @@
 # Load project environment
 source("environment_setup.R")
-library(tibble)
 
 ## -- load all the separate models --
 imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
 imp_binary_separate_withintomb <- readRDS("unofficial work/models save/imp_binary_separate_withintomb.rds")
 imp_binary_separate_unrel3rd <- readRDS("unofficial work/models save/imp_binary_separate_unrel3rd.rds")
 imp_binary_separate_sametomb <- readRDS("unofficial work/models save/imp_binary_separate_sametomb.rds")
+imp_binary_separate_nobone_prior <- readRDS("Models/saved_models/imp_binary_separate_nobone_prior.rds")
 
 ## -- load all the grouped models -- 
 imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
 imp_binary_group_withintomb <- readRDS("unofficial work/models save/imp_binary_group_withintomb.rds")
 imp_binary_group_unrel3rd <- readRDS("unofficial work/models save/imp_binary_group_unrel3rd.rds")
 imp_binary_group_sametomb <- readRDS("unofficial work/models save/imp_binary_group_sametomb.rds")
-
+imp_binary_group_nobone_prior <- readRDS("Models/saved_models/imp_binary_group_nobone_prior.rds")
 
 
 extract_brms_estimates <- function(model, model_name, probs = c(.025, .975)) {
@@ -77,6 +77,36 @@ extract_brms_estimates <- function(model, model_name, probs = c(.025, .975)) {
   bind_rows(fx, sd_df)
 }
 
+# Clean the label
+clean_term_labels <- function(df) {
+  df |>
+    mutate(
+      term = case_when(
+        term == "Intercept" | term == "(Intercept)" ~ "Intercept",
+        term == "age_pairmixed" ~ "Mixed",
+        term == "age_pairbothsubadult" ~ "Both Subadults",
+        term == "sex_pairXYMXY" ~ "XY-XY",
+        term == "sex_pairXXMXY" ~ "XX-XY",
+        term == "same_tombTRUE" ~ "Same Tomb",
+        TRUE ~ term
+      ),
+      
+      term = case_when(
+        str_detect(term, "^SD:\\s*mmindividual1_idindividual2_id") ~ "SD (Individual pair intercept)",
+        str_detect(term, "^SD:\\s*mmtomb1tomb2") ~ "SD (Tomb pair intercept)",
+        TRUE ~ term
+      ),
+      
+      group = case_when(
+        group == "Random effects (SD)" ~ "Random effects (SD)",
+        group == "Age pair" ~ "Age pair",
+        group == "Sex pair" ~ "Sex pair",
+        group == "Same tomb" ~ "Same tomb",
+        group == "Intercept" ~ "Intercept",
+        TRUE ~ group
+      )
+    )
+}
 
 robustcheck_models_separate <- list(
   "Main model" = imp_binary_separate_nobone,
@@ -104,6 +134,7 @@ robust_df_separate <- robust_df_separate |>
     model = factor(model, levels = names(robustcheck_models_separate))
   )
 
+robust_df_separate <- clean_term_labels(robust_df_separate)
 
 ## -- plot for all of the parameters
 pd <- position_dodge(width = 0.6)
@@ -184,13 +215,6 @@ p_tomb_separate
 p_int_separate
 p_re_separate
 
-##save the plots 
-ggsave("Plots/robust_age_sep.png",   p_age_separate,  width = 8, height = 6, dpi = 400)
-ggsave("Plots/robust_sex_sep.png",   p_sex_separate,  width = 8, height = 6, dpi = 400)
-ggsave("Plots/robust_tomb_sep.png",  p_tomb_separate, width = 8, height = 4, dpi = 400)
-ggsave("Plots/robust_intercept_sep.png", p_int_separate, width = 10, height = 3.5, dpi = 400)
-ggsave("Plots/robust_random_sd_sep.png", p_re_separate, width = 10, height = 4.5, dpi = 400)
-
 
 ## -- Grouped tombs --
 robustcheck_models_group <- list(
@@ -218,6 +242,8 @@ robust_df_group <- robust_df_group |>
     
     model = factor(model, levels = names(robustcheck_models_separate))
   )
+
+robust_df_group <- clean_term_labels(robust_df_group)
 
 plot_one_group <- function(g) {
   d <- robust_df_group |> filter(group == g)
@@ -254,6 +280,8 @@ p_tomb_group
 p_int_group
 p_re_group
 
+
+
 # ---- choose only the two separate models (Main and Within tomb) ----
 models_sep_main_vs_withintomb <- list(
   "Main model"   = imp_binary_separate_nobone,
@@ -277,6 +305,7 @@ robust_sep_main_vs_withintomb <- robust_sep_main_vs_withintomb |>
   mutate(
     model = factor(model, levels = names(models_sep_main_vs_withintomb))
   )
+
 
 pd <- position_dodge(width = 0.6)
 
@@ -486,3 +515,331 @@ ggsave(
   width = 9, height = 5, dpi = 400
 )
 
+## --- compare the main model (flat prior) with weakly informative prior N(0,1) ---
+
+models_sep_flat_vs_wip <- list(
+  "Flat prior (main)"                 = imp_binary_separate_nobone,
+  "Weakly informative prior N(0,1)"   = imp_binary_separate_nobone_prior
+)
+
+# ---- extract estimates ----
+robust_sep_flat_vs_wip <- imap_dfr(
+  models_sep_flat_vs_wip,
+  ~ extract_brms_estimates(.x, .y)
+)
+
+# ---- keep age + sex + same_tomb fixed effects ----
+robust_sep_flat_vs_wip <- robust_sep_flat_vs_wip |>
+  filter(component == "Fixed effects") |>
+  mutate(
+    group = case_when(
+      str_detect(term, "^age_pair")  ~ "Age pair",
+      str_detect(term, "^sex_pair")  ~ "Sex pair",
+      str_detect(term, "^same_tomb") ~ "Same tomb",
+      TRUE                           ~ NA_character_
+    ),
+    model = factor(model, levels = names(models_sep_flat_vs_wip))
+  ) |>
+  filter(!is.na(group)) |>
+  mutate(
+    group = factor(group, levels = c("Age pair", "Sex pair", "Same tomb"))
+  )
+
+pd <- position_dodge(width = 0.6)
+
+p_sep_flat_vs_wip <- ggplot(
+  robust_sep_flat_vs_wip,
+  aes(x = estimate, y = term, color = model)
+) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Flat prior vs Weakly informative prior (Separate)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 12),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_sep_flat_vs_wip
+
+## --- Grouped tombs ---
+
+models_grp_flat_vs_wip <- list(
+  "Flat prior (main)"                 = imp_binary_group_nobone,
+  "Weakly informative prior N(0,1)"   = imp_binary_group_nobone_prior
+)
+
+# ---- extract estimates ----
+robust_grp_flat_vs_wip <- imap_dfr(
+  models_grp_flat_vs_wip,
+  ~ extract_brms_estimates(.x, .y)
+)
+
+# ---- keep age + sex + same_tomb fixed effects ----
+robust_grp_flat_vs_wip <- robust_grp_flat_vs_wip |>
+  filter(component == "Fixed effects") |>
+  mutate(
+    group = case_when(
+      str_detect(term, "^age_pair")  ~ "Age pair",
+      str_detect(term, "^sex_pair")  ~ "Sex pair",
+      str_detect(term, "^same_tomb") ~ "Same tomb",
+      TRUE                           ~ NA_character_
+    ),
+    model = factor(model, levels = names(models_grp_flat_vs_wip))
+  ) |>
+  filter(!is.na(group)) |>
+  mutate(
+    group = factor(group, levels = c("Age pair", "Sex pair", "Same tomb"))
+  )
+
+pd <- position_dodge(width = 0.6)
+
+p_grp_flat_vs_wip <- ggplot(
+  robust_grp_flat_vs_wip,
+  aes(x = estimate, y = term, color = model)
+) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Flat prior vs Weakly informative prior (Grouped)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 12),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_grp_flat_vs_wip
+
+## Fixed cleaned label 
+
+clean_fixed_term_labels <- function(df) {
+  df |>
+    mutate(
+      term = case_when(
+        term == "age_pairmixed" ~ "Mixed",
+        term == "age_pairbothsubadult" ~ "Both Subadults",
+        term == "sex_pairXYMXY" ~ "XY-XY",
+        term == "sex_pairXXMXY" ~ "XX-XY",
+        term == "same_tombTRUE" ~ "Same Tomb",
+        TRUE ~ term
+      ),
+      # optional: nicer facet titles too (if you ever have them as factors)
+      group = case_when(
+        group == "Age pair" ~ "Age pair",
+        group == "Sex pair" ~ "Sex pair",
+        group == "Same tomb" ~ "Same tomb",
+        TRUE ~ group
+      )
+    )
+}
+
+### 1. Separate Main vs Within Tomb
+robust_sep_main_vs_withintomb <- clean_fixed_term_labels(robust_sep_main_vs_withintomb)
+
+pd <- position_dodge(width = 0.6)
+
+p_sep_main_vs_withintomb_clean <- ggplot(robust_sep_main_vs_withintomb, aes(x = estimate, y = term, color = model)) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Main vs Within tomb (Separate)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 11),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_sep_main_vs_withintomb_clean 
+
+### 2. Grouped Main vs Within Tomb
+robust_grp_main_vs_withintomb <- clean_fixed_term_labels(robust_grp_main_vs_withintomb)
+
+p_grp_main_vs_withintomb_clean <- ggplot(robust_grp_main_vs_withintomb, aes(x = estimate, y = term, color = model)) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Main vs Within tomb (Grouped)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 11),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_grp_main_vs_withintomb_clean
+
+### 3. Separate Main vs 3rd-as-unrelated
+robust_sep_main_vs_unrel3rd <- clean_fixed_term_labels(robust_sep_main_vs_unrel3rd)
+
+p_sep_main_vs_unrel3rd_clean <- ggplot(robust_sep_main_vs_unrel3rd, aes(x = estimate, y = term, color = model)) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Main vs 3rd-as-unrelated (Separate)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 12),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_sep_main_vs_unrel3rd_clean
+
+### 4. Grouped Main vs 3rd-as-unrelated
+robust_grp_main_vs_unrel3rd <- clean_fixed_term_labels(robust_grp_main_vs_unrel3rd)
+
+p_grp_main_vs_unrel3rd_clean <- ggplot(robust_grp_main_vs_unrel3rd, aes(x = estimate, y = term, color = model)) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Main vs 3rd-as-unrelated (Grouped)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 12),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_grp_main_vs_unrel3rd_clean
+
+### 5. Separate Flat prior vs Weak prior
+robust_sep_flat_vs_wip <- clean_fixed_term_labels(robust_sep_flat_vs_wip)
+
+p_sep_flat_vs_wip_clean <- ggplot(robust_sep_flat_vs_wip, aes(x = estimate, y = term, color = model)) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Flat prior vs Weakly informative prior (Separate)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 12),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_sep_flat_vs_wip_clean
+
+### 6. Grouped Flat prior vs Weak prior
+robust_grp_flat_vs_wip <- clean_fixed_term_labels(robust_grp_flat_vs_wip)
+
+p_grp_flat_vs_wip_clean <- ggplot(robust_grp_flat_vs_wip, aes(x = estimate, y = term, color = model)) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_point(position = pd, size = 2) +
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.18, position = pd, linewidth = 0.5
+  ) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Estimate (log-odds scale)",
+    y = NULL,
+    color = "Model",
+    title = "Flat prior vs Weakly informative prior (Grouped)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(size = 12),
+    axis.text.y = element_text(size = 10)
+  )
+
+p_grp_flat_vs_wip_clean
+
+# Save all of the clean plots 
+ggsave(
+  "Plots/robust_main_withintomb_sep_clean.png",
+  p_sep_main_vs_withintomb_clean,
+  width = 6, height = 5, dpi = 400
+)
+ggsave(
+  "Plots/robust_group_main_withintomb_clean.png",
+  p_grp_main_vs_withintomb_clean,
+  width = 6, height = 5, dpi = 400
+)
+ggsave(
+  "Plots/robust_main_unrel3rd_sep_clean.png",
+  p_sep_main_vs_unrel3rd_clean,
+  width = 6, height = 5, dpi = 400
+)
+ggsave(
+  "Plots/robust_group_main_unrel3rd_clean.png",
+  p_grp_main_vs_unrel3rd_clean,
+  width = 9, height = 5, dpi = 400
+)
+ggsave(
+  "Plots/robust_flat_vs_weakprior_sep_clean.png",
+  p_sep_flat_vs_wip_clean,
+  width = 6, height = 5, dpi = 400
+)
+ggsave(
+  "Plots/robust_flat_vs_weakprior_group_clean.png",
+  p_grp_flat_vs_wip_clean,
+  width = 6, height = 5, dpi = 400
+)

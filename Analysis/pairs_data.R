@@ -245,30 +245,8 @@ pairs_all <- kinship_result %>%
       combine_skeletal_elements
     ),
     
-    same_tomb = tomb1 == tomb2,
-    
-    sample_success_min = pmin(sample_success1, sample_success2, na.rm = TRUE),
-    
-    analysed_ind_min = pmin(analysed_ind1, analysed_ind2, na.rm = TRUE),
-    
-    length_of_use_absdiff = abs(length_of_use1 - length_of_use2), 
-    
-    length_of_use_average = (length_of_use1 + length_of_use2) / 2
-  ) %>%
-  mutate(
-    # normalization (min–max)
-    sample_success_min_norm = 
-      (sample_success_min - min(sample_success_min, na.rm = TRUE)) /
-      (max(sample_success_min, na.rm = TRUE) - min(sample_success_min, na.rm = TRUE)),
-    
-    analysed_ind_min_norm = 
-      (analysed_ind_min - min(analysed_ind_min, na.rm = TRUE)) /
-      (max(analysed_ind_min, na.rm = TRUE) - min(analysed_ind_min, na.rm = TRUE)),
-    
-    length_of_use_average_norm =
-      (length_of_use_average - min(length_of_use_average, na.rm = TRUE)) /
-      (max(length_of_use_average, na.rm = TRUE) - min(length_of_use_average, na.rm = TRUE))
-  )
+    same_tomb = tomb1 == tomb2
+  ) 
 
 pairs_ind_og <- pairs_all |> filter(tomb1 != "Elateia T46 56 62", tomb2 != "Elateia T46 56 62")
 

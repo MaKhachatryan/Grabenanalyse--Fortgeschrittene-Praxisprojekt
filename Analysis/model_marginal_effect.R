@@ -4,8 +4,6 @@ suppressMessages(
     source(here::here("environment_setup.R"))
   )
 )
-library(marginaleffects)
-library(collapse)
 
 imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
 imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
@@ -56,12 +54,19 @@ me_sex_sep  <- me_separate_sex  |>
   mutate(group = "Sex pair")
 me_age_sep  <- me_separate_age  |> 
   rename(term = age_pair) |>
-  mutate(group = "Age pair")
+  mutate(
+    group = "Age pair",
+    term = case_when(
+      term == "both subadult" ~ "Both Subadults",
+      term == "mixed" ~ "Mixed",
+      term == "both adult/undefined" ~ "Both Adults/Undefined"
+    )
+  )
 me_tomb_sep <- me_separate_tomb |> 
   rename(term = same_tomb) |>
   mutate(
     group = "Same tomb",
-    term = if_else(term, "Same tomb", "Different tomb")
+    term = if_else(term, "Same Tomb", "Different Tomb")
     )
 
 me_all_sep <- bind_rows(me_sex_sep, me_age_sep, me_tomb_sep)
@@ -168,12 +173,19 @@ me_sex_gr  <- me_group_sex  |>
   mutate(group = "Sex pair")
 me_age_gr  <- me_group_age  |> 
   rename(term = age_pair) |>
-  mutate(group = "Age pair")
+  mutate(
+    group = "Age pair",
+    term = case_when(
+      term == "both subadult" ~ "Both Subadults",
+      term == "mixed" ~ "Mixed",
+      term == "both adult/undefined" ~ "Both Adults/Undefined"
+    )
+  )
 me_tomb_gr <- me_group_tomb |> 
   rename(term = same_tomb) |>
   mutate(
     group = "Same tomb",
-    term = if_else(term, "Same tomb", "Different tomb")
+    term = if_else(term, "Same Tomb", "Different Tomb")
   )
 
 me_all_gr <- bind_rows(me_sex_gr, me_age_gr, me_tomb_gr)
@@ -278,4 +290,39 @@ me_combined
 #save the table 
 saveRDS(me_combined, "unofficial work/me_tables/me_combined.rds")
 
+# Combine marginal effects from both models
+me_plot <- bind_rows(
+  me_all_sep %>% mutate(model = "Separated Model"),
+  me_all_gr  %>% mutate(model = "Grouped Model")
+) %>%
+  group_by(group) %>%
+  mutate(term = factor(term, levels = rev(unique(term)))) %>%
+  ungroup()
 
+# One combined plot (two models in one figure)
+dodge <- position_dodge(width = 0.55)
+
+p_one <- ggplot(me_plot, aes(x = estimate, y = term, color = model)) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.6, alpha = 0.6) +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high),
+                 height = 0.2, position = dodge, linewidth = 0.8) +
+  geom_point(position = dodge, size = 3) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Predicted probability",
+    y = NULL,
+    color = NULL
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    strip.text = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+
+p_one
+
+ggsave(filename = "Plots/marginal_effects_combined.png", 
+       plot = p_one, 
+       width = 10, 
+       height = 8, 
+       dpi = 300 )
