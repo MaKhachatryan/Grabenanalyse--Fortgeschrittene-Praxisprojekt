@@ -3,14 +3,10 @@
 # Output: Q-Q plots
 
 # Load project environment
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
+source("environment_setup.R")
 
-imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
-imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
+imp_binary_separate_nobone <- readRDS("Models/Saved models/imp_binary_separate_nobone.rds")
+imp_binary_group_nobone <- readRDS("Models/Saved models/imp_binary_group_nobone.rds")
 
 # This script is to check the assumption of RE normality 
 

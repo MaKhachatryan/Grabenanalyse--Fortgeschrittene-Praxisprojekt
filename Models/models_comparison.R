@@ -3,35 +3,27 @@
 # Output: tables of estimates and CI per model
 
 # Load project environment
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
+source("environment_setup.R")
+
 # Load models ----
 ## Separated tomb version ----
-imp_binary_separate_cat <- readRDS("unofficial work/models save/imp_binary_separate_cat.rds")
-all_binary_separate_cat <- readRDS("unofficial work/models save/all_binary_separate_cat.rds")
-imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
-imp_binary_separate_newtombvar <- readRDS("unofficial work/models save/imp_binary_separate_newtombvar.rds")
+imp_binary_separate_cat <- readRDS("Models/Saved models/imp_binary_separate_cat.rds")
+imp_binary_separate_nobone <- readRDS("Models/Saved models/imp_binary_separate_nobone.rds")
+imp_binary_separate_unrel3rd <- readRDS("Models/Saved models/imp_binary_separate_unrel3rd.rds")
+imp_binary_separate_sametomb <- readRDS("Models/Saved models/imp_binary_separate_sametomb.rds")
+imp_binary_separate_nobone_prior <- readRDS("Models/Saved models/imp_binary_separate_nobone_prior.rds")
 imp_binary_separate_withintomb <- readRDS("unofficial work/models save/imp_binary_separate_withintomb.rds")
-imp_binary_separate_unrel3rd <- readRDS("unofficial work/models save/imp_binary_separate_unrel3rd.rds")
-imp_binary_separate_sametomb <- readRDS("unofficial work/models save/imp_binary_separate_sametomb.rds")
-imp_binary_separate_nobone_prior <- readRDS("unofficial work/models save/imp_binary_separate_nobone_prior.rds")
 imp_binary_separate_withintomb_unrel3rd <- readRDS("unofficial work/models save/imp_binary_separate_withintomb_unrel3rd.rds")
-all_binary_separate_nobone <-  readRDS("unofficial work/models save/all_binary_separate_nobone.rds")
+all_binary_separate_nobone <- readRDS("unofficial work/models save/all_binary_separate_nobone.rds")
+all_binary_separate_cat <- readRDS("unofficial work/models save/all_binary_separate_cat.rds")
 
 ## Grouped tomb version ----
-imp_binary_group_cat <- readRDS("unofficial work/models save/imp_binary_group_cat.rds")
-all_binary_group_cat <- readRDS("unofficial work/models save/all_binary_group_cat.rds")
-imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
-imp_binary_group_newtombvar <- readRDS("unofficial work/models save/imp_binary_group_newtombvar.rds")
+imp_binary_group_cat <- readRDS("Models/Saved models/imp_binary_group_cat.rds")
+imp_binary_group_nobone <- readRDS("Models/Saved models/imp_binary_group_nobone.rds")
+imp_binary_group_unrel3rd <- readRDS("Models/Saved models/imp_binary_group_unrel3rd.rds")
+imp_binary_group_sametomb <- readRDS("Models/Saved models/imp_binary_group_sametomb.rds")
+imp_binary_group_nobone_prior <- readRDS("Models/Saved models/imp_binary_group_nobone_prior.rds")
 imp_binary_group_withintomb <- readRDS("unofficial work/models save/imp_binary_group_withintomb.rds")
-imp_binary_group_unrel3rd <- readRDS("unofficial work/models save/imp_binary_group_unrel3rd.rds")
-imp_binary_group_sametomb <- readRDS("unofficial work/models save/imp_binary_group_sametomb.rds")
-imp_binary_group_nobone_prior <- readRDS("unofficial work/models save/imp_binary_group_nobone_prior.rds")
-imp_binary_group_withintomb_unrel3rd <- readRDS("unofficial work/models save/imp_binary_group_withintomb_unrel3rd.rds")
-all_binary_group_nobone <- readRDS("unofficial work/models save/all_binary_group_nobone.rds")
 
 # Define compare function ----
 compare_model <- function(models, ci_width = 0.95, digits = 2, output = c("gt", "data"),
