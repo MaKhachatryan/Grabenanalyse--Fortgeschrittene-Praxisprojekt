@@ -615,8 +615,62 @@ all_binary_group_nobone <- update(imp_binary_group_nobone,
 saveRDS(all_binary_group_nobone, "unofficial work/models save/all_binary_group_nobone.rds")
 
 
+### New batch 4.4.26
+suppressMessages(
+  suppressWarnings(
+    source(here::here("environment_setup.R"))
+  )
+)
+
+suppressMessages(
+  suppressWarnings(
+    source(here::here("Analysis", "pairs_data.R"))
+  )
+)
+
+pairs_ind <- pairs_ind_og[pairs_ind_og$overlap_nsnps >= 15000, ]
+pairs_group <- pairs_group_og[pairs_group_og$overlap_nsnps >= 15000, ]
+
+imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
+imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
+
+imp_binary_separate_withintomb <- update(imp_binary_separate_nobone, 
+                                         formula. = related_binary ~ sex_pair + age_pair + 
+                                           (1 | mm(individual1_id, individual2_id)) + (1 | tomb1),
+                                         newdata = pairs_ind_withintomb,
+                                         seed = 123)
+saveRDS(imp_binary_separate_withintomb, "unofficial work/models save/imp_binary_separate_withintomb.rds")
+imp_binary_group_withintomb <- update(imp_binary_separate_withintomb, newdata = pairs_group_withintomb,
+                                      seed = 123)
+saveRDS(imp_binary_group_withintomb, "unofficial work/models save/imp_binary_group_withintomb.rds")
+
+pairs_ind_withintomb_unrel3rd <- pairs_ind_unrel3rd[pairs_ind_unrel3rd$same_tomb == TRUE, ]
+pairs_group_withintomb_unrel3rd <- pairs_group_unrel3rd[pairs_group_unrel3rd$same_tomb == TRUE, ]
+
+imp_binary_separate_withintomb <- readRDS("unofficial work/models save/imp_binary_separate_withintomb.rds")
+imp_binary_group_withintomb <- readRDS("unofficial work/models save/imp_binary_group_withintomb.rds")
+
+imp_binary_separate_withintomb_unrel3rd <- update(imp_binary_separate_withintomb,
+                                                  newdata = pairs_ind_withintomb_unrel3rd,
+                                                  seed = 123)
+saveRDS(imp_binary_separate_withintomb_unrel3rd, "unofficial work/models save/imp_binary_separate_withintomb_unrel3rd.rds")
+
+imp_binary_group_withintomb_unrel3rd <- update(imp_binary_group_withintomb,
+                                               newdata = pairs_group_withintomb_unrel3rd,
+                                               seed = 123)
+saveRDS(imp_binary_group_withintomb_unrel3rd, "unofficial work/models save/imp_binary_group_withintomb_unrel3rd.rds")
 
 
+
+all_binary_separate_nobone <- update(imp_binary_separate_nobone,
+                                     newdata = pairs_ind_all,
+                                     seed = 123)
+saveRDS(all_binary_separate_nobone, "unofficial work/models save/all_binary_separate_nobone.rds")
+
+all_binary_group_nobone <- update(imp_binary_group_nobone,
+                                  newdata = pairs_group_all,
+                                  seed = 123)
+saveRDS(all_binary_group_nobone, "unofficial work/models save/all_binary_group_nobone.rds")
 
   
   
