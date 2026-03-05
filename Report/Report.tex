@@ -138,11 +138,11 @@ This project is based on genetic and osteological data obtained from
 human remains recovered from Mycenaean collective burial contexts in
 Greece, dated to approximately 1500--1000 BCE. The material derives from
 two archaeological sites: Amfissa, which consists of a single tholos
-tomb, and Elateia, a large chamber tomb complex containing 85 chambers.
-From Elateia, eight chambers were selected for detailed genetic
-investigation. DNA preserved in skeletal material was extracted and
-analyzed to infer biological relationships among individuals buried
-within and between tombs.
+tomb, and Elateia, a large burial site containing 85 tombs. From
+Elateia, seven tombs were selected for detailed genetic investigation,
+namely tombs 31, 36, 46, 50, 56, 62, and 67. DNA preserved in skeletal
+material was extracted and analyzed to infer biological relationships
+among individuals buried within and between tombs.
 
 The analysis draws on three interconnected datasets that capture
 information at different levels of resolution. One dataset summarizes
@@ -679,10 +679,9 @@ constructing derived variables required for modeling.
 At the individual level, metadata were first restricted to the burial
 sites and tombs included in the analysis. Individuals from Lapoutsi were
 excluded, and only samples from Amfissa tholos and selected tombs at
-Elateia were retained. Age estimates were harmonized by collapsing
-ambiguous or overlapping categories into two broad groups, namely
-subadult and adult or undefined, to ensure sufficient sample sizes per
-category.
+Elateia were retained. Age estimates were then simplified by combining
+unclear or overlapping categories into two broad groups, namely subadult
+and adult or undefined, to ensure sufficient sample sizes per category.
 
 Tomb-level parameters were prepared separately and standardized to
 ensure consistency across datasets. These parameters include the minimum
@@ -718,21 +717,16 @@ related burial contexts as a single unit.
 
 Finally, both datasets were augmented with tomb-level characteristics by
 linking each individual's tomb to the corresponding sampling success,
-number of analyzed individuals, and length of use. From these variables,
-pairwise summaries were derived, including the minimum sampling success,
-the minimum number of analyzed individuals, and the absolute difference
-in tomb use duration between the two burial contexts. Additional
-pair-level variables were constructed to describe sex composition, age
-composition, shared tomb membership, combined skeletal element types,
-and an indicator of bone quality based on the presence of petrous bone
-samples.
+number of analyzed individuals, and length of use. Additional pair-level
+variables were constructed to describe sex composition, age composition,
+shared tomb membership, combined skeletal element types, and an
+indicator of bone quality based on the presence of petrous bone samples.
 
 The resulting datasets consist of pairwise observations enriched with
-individual- and tomb-level information and derived covariates. Together,
-they allow the evaluation of genetic relatedness patterns under
-alternative representations of burial organization and provide the basis
-for the multi-membership modeling strategy applied in the subsequent
-analysis.
+individual- and tomb-level information. Together, they allow the
+evaluation of genetic relatedness patterns under alternative
+representations of burial organization and provide the basis for the
+multi-membership modeling strategy applied in the subsequent analysis.
 
 \subsection{The Multi-Membership Generalized Linear Mixed
 Model}\label{the-multi-membership-generalized-linear-mixed-model}
@@ -913,6 +907,17 @@ estimated relationships. For a visual representation of the full effect
 estimations and their associated 95\% Credible Intervals (CI), please
 refer to the plot in ??Figure.
 
+\begin{CodeChunk}
+\begin{figure}[H]
+
+{\centering \includegraphics{../Plots/model_coefficients_all} 
+
+}
+
+\caption[Posterior coefficient estimates with 95\% credible intervals from the Bayesian models]{Posterior coefficient estimates with 95\% credible intervals from the Bayesian models}\label{fig:fig11}
+\end{figure}
+\end{CodeChunk}
+
 A primary observation is the dominance of Same Tomb Indicator, which
 yielded the highest estimate in both models (2.30 and 2.64,
 respectively). This signifies that shared burial space is the strongest
@@ -944,27 +949,35 @@ These convert the model estimates into probabilities of the outcome,
 which in this case, the probability that a pair of individuals is
 biologically related.
 
-\textbf{Marginal Effect (Predicted Probabilities)}:
-
 Marginal predicted probabilities indicate how each explanatory variable
 affects the average probability of relatedness, while holding all other
 variables constant (ceteris paribus). This approach allows for a more
 accessible interpretation of the model results by expressing effects in
 terms of probabilities rather than log-odds.
 
-??? me plots
+\begin{CodeChunk}
+\begin{figure}[H]
+
+{\centering \includegraphics{../Plots/marginal_effects_combined} 
+
+}
+
+\caption[Predicted probabilities of biological relatedness with 95\% credible intervals]{Predicted probabilities of biological relatedness with 95\% credible intervals}\label{fig:fig12}
+\end{figure}
+\end{CodeChunk}
 
 The average predicted probabilities in the figure highlight several key
 patterns across sex pairings, age compositions, and burial contexts.
-Female--female pairs show relatively low average predicted probabilities
-of relatedness (0.21\% in the separate tombs model and 0.31\% in the
-grouped tombs model, ceteris paribus), while male--male pairs exhibit
-higher probabilities compared to other sex combinations. For age
-composition, pairs consisting of two subadults display higher predicted
-probabilities than mixed or adult--adult pairs. The most pronounced
-effect, however, is observed for burial context: pairs interred in the
-same tomb show substantially higher predicted probabilities of
-relatedness than any other category in both model specifications
+Female--Female (XX-XX) pairs show relatively low average predicted
+probabilities of relatedness (0.21\% in the separate tombs model and
+0.31\% in the grouped tombs model, ceteris paribus), while Male-Male
+(XY-XY) pairs exhibit higher probabilities compared to other sex
+combinations. For age composition, pairs consisting of Both Subadults
+display higher predicted probabilities than Mixed or Both
+Adults/Undefined pairs. The most pronounced effect, however, is observed
+for burial context: pairs interred in the same tomb show substantially
+higher predicted probabilities of relatedness than any other category in
+both model specifications
 
 \subsection{Model Robustness Check}\label{model-robustness-check}
 
@@ -985,6 +998,17 @@ exist, we re-fitted the model using Weakly Informative Priors
 \(N(0,1)\). This approach applies a form of regularization, pulling
 estimates toward zero unless the data provides strong evidence to the
 contrary.
+
+\begin{CodeChunk}
+\begin{figure}[H]
+
+{\centering \includegraphics{../Plots/robust_flat_vs_weakprior_sep_clean} 
+
+}
+
+\caption[Posterior coefficient estimates with 95\% credible intervals under flat priors and weakly informative priors N(0,1)]{Posterior coefficient estimates with 95\% credible intervals under flat priors and weakly informative priors N(0,1)}\label{fig:fig13}
+\end{figure}
+\end{CodeChunk}
 
 As expected with Priors \(N(0,1)\), the coefficients experienced a
 slight shrinkage toward zero. No coefficients changed direction, and the
@@ -1010,6 +1034,17 @@ involving individuals interred in the same tomb, compared to the 13,690
 observations in the full dataset. Consequently, the estimated effects
 appear weaker, with coefficients shrinking toward zero.
 
+\begin{CodeChunk}
+\begin{figure}[H]
+
+{\centering \includegraphics{../Plots/robust_main_withintomb_sep_clean} 
+
+}
+
+\caption[Posterior coefficient estimates with 95\% credible intervals comparing the main model and the within-tomb model]{Posterior coefficient estimates with 95\% credible intervals comparing the main model and the within-tomb model}\label{fig:fig14}
+\end{figure}
+\end{CodeChunk}
+
 Despite the reduced power, the qualitative results remained consistent.
 The direction of all effects was unchanged, and the Male-Male (XY-XY)
 pair combination remained the dominant predictor of relatedness within
@@ -1026,6 +1061,17 @@ into a single ``Related'' category. However, 3rd-degree relationships
 represent more distant biological ties. We conducted a robustness check
 by redefining the response variable \(Y_{ij}\) to count only 1st and
 2nd-degree relatives as ``Related.''
+
+\begin{CodeChunk}
+\begin{figure}[H]
+
+{\centering \includegraphics{../Plots/robust_main_unrel3rd_sep_clean} 
+
+}
+
+\caption[Posterior coefficient estimates with 95\% credible intervals comparing the main model with a model treating third-degree relationships as unrelated]{Posterior coefficient estimates with 95\% credible intervals comparing the main model with a model treating third-degree relationships as unrelated}\label{fig:fig15}
+\end{figure}
+\end{CodeChunk}
 
 Under this stricter definition, the ``Same Tomb'' effect showed a
 substantially larger estimated coefficient. This suggests that shared
@@ -1107,10 +1153,10 @@ by incorporating a substantially larger number of tombs across multiple
 archaeological contexts. A broader sample would allow for the estimation
 of robust tomb-level or multilevel models with a sufficient number of
 higher-level units. This would enable a more reliable assessment of
-tomb-specific characteristics---such as length of use, number of
-interred individuals, and skeletal preservation patterns---and their
-influence on genetic relatedness structures. With increased statistical
-power, contextual variation between burial units could be modeled more
+tomb-specific characteristics such as length of use, number of interred
+individuals, and skeletal preservation patterns and their influence on
+genetic relatedness structures. With increased statistical power,
+contextual variation between burial units could be modeled more
 systematically.
 
 In addition, future research should further address the issue of missing
@@ -1157,33 +1203,37 @@ quality of this work.
 
 \section{B Use of AI tools}\label{b-use-of-ai-tools}
 
-\#\#\#Report ChatGPT (GPT-5.2) were used to support the drafting and
-revision of the written report. The tools assisted in improving clarity,
-structure, and linguistic precision, particularly in reformulating
-paragraphs, refining academic wording, and ensuring coherence between
-sections. All conceptual content, interpretations, statistical
-reasoning, and conclusions were developed independently by the authors.
-The AI tool did not generate original scientific arguments but served as
-a language and structure support tool. All outputs were critically
-reviewed, edited, and verified by the authors. ??Latex??
+\subsubsection{Report}\label{report}
 
-\#\#\#Code ChatGPT (GPT-5.2) and Gemini? were used to assist in
-troubleshooting, refining, and optimizing statistical code (e.g., for
-logistic regression models and data visualization). This included
-suggestions for improving code structure, debugging errors, and
-clarifying model implementation. However, all analytical decisions,
-model specifications, variable selections, and interpretations of
-results were made independently. The correctness and functionality of
-all code were manually tested and validated before inclusion in the
-analysis.
+ChatGPT (GPT-5.2) were used to support the drafting and revision of the
+written report. The tools assisted in improving clarity, structure, and
+linguistic precision, particularly in reformulating paragraphs, refining
+academic wording, and ensuring coherence between sections. All
+conceptual content, interpretations, statistical reasoning, and
+conclusions were developed independently by the authors. The AI tool did
+not generate original scientific arguments but served as a language and
+structure support tool. All outputs were critically reviewed, edited,
+and verified by the authors. ??Latex??
 
-\#\#\#Literature Research ChatGPT (GPT-5.2) was used to support the
-development of literature search strategies and to clarify theoretical
-concepts. All academic sources cited in the report were independently
-identified, accessed through scholarly databases, and critically
-evaluated. No references were included without independent verification.
-The interpretation and integration of the literature were conducted
-manually.
+\subsubsection{Code}\label{code}
+
+ChatGPT (GPT-5.2) and Gemini? were used to assist in troubleshooting,
+refining, and optimizing statistical code (e.g., for logistic regression
+models and data visualization). This included suggestions for improving
+code structure, debugging errors, and clarifying model implementation.
+However, all analytical decisions, model specifications, variable
+selections, and interpretations of results were made independently. The
+correctness and functionality of all code were manually tested and
+validated before inclusion in the analysis.
+
+\subsubsection{Literature Research}\label{literature-research}
+
+ChatGPT (GPT-5.2) was used to support the development of literature
+search strategies and to clarify theoretical concepts. All academic
+sources cited in the report were independently identified, accessed
+through scholarly databases, and critically evaluated. No references
+were included without independent verification. The interpretation and
+integration of the literature were conducted manually.
 
 
 
