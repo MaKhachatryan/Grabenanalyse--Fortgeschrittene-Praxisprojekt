@@ -23,18 +23,18 @@ Please make sure to source the setup files in the following order:
    - Defines general functions and helper utilities used across the project.  
    - **Purpose:** ensures the R environment is ready to run all analysis scripts without errors.  
 
-2. **`Analysis/pairs_data.R`**  
+2. **`Data/pairs_data.R`**  
    - Loads and prepares the cleaned datasets  
    - **Purpose:** makes the processed data available for analyses, plots, and models.  
 
 The following scripts perform analyses, visualizations, and model comparisons using the processed datasets and saved models:
 
-3. **`Models/fit_models.R`**  
+3. **`Analysis/fit_models.R`**  
    - Fits all main and supplementary models using the processed pairwise data.  
-   - Saves the fitted models into **`Models/Saved models`** for later use.  
+   - Saves the fitted models into **`Analysis/Saved models`** for later use.  
    - **Note:** Running this script can take a long time.  
 
-4. **`Models/model_comparison.R`**  
+4. **`Analysis/model_comparison.R`**  
    - Compares fitted models by summarizing parameter estimates and credible intervals.
 
 5. **`Analysis/descriptive_plots.R`**  
@@ -78,24 +78,20 @@ The following scripts perform analyses, visualizations, and model comparisons us
 - `Plots/`  
   Saved plots generated during the project.
 
-- `Data/`  
-  Raw initial datasets used in the project.
+### Data
+Contains the raw datasets used in the project and script for preparing the pairwise datasets used in the analyses.
+
+- `Raw/`  
+- `pairs_data.R`  
 
 ### Analysis
-Scripts for data preparation, descriptive analysis, and model diagnostics.  
+Scripts for data preparation, descriptive analysis, model diagnostics, fitting and comparison.  
 
 - `descriptive_plots.R`
 - `model_assumption.R`
 - `model_marginal_effect.R`
 - `model_output_plot.R`
-- `pairs_data.R`
 - `robust_check_plots.R`
-
-### Models
-Scripts for model fitting and model comparison.  
-
 - `fit_models.R`
 - `model_comparison.R`
 - `Saved models/`: Stored fitted model objects (.rds files).
-   
-   

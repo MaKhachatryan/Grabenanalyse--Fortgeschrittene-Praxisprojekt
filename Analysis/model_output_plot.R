@@ -1,8 +1,8 @@
 # Load project environment
 source("environment_setup.R")
 
-imp_binary_separate_nobone <- readRDS("Models/Saved models/imp_binary_separate_nobone.rds")
-imp_binary_group_nobone <- readRDS("Models/Saved models/imp_binary_group_nobone.rds")
+imp_binary_separate_nobone <- readRDS("Analysis/Saved models/imp_binary_separate_nobone.rds")
+imp_binary_group_nobone <- readRDS("Analysis/Saved models/imp_binary_group_nobone.rds")
 
 
 coef_sep <- broom.mixed::tidy(

@@ -1,11 +1,10 @@
-# This script loads the prepared pair datasets and fits the statistical models
-# used in the analysis. It runs Bayesian mixed models 
-# and a Gaussian regression model for SNP overlap, and saves all fitted models
-# as .rds files in the folder Models/Saved models.
+# This script loads the prepared pairwise datasets and fits all models used in
+# the analysis, including the main models and several robustness checks.
+# The fitted models are saved as .rds files in the folder Analysis/Saved models.
 
 # Load project environment and processed data
 source("environment_setup.R")
-source("Analysis/pairs_data.R")
+source("Data/pairs_data.R")
 
 # Keep only pairs with 15000 SNP overlap
 pairs_ind <- pairs_ind_og[pairs_ind_og$overlap_nsnps >= 15000, ]
@@ -39,7 +38,7 @@ summary(imp_binary_separate_nobone)
 # Save fitted model
 saveRDS(
   imp_binary_separate_nobone,
-  file = "Models/Saved models/imp_binary_separate_nobone.rds"
+  file = "Analysis/Saved models/imp_binary_separate_nobone.rds"
 )
 
 
@@ -54,7 +53,7 @@ summary(imp_binary_group_nobone)
 # Save fitted model
 saveRDS(
   imp_binary_group_nobone,
-  file = "Models/Saved models/imp_binary_group_nobone.rds"
+  file = "Analysis/Saved models/imp_binary_group_nobone.rds"
 )
 
 # 3. Robust check model (separated): only use "same_tomb" as predictor ----
@@ -70,7 +69,7 @@ summary(imp_binary_separate_sametomb)
 # Save fitted model
 saveRDS(
   imp_binary_separate_sametomb,
-  file = "Models/Saved models/imp_binary_separate_sametomb.rds"
+  file = "Analysis/Saved models/imp_binary_separate_sametomb.rds"
 )
 
 # 4. Robust check model (grouped): only use "same_tomb" as predictor ----
@@ -84,7 +83,7 @@ summary(imp_binary_group_sametomb)
 # Save fitted model
 saveRDS(
   imp_binary_group_sametomb,
-  file = "Models/Saved models/imp_binary_group_sametomb.rds"
+  file = "Analysis/Saved models/imp_binary_group_sametomb.rds"
 )
 
 
@@ -99,7 +98,7 @@ summary(imp_binary_separate_unrel3rd)
 # Save fitted model
 saveRDS(
   imp_binary_separate_unrel3rd,
-  file = "Models/Saved models/imp_binary_separate_unrel3rd.rds"
+  file = "Analysis/Saved models/imp_binary_separate_unrel3rd.rds"
 )
 
 # 6. Robust check model (grouped): set 3rd degree kinship as unrelated ----
@@ -113,7 +112,7 @@ summary(imp_binary_group_unrel3rd)
 # Save fitted model
 saveRDS(
   imp_binary_group_unrel3rd,
-  file = "Models/Saved models/imp_binary_group_unrel3rd.rds"
+  file = "Analysis/Saved models/imp_binary_group_unrel3rd.rds"
 )
 
 # 7. Robust check model (separated): set prior N(0,1) ----
@@ -129,7 +128,7 @@ summary(imp_binary_separate_nobone_prior)
 # Save fitted model
 saveRDS(
   imp_binary_separate_nobone_prior,
-  file = "Models/Saved models/imp_binary_separate_nobone_prior.rds"
+  file = "Analysis/Saved models/imp_binary_separate_nobone_prior.rds"
 )
 
 # 8. Robust check model (grouped): set prior N(0,1) ----
@@ -143,7 +142,7 @@ summary(imp_binary_group_nobone_prior)
 # Save fitted model
 saveRDS(
   imp_binary_group_nobone_prior,
-  file = "Models/Saved models/imp_binary_group_nobone_prior.rds"
+  file = "Analysis/Saved models/imp_binary_group_nobone_prior.rds"
 )
 
 # 9. Robust check model (separated): within tomb pairs only ---- 
@@ -159,7 +158,7 @@ summary(imp_binary_separate_withintomb)
 # Save fitted model
 saveRDS(
   imp_binary_separate_withintomb,
-  file = "Models/Saved models/imp_binary_separate_withintomb.rds"
+  file = "Analysis/Saved models/imp_binary_separate_withintomb.rds"
 )
 
 # 10. Robust check model (grouped): within tomb pairs only ----
@@ -172,7 +171,7 @@ summary(imp_binary_group_withintomb)
 # Save fitted model
 saveRDS(
   imp_binary_group_withintomb,
-  file = "Models/Saved models/imp_binary_separate_withintomb.rds"
+  file = "Analysis/Saved models/imp_binary_separate_withintomb.rds"
 )
 
 # 11. Robust check model (separated): within tomb pairs only and 3rd degree as unrelated ----
@@ -188,7 +187,7 @@ summary(imp_binary_separate_withintomb_unrel3rd)
 # Save fitted model
 saveRDS(
   imp_binary_separate_withintomb_unrel3rd,
-  file = "Models/Saved models/imp_binary_separate_withintomb_unrel3rd.rds"
+  file = "Analysis/Saved models/imp_binary_separate_withintomb_unrel3rd.rds"
 )
 
 # 12. Robust check model (grouped): within tomb pairs only and 3rd degree as unrelated ----
@@ -201,7 +200,7 @@ summary(imp_binary_group_withintomb_unrel3rd)
 # Save fitted model
 saveRDS(
   imp_binary_group_withintomb_unrel3rd,
-  file = "Models/Saved models/imp_binary_group_withintomb_unrel3rd.rds"
+  file = "Analysis/Saved models/imp_binary_group_withintomb_unrel3rd.rds"
 )
 
 # 13. Robust check model (separated): standard threshold with ske.elem ----
@@ -229,7 +228,7 @@ summary(all_binary_separate_cat)
 # Save fitted model
 saveRDS(
   all_binary_separate_cat,
-  file = "Models/Saved models/all_binary_separate_cat.rds"
+  file = "Analysis/Saved models/all_binary_separate_cat.rds"
 )
 
 # 14. Robust check model (grouped): standard threshold with ske.elem ----
@@ -257,7 +256,7 @@ summary(all_binary_group_cat)
 # Save fitted model
 saveRDS(
   all_binary_group_cat,
-  file = "Models/Saved models/all_binary_group_cat.rds"
+  file = "Analysis/Saved models/all_binary_group_cat.rds"
 )
 
 
@@ -271,7 +270,7 @@ summary(all_binary_separate_nobone)
 # Save fitted model
 saveRDS(
   all_binary_separate_nobone,
-  file = "Models/Saved models/all_binary_separate_nobone.rds"
+  file = "Analysis/Saved models/all_binary_separate_nobone.rds"
 )
 
 # 16. Robust check model (grouped): standard threshold with main formula ----
@@ -284,7 +283,7 @@ summary(all_binary_group_nobone)
 # Save fitted model
 saveRDS(
   all_binary_group_nobone,
-  file = "Models/Saved models/all_binary_group_nobone.rds"
+  file = "Analysis/Saved models/all_binary_group_nobone.rds"
 )
 
 # . Model Overlap GLM
@@ -303,7 +302,7 @@ summary(m_overlap_glm)
 # Save fitted model
 saveRDS(
   m_overlap_glm,
-  file = "Models/Saved models/m_overlap_glm.rds"
+  file = "Analysis/Saved models/m_overlap_glm.rds"
 )
 
 # . Relatedness Bayesian Regression Modeling (BRM)
@@ -337,6 +336,6 @@ summary(m_related)
 
 # Save fitted model
 saveRDS(m_related,
-        file = "Models/Saved models/m_related1.rds"
+        file = "Analysis/Saved models/m_related1.rds"
 )
 
