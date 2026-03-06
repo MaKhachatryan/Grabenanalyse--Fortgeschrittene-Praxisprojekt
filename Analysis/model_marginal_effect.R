@@ -1,8 +1,8 @@
 # Load project environment
 source("environment_setup.R")
 
-imp_binary_separate_nobone <- readRDS("Models/Saved models/imp_binary_separate_nobone.rds")
-imp_binary_group_nobone <- readRDS("Models/Saved models/imp_binary_group_nobone.rds")
+imp_binary_separate_nobone <- readRDS("Analysis/Saved models/imp_binary_separate_nobone.rds")
+imp_binary_group_nobone <- readRDS("Analysis/Saved models/imp_binary_group_nobone.rds")
 
 # Marginal effects for separate tomb
 
@@ -280,7 +280,7 @@ me_combined <- me_all_sep_df |>
 me_combined
 
 # Save the table 
-saveRDS(me_combined, "Models/Saved models/me_combined.rds")
+saveRDS(me_combined, "Analysis/Saved models/me_combined.rds")
 
 # Combine marginal effects from both models
 me_plot <- bind_rows(
