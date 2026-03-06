@@ -427,9 +427,11 @@ While the MM-GLMM provides a robust framework for analyzing pairwise kinship, th
 In the multi-membership structure, we assumed equal weights ($w_i = w_j = 0.5$ and $w_{T(i)} = w_{T(j)} = 0.5$) for the random effects of individuals and tombs, respectively. This assumption is theoretically plausible at the individual level, as there is no a priori reason to believe one individual in a pair contributes more to the shared probability of relatedness than the other. Furthermore, simulation studies by @smith2014impact suggest that multi-membership models are generally robust to weight misspecification, meaning that even if the "true" weights were slightly unequal, the resulting fixed-effect estimates remain reliable.
 
 ### Normality of Random Effects
-A standard assumption of GLMMs is that the random effects ($u$ and $v$) are independently and identically distributed following a normal distribution: $u,v \sim \mathcal{N}(0, \sigma^2)$. We evaluated this through Q-Q plots for both the Individual and Tomb random effects across our model variants.
+A standard assumption of GLMMs is that the random effects ($u$ and $v$) are independently and identically distributed following a normal distribution: $u,v \sim \mathcal{N}(0, \sigma^2)$. We evaluated this through Q-Q plots for both the Individual and Tomb random effects in the separate model version. The grouped model behaves similarly (see [Appendix](#appendix)).
 
-?? add QQ plot
+```{r a qq, echo=FALSE, fig.cap="Q-Q Plots for Random Effects (separate)", fig.pos='H', out.width="90%"}
+knitr::include_graphics("../Plots/qq_separate.png")
+```
 
 For individual random effect diagnostic plots, the distribution is somewhat skewed. Non-normality in random effects can potentially lead to a biased global intercept and an inaccurate estimation of the random effect distribution's shape. However, literature on mixed models @mcculloch2011misspecifying demonstrates that fixed-effect estimates and variance components are stable even when the normality assumption for random effects is violated.
 
@@ -457,6 +459,10 @@ Finally, future work should evaluate the potential impact of selection processes
 knitr::include_graphics("../Plots/robust_flat_vs_weakprior_group_clean.png")
 knitr::include_graphics("../Plots/robust_group_main_withintomb_clean.png")
 knitr::include_graphics("../Plots/robust_group_main_unrel3rd_clean.png")
+```
+
+```{r ap qq, echo=FALSE, fig.cap="Q-Q Plots for Random Effects (grouped)", fig.pos='H', out.width="100%"}
+knitr::include_graphics("../Plots/qq_group.png")
 ```
 
 # Acknowledgment

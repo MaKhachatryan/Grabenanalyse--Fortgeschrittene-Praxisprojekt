@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.3.2)  5 MAR 2026 23:54
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.3.2)  6 MAR 2026 09:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1196,6 +1196,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [27]
+File: ../Plots/qq_separate.png Graphic file (type bmp)
+<../Plots/qq_separate.png>
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1204,10 +1206,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [28]
-File: ../Plots/robust_flat_vs_weakprior_group_clean.png Graphic file (type bmp)
-<../Plots/robust_flat_vs_weakprior_group_clean.png>
-File: ../Plots/robust_group_main_withintomb_clean.png Graphic file (type bmp)
-<../Plots/robust_group_main_withintomb_clean.png>
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1216,6 +1214,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [29]
+File: ../Plots/robust_flat_vs_weakprior_group_clean.png Graphic file (type bmp)
+<../Plots/robust_flat_vs_weakprior_group_clean.png>
+File: ../Plots/robust_group_main_withintomb_clean.png Graphic file (type bmp)
+<../Plots/robust_group_main_withintomb_clean.png>
 File: ../Plots/robust_group_main_unrel3rd_clean.png Graphic file (type bmp)
 <../Plots/robust_group_main_unrel3rd_clean.png>
 
@@ -1234,6 +1236,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [31]
+File: ../Plots/qq_group.png Graphic file (type bmp)
+<../Plots/qq_group.png>
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1249,19 +1253,27 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[33] (./Report.aux)
+[33]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[34] (./Report.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 20255 strings out of 470190
- 376964 string characters out of 5477853
- 974713 words of memory out of 5000000
- 48575 multiletter control sequences out of 15000+600000
+ 20295 strings out of 470190
+ 378014 string characters out of 5477853
+ 974840 words of memory out of 5000000
+ 48613 multiletter control sequences out of 15000+600000
  632738 words of font info for 85 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 90i,12n,114p,1003b,429s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,114p,1003b,438s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Report.pdf (34 pages).
+Output written on Report.pdf (35 pages).
