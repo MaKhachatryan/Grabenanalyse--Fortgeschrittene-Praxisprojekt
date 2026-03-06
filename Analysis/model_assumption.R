@@ -3,14 +3,10 @@
 # Output: Q-Q plots
 
 # Load project environment
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
+source("environment_setup.R")
 
-imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
-imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
+imp_binary_separate_nobone <- readRDS("Models/Saved models/imp_binary_separate_nobone.rds")
+imp_binary_group_nobone <- readRDS("Models/Saved models/imp_binary_group_nobone.rds")
 
 # This script is to check the assumption of RE normality 
 
@@ -48,5 +44,15 @@ plot_qq_both_effects <- function(model_object, subtitle = "Separated tomb") {
   return(invisible(plot_list))
 }
 
-plot_qq_both_effects(imp_binary_separate_nobone, "Separated tombs")
-plot_qq_both_effects(imp_binary_group_nobone, "Grouped tombs")
+qq_separate <- plot_qq_both_effects(imp_binary_separate_nobone, "Separated tombs")
+qq_group <- plot_qq_both_effects(imp_binary_group_nobone, "Grouped tombs")
+
+# Save
+export_separate <- 
+  marrangeGrob(qq_separate, ncol = 2, nrow = 1, top = "Separated Tombs Analysis")
+ggsave("Plots/qq_separate.png", export_separate, width = 10, height = 5, dpi = 300)
+
+export_group <- 
+  marrangeGrob(qq_group, ncol = 2, nrow = 1, top = "Grouped Tombs Analysis")
+ggsave("Plots/qq_group.png", export_group, width = 10, height = 5, dpi = 300)
+

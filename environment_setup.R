@@ -21,7 +21,11 @@ packages <- c("tidyr",
               "gt",
               "modelsummary",
               "tidybayes",
-              "gridExtra")
+              "gridExtra",
+              "marginaleffects",
+              "collapse",
+              "broom.mixed",
+              "tibble")
 
 for (pkg in packages) {
   if (!require(pkg, character.only = TRUE)) {

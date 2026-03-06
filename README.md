@@ -12,7 +12,7 @@
 
 This repository contains the Grave Analysis Project. Please read these instructions carefully to ensure that all scripts run smoothly.
 
-We use R version 4.4.2 (or higher). Some packages may require the latest R version, so please ensure it is installed before proceeding.
+We use R version 4.5.2. Some packages may require the latest R version, so please ensure it is installed before proceeding.
 
 ## Usage
 
@@ -31,18 +31,26 @@ The following scripts perform analyses, visualizations, and model comparisons us
 
 3. **`Models/fit_models.R`**  
    - Fits all main and supplementary models using the processed pairwise data.  
-   - Saves the fitted models into **`Models/saved_models.R`** for later use.  
+   - Saves the fitted models into **`Models/Saved models`** for later use.  
    - **Note:** Running this script can take a long time.  
 
-4. **`Model/model_comparison.R`**  
+4. **`Models/model_comparison.R`**  
    - Compares fitted models by summarizing parameter estimates and credible intervals.
 
 5. **`Analysis/descriptive_plots.R`**  
    - Generates descriptive plots from the processed pairwise dataset and saves them in the Plots folder.
 
-
 6. **`Analysis/model_assumption.R`**  
    - Creates Q-Q plots to check random effects normality of fitted models.
+
+7. **`Analysis/model_marginal_effect.R`**  
+   - Calculates marginal effects and predicted probabilities from the fitted models and generates plots comparing effects across sex pair, age pair, and burial context for both separated and grouped tomb models.
+
+8. **`Analysis/model_output_plot.R`**  
+   - Extracts fixed and random effect estimates from the fitted models and generates coefficient plots with credible intervals to visualize and compare model parameters.
+
+9. **`Analysis/robust_check_plots.R`**  
+   - Performs robustness checks by comparing alternative model specifications.
 
 ## Directory structure
 
@@ -52,10 +60,10 @@ The following scripts perform analyses, visualizations, and model comparisons us
 - `environment_setup.R`
 
 - **Files for the presentation**
-  - `Middle Presentation.qmd`
-  - `Middle Presentation.html`
-  - `Final Presentation.qmd`
-  - `Final Presentation.html`
+  - `middle_presentation.qmd`
+  - `middle_presentation.html`
+  - `final_presentation.qmd`
+  - `final_presentation.html`
   - `customstyle.css`
 
 - `Additional materials/`  
@@ -77,14 +85,17 @@ The following scripts perform analyses, visualizations, and model comparisons us
 Scripts for data preparation, descriptive analysis, and model diagnostics.  
 
 - `descriptive_plots.R`
-- `pairs_data.R`
 - `model_assumption.R`
+- `model_marginal_effect.R`
+- `model_output_plot.R`
+- `pairs_data.R`
+- `robust_check_plots.R`
 
 ### Models
 Scripts for model fitting and model comparison.  
 
 - `fit_models.R`
 - `model_comparison.R`
-- `saved_models/`: Stored fitted model objects (.rds files).
+- `Saved models/`: Stored fitted model objects (.rds files).
    
    

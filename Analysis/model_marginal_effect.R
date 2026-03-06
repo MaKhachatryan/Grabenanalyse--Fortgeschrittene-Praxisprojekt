@@ -1,18 +1,12 @@
-# Load project environment and processed data
-suppressMessages(
-  suppressWarnings(
-    source(here::here("environment_setup.R"))
-  )
-)
-library(marginaleffects)
-library(collapse)
+# Load project environment
+source("environment_setup.R")
 
-imp_binary_separate_nobone <- readRDS("unofficial work/models save/imp_binary_separate_nobone.rds")
-imp_binary_group_nobone <- readRDS("unofficial work/models save/imp_binary_group_nobone.rds")
+imp_binary_separate_nobone <- readRDS("Models/Saved models/imp_binary_separate_nobone.rds")
+imp_binary_group_nobone <- readRDS("Models/Saved models/imp_binary_group_nobone.rds")
 
-##marginal effects for separate tomb
+# Marginal effects for separate tomb
 
-###by sex group
+# By sex group
 
 me_separate_sex <- avg_predictions(
   model = imp_binary_separate_nobone,
@@ -25,7 +19,7 @@ me_separate_sex <- avg_predictions(
 
 me_separate_sex
 
-###by age group
+# By age group
 
 me_separate_age <- avg_predictions(
   model = imp_binary_separate_nobone,
@@ -38,7 +32,7 @@ me_separate_age <- avg_predictions(
 
 me_separate_age
 
-###by same_tomb
+# By same_tomb
 me_separate_tomb <- avg_predictions(
   model = imp_binary_separate_nobone,
   by = "same_tomb",
@@ -50,18 +44,25 @@ me_separate_tomb <- avg_predictions(
 
 me_separate_tomb
 
-##for plotting
+# For plotting
 me_sex_sep  <- me_separate_sex  |> 
   rename(term = sex_pair) |>
   mutate(group = "Sex pair")
 me_age_sep  <- me_separate_age  |> 
   rename(term = age_pair) |>
-  mutate(group = "Age pair")
+  mutate(
+    group = "Age pair",
+    term = case_when(
+      term == "both subadult" ~ "Both Subadults",
+      term == "mixed" ~ "Mixed",
+      term == "both adult/undefined" ~ "Both Adults/Undefined"
+    )
+  )
 me_tomb_sep <- me_separate_tomb |> 
   rename(term = same_tomb) |>
   mutate(
     group = "Same tomb",
-    term = if_else(term, "Same tomb", "Different tomb")
+    term = if_else(term, "Same Tomb", "Different Tomb")
     )
 
 me_all_sep <- bind_rows(me_sex_sep, me_age_sep, me_tomb_sep)
@@ -75,7 +76,7 @@ ggplot(me_all_sep,
   theme_minimal()
 
 
-##marginal effect plots 
+# Marginal effect plots 
 p_sex_sep <- ggplot(me_sex_sep, aes(x = estimate, y = term)) +
   geom_point(size = 3) +
   geom_errorbarh(
@@ -118,12 +119,10 @@ p_tomb_sep <- ggplot(me_tomb_sep, aes(x = estimate, y = term)) +
   theme_minimal(base_size = 14)
 
 
-##save the plots 
 
+# Marginal effects for grouped tombs (Elateia T46, 56, 62)
 
-##marginal effects for grouped tombs (Elateia T46, 56, 62)
-
-###by sex group
+# By sex group
 
 me_group_sex <- avg_predictions(
   model = imp_binary_group_nobone,
@@ -136,7 +135,7 @@ me_group_sex <- avg_predictions(
 
 me_group_sex
 
-###by age group
+# By age group
 
 me_group_age <- avg_predictions(
   model = imp_binary_group_nobone,
@@ -149,7 +148,7 @@ me_group_age <- avg_predictions(
 
 me_group_age
 
-###by same_tomb
+# By same_tomb
 me_group_tomb <- avg_predictions(
   model = imp_binary_group_nobone,
   by = "same_tomb",
@@ -161,19 +160,26 @@ me_group_tomb <- avg_predictions(
 
 me_group_tomb
 
-##for plotting
+# For plotting
 
 me_sex_gr  <- me_group_sex  |> 
   rename(term = sex_pair) |>
   mutate(group = "Sex pair")
 me_age_gr  <- me_group_age  |> 
   rename(term = age_pair) |>
-  mutate(group = "Age pair")
+  mutate(
+    group = "Age pair",
+    term = case_when(
+      term == "both subadult" ~ "Both Subadults",
+      term == "mixed" ~ "Mixed",
+      term == "both adult/undefined" ~ "Both Adults/Undefined"
+    )
+  )
 me_tomb_gr <- me_group_tomb |> 
   rename(term = same_tomb) |>
   mutate(
     group = "Same tomb",
-    term = if_else(term, "Same tomb", "Different tomb")
+    term = if_else(term, "Same Tomb", "Different Tomb")
   )
 
 me_all_gr <- bind_rows(me_sex_gr, me_age_gr, me_tomb_gr)
@@ -186,7 +192,7 @@ ggplot(me_all_gr,
   labs(x = "Predicted probability", y = NULL) +
   theme_minimal()
 
-##marginal effect plots 
+# Marginal effect plots 
 p_sex_gr <- ggplot(me_sex_gr, aes(x = estimate, y = term)) +
   geom_point(size = 3) +
   geom_errorbarh(
@@ -229,10 +235,8 @@ p_tomb_gr <- ggplot(me_tomb_gr, aes(x = estimate, y = term)) +
   theme_minimal(base_size = 14)
 
 
-##save the plots 
 
-
-##Making a combined table for visual
+# Making a combined table for visual
 me_all_sep_df <- me_all_sep |> 
   as.data.frame()
 
@@ -275,7 +279,42 @@ me_combined <- me_all_sep_df |>
 
 me_combined
 
-#save the table 
-saveRDS(me_combined, "unofficial work/me_tables/me_combined.rds")
+# Save the table 
+saveRDS(me_combined, "Models/Saved models/me_combined.rds")
 
+# Combine marginal effects from both models
+me_plot <- bind_rows(
+  me_all_sep %>% mutate(model = "Separated Model"),
+  me_all_gr  %>% mutate(model = "Grouped Model")
+) %>%
+  group_by(group) %>%
+  mutate(term = factor(term, levels = rev(unique(term)))) %>%
+  ungroup()
 
+# One combined plot (two models in one figure)
+dodge <- position_dodge(width = 0.55)
+
+p_one <- ggplot(me_plot, aes(x = estimate, y = term, color = model)) +
+  geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.6, alpha = 0.6) +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high),
+                 height = 0.2, position = dodge, linewidth = 0.8) +
+  geom_point(position = dodge, size = 3) +
+  facet_wrap(~ group, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Predicted probability",
+    y = NULL,
+    color = NULL
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    strip.text = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+
+p_one
+
+ggsave(filename = "Plots/marginal_effects_combined.png", 
+       plot = p_one, 
+       width = 10, 
+       height = 8, 
+       dpi = 300 )
