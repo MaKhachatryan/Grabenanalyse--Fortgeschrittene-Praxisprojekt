@@ -89,33 +89,31 @@ This study investigates genetic relatedness patterns among individuals buried in
 \newpage
 
 # Introduction
-Understanding patterns of biological relatedness within collective burial contexts can provide important insights into the social organization of past societies. In Mycenaean Greece (ca. 1500–1000 BCE), collective tombs were used over long periods and often contain the remains of many individuals. Archaeologists have long debated whether these tombs represent biological family groups, broader kin networks, or socially defined communities. Only recently has ancient DNA (aDNA) analysis made it possible to examine these questions directly.
+Understanding patterns of biological relatedness within collective burial contexts can provide insights into the social organization of past societies. In Mycenaean Greece (ca. 1500–1000 BCE), collective tombs were used over long periods and often contain the remains of many individuals. Archaeologists have long debated whether these tombs represent biological family groups, broader kin networks, or socially defined communities. Only recently has ancient DNA (aDNA) analysis made it possible to examine these questions directly.
 
 ```{r fig0, echo=FALSE, fig.cap="Selected tombs at Elateia", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../images/tombs.png")
 ```
 
-The present study investigates patterns of genetic relatedness among individuals buried in collective tombs from the Mycenaean sites of Amfissa and Elateia. Genetic data from skeletal remains allow the identification of biological relationships between individuals and provide a new way to study how people buried in the same tomb were connected.
+The present study investigates patterns of genetic relatedness among individuals buried in collective tombs from the Mycenaean sites of Amfissa and Elateia. Genetic data from skeletal remains allow the identification of biological relationships and provide a new way to examine how individuals buried in the same tomb were connected.
 
-However, analyzing relatedness in this context presents several challenges. Archaeological sampling is selective, meaning that only a subset of individuals from each tomb is genetically analyzed. In addition, DNA preservation varies across individuals and skeletal elements, which affects the quality of the genetic data. As a result, some relationships may be harder to detect than others. Furthermore, the data have a complex structure because relatedness is observed for pairs of individuals, and each individual can appear in multiple pairwise comparisons.
+However, analyzing relatedness in this context presents several challenges. Archaeological sampling is selective, meaning that only a subset of individuals from each tomb is genetically analyzed. In addition, DNA preservation varies across individuals and skeletal elements, affecting the quality of the genetic data. As a result, some relationships may be harder to detect. The data also have a complex structure because relatedness is observed for pairs of individuals, and each individual can appear in multiple pairwise comparisons.
 
-\newpage
 
-The statistical analysis in this study was guided by research questions formulated by our project partners. In particular, they were interested in both tomb-level and individual-level patterns of relatedness. At the tomb level, the goal was to examine whether relatedness patterns differ between burial contexts and whether characteristics such as the duration of tomb use, the number of burials, or sampling success might influence these patterns. At the individual level, the focus was on whether biological and sampling-related characteristics, such as sex, age category, or the sampled skeletal element, are associated with detected relatedness.
+The statistical analysis was guided by research questions formulated by our project partners, focusing on both tomb-level and individual-level patterns of relatedness. At the tomb level, the goal was to examine whether relatedness patterns differ between burial contexts and whether characteristics such as the duration of tomb use, the number of burials, or sampling success influence these patterns. At the individual level, the focus was on whether biological and sampling-related characteristics, such as sex, age category, or the sampled skeletal element, are associated with detected relatedness.
 
-Overall, the aim of the study is to evaluate how relatedness patterns vary across burial contexts while accounting for potential sources of bias in the data. By combining archaeogenetic data with modern statistical modeling approaches, this work contributes to a better understanding of social organization in Mycenaean collective burials.
+Overall, the study aims to evaluate how relatedness patterns vary across burial contexts while accounting for potential sources of bias in the data. By combining archaeogenetic data with statistical modeling approaches, this work contributes to a better understanding of social organization in Mycenaean collective burials.
 
-\newpage
 
 # Data and Methods
 ## Data Description 
-This project is based on genetic and osteological data obtained from human remains recovered from Mycenaean collective burial contexts in Greece, dated to approximately 1500–1000 BCE. The material derives from two archaeological sites: Amfissa, which consists of a single tholos tomb, and Elateia, a large burial site containing 85 tombs. From Elateia, seven tombs were selected for detailed genetic investigation, namely tombs 31, 36, 46, 50, 56, 62, and 67. DNA preserved in skeletal material was extracted and analyzed to infer biological relationships among individuals buried within and between tombs.
+This project is based on genetic and osteological data from human remains recovered from Mycenaean collective burial contexts in Greece, dated to approximately 1500–1000 BCE. The material derives from two archaeological sites: Amfissa, which consists of a single tholos tomb, and Elateia, a large burial site containing 85 tombs. From Elateia, seven tombs were selected for detailed genetic investigation: tombs 31, 36, 46, 50, 56, 62, and 67. DNA preserved in skeletal material was extracted and analyzed to infer biological relationships among individuals buried within and between tombs.
 
-The analysis draws on three interconnected datasets that capture information at different levels of resolution. One dataset summarizes characteristics at the tomb level. It includes variables such as the minimum number of individuals identified, the number of individuals successfully analyzed genetically, the estimated duration over which the tomb was used, the proportion of successful DNA samples, the total number of samples taken, and the distribution of sampled skeletal elements (including petrous bones, teeth, talus or phalanx, and other elements). These variables highlight differences between tombs in preservation, sampling, and burial practices.
+The analysis draws on three interconnected datasets that capture information at different levels. One dataset summarizes characteristics at the tomb level, including the minimum number of individuals identified, the number successfully analyzed genetically, the estimated duration of tomb use, the proportion of successful DNA samples, the total number of samples taken, and the distribution of sampled skeletal elements (such as petrous bones, teeth, talus or phalanx, and others). These variables highlight differences between tombs in preservation, sampling, and burial practices.
 
-A second dataset contains metadata describing the sampled individuals. Each entry represents a single individual and records the associated tomb, estimated biological sex, age category, and the skeletal element used for DNA extraction. This information provides the biological and contextual background necessary to evaluate how individual characteristics relate to genetic data quality and inferred relationships.
+A second dataset contains metadata describing the sampled individuals. Each entry represents a single individual and records the associated tomb, estimated biological sex, age category, and the skeletal element used for DNA extraction. This information provides the biological and contextual background needed to evaluate how individual characteristics relate to genetic data quality and inferred relationships.
 
-The third dataset reports pairwise genetic relationships between individuals based on ancient DNA analyses. For each pair, it includes estimates of genetic relatedness, the number of overlapping single nucleotide polymorphisms (SNPs), and a categorical classification of relationship degree following established criteria. Since individuals can be involved in multiple pairwise comparisons, observations in this dataset are not independent, resulting in a complex relational structure.
+The third dataset reports pairwise genetic relationships between individuals based on ancient DNA analyses. For each pair, it includes estimates of genetic relatedness, the number of overlapping single nucleotide polymorphisms (SNPs), and a categorical classification of relationship degree. Since individuals can appear in multiple pairwise comparisons, observations in this dataset are not independent, resulting in a complex relational structure.
 
 ## READv2 Software
 ### Classification Procedure and Overlap Requirements
@@ -410,7 +408,7 @@ To ensure that the results obtained in the primary MM-GLMM are not artifacts of 
 ### Sensitivity to Prior Specification
 In the primary model, we utilized flat (uninformative) priors, which allow the data to drive the estimates entirely. To ensure the model was not "noise chasing", which means fitting patterns that do not truly exist, we re-fitted the model using Weakly Informative Priors $N(0,1)$. This approach applies a form of regularization, pulling estimates toward zero unless the data provides strong evidence to the contrary.
 
-```{r a2, echo=FALSE, fig.cap="Estimations of model with flat prior and with weakly informative prior", fig.pos='H', out.width="100%"}
+```{r a2, echo=FALSE, fig.cap="Estimations of model with flat prior and with weakly informative prior", fig.pos='H', out.width="90%"}
 knitr::include_graphics("../Plots/robust_flat_vs_weakprior_sep_clean.png")
 ```
 
@@ -422,7 +420,7 @@ Because the Same Tomb Indicator emerged as an exceptionally dominant predictor i
 
 To isolate the influence of sex and age from the overwhelming signal of shared burial space, we fitted a secondary model restricted exclusively to within-tomb pairs. This approach effectively removes the across-tomb variance, providing a focused look at the internal organization of the burial units. The model was restricted to the 2,990 observations involving individuals interred in the same tomb, compared to the 13,690 observations in the full dataset. Consequently, the estimated effects appear weaker, with coefficients shrinking toward zero.
 
-```{r a3, echo=FALSE, fig.cap="Estimations of main model and 'with-in tomb' model", fig.pos='H', out.width="100%"}
+```{r a3, echo=FALSE, fig.cap="Estimations of main model and 'with-in tomb' model", fig.pos='H', out.width="90%"}
 knitr::include_graphics("../Plots/robust_main_withintomb_sep_clean.png")
 ```
 
