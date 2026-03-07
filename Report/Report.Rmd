@@ -68,7 +68,9 @@ header-includes:
 
 \textbf{Institution:} Institute of Statistics\\
 \textbf{Supervisor:} Yichen Han \\
-\textbf{Project Partners:} Irene Högner \& Alissa Mittnik (Pre- and Early History Archaeology, ERC Project “MySocialBeIng”) \\
+\textbf{Project Partners:} Irene Högner \& Alissa Mittnik  
+(Max Planck Institute for Evolutionary Anthropology, Department of Archaeogenetics) \\    
+\textbf{Research Area:} Pre- and Early History Archaeology (ERC Project “MySocialBeIng”) \\
 \vspace{1cm}
 {\large 2026-03-08 \par}
 
@@ -89,9 +91,15 @@ This study investigates genetic relatedness patterns among individuals buried in
 # Introduction
 Understanding patterns of biological relatedness within collective burial contexts can provide important insights into the social organization of past societies. In Mycenaean Greece (ca. 1500–1000 BCE), collective tombs were used over long periods and often contain the remains of many individuals. Archaeologists have long debated whether these tombs represent biological family groups, broader kin networks, or socially defined communities. Only recently has ancient DNA (aDNA) analysis made it possible to examine these questions directly.
 
+```{r fig0, echo=FALSE, fig.cap="Selected tombs at Elateia", fig.pos='H', out.width="100%"}
+knitr::include_graphics("../images/tombs.png")
+```
+
 The present study investigates patterns of genetic relatedness among individuals buried in collective tombs from the Mycenaean sites of Amfissa and Elateia. Genetic data from skeletal remains allow the identification of biological relationships between individuals and provide a new way to study how people buried in the same tomb were connected.
 
 However, analyzing relatedness in this context presents several challenges. Archaeological sampling is selective, meaning that only a subset of individuals from each tomb is genetically analyzed. In addition, DNA preservation varies across individuals and skeletal elements, which affects the quality of the genetic data. As a result, some relationships may be harder to detect than others. Furthermore, the data have a complex structure because relatedness is observed for pairs of individuals, and each individual can appear in multiple pairwise comparisons.
+
+\newpage
 
 The statistical analysis in this study was guided by research questions formulated by our project partners. In particular, they were interested in both tomb-level and individual-level patterns of relatedness. At the tomb level, the goal was to examine whether relatedness patterns differ between burial contexts and whether characteristics such as the duration of tomb use, the number of burials, or sampling success might influence these patterns. At the individual level, the focus was on whether biological and sampling-related characteristics, such as sex, age category, or the sampled skeletal element, are associated with detected relatedness.
 
@@ -113,21 +121,21 @@ The third dataset reports pairwise genetic relationships between individuals bas
 ### Classification Procedure and Overlap Requirements
 Genetic relatedness between individuals was inferred using READv2 (Relationship Estimation from Ancient DNA) [[@alaccamli2024readv2]], which estimates pairwise relatedness from genome-wide patterns of allele mismatches. The method computes the proportion of non-matching alleles (P0) across overlapping SNPs between two individuals and classifies relationships based on normalized P0 thresholds. These thresholds split pairs into four categories: unrelated, third-degree, second-degree, and first-degree relatives.
 
-```{r fig1, echo=FALSE, fig.cap="READv2 Classification Process", fig.pos='H', out.width="100%"}
+```{r fig1, echo=FALSE, fig.cap="READv2 classification process", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../images/READv2_process1.png")
 ```
 
 Because the precision of the P0 estimate depends directly on the number of overlapping SNPs, READv2 incorporates minimum overlap requirements to ensure sufficient data for each degree of relatedness. According to the documentation [@alaccamli2024readv2], the recommended thresholds are 500 overlapping SNPs for first-degree, 2,000 for second-degree, and 15,000 for third-degree relationships. Pairs falling below these thresholds are considered insufficiently informative and are labeled as uncertain.
-This two-step procedure, initial classification based on normalized P0 followed by validation through minimum overlap thresholds, reflects the fundamental dependence of kinship inference on data quantity. Relationship labels are therefore conditional not only on genetic similarity but also on genomic coverage.
+This two-step procedure, initial classification based on normalized P0 followed by validation through minimum SNP overlap thresholds, reflects the fundamental dependence of kinship inference on data quantity. Relationship labels are therefore conditional not only on genetic similarity but also on genomic coverage.
 
 ### False Positive Rates and Classification Power
-The reliability of READv2 classifications has been evaluated in the original methodological validation studies. In particular, true positive rates (TPR) and false positive rates (FPR) were assessed across different coverage levels and degrees of relatedness.
+The reliability of READv2 classifications has been evaluated in the original methodological validation studies [@alaccamli2024readv2]. In particular, true positive rates (TPR) and false positive rates (FPR) were assessed across different coverage levels and degrees of relatedness.
 
 ```{r fig3, echo=FALSE, fig.cap="The power (i.e., the proportion of correctly classified pairs) and false positive rates (proportion of unrelated pairs classified into the respective degree) of READv2 assignment using simulated first-degree (n=118), second-degree (n=150), and third-degree pairs (n=144). The analyses were performed using varying window sizes (1 Mb, 5 Mb, 20 Mb, Whole genome), and also using varying coverages (0.01×, 0.05×, 0.1×, 0.2×, 0.3×, 0.4×, 0.5×, 1×, 5×) that correspond to the number of overlapping SNPs in the simulated dataset", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../images/READv2_FPR_and_Power.png")
 ```
 
-As shown in Figure 3, classification accuracy is strongly dependent on genome coverage. At low coverage levels, false positive rates increase substantially, particularly for third-degree relationships. On the contrary, the power to correctly identify true relatives rises sharply as the number of overlapping SNPs increases.
+As shown in Figure 2, classification accuracy is strongly dependent on genome coverage. At low coverage levels, false positive rates increase substantially, particularly for third-degree relationships. On the contrary, the power to correctly identify true relatives rises sharply as the number of overlapping SNPs increases.
 
 For all degrees of relatedness, performance stabilizes once overlap approaches approximately 15,000 SNPs. Beyond this level, both false positive rates decline toward zero and true positive rates approach one, indicating reliable differentiation between related and unrelated pairs. Below this range, however, classifications are noticeably less stable.
 
@@ -144,34 +152,34 @@ $$
 
 The coefficient of variation provides a scale-independent measure of relative estimation error and thus serves as a direct indicator of classification stability.
 
-```{r fig4, echo=FALSE, fig.cap="Empirical Precision of P0 vs. Overlapping SNPs", fig.pos='H', out.width="100%"}
+```{r fig4, echo=FALSE, fig.cap="Empirical precision of P0 vs. overlapping SNPs", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/plot_p0_overlap.png")
 ```
 
-Figure 4 shows a noticeable inverse relationship between overlap size and relative estimation error. For pairs with fewer than approximately 1,000 overlapping SNPs, the CV is high and highly variable, indicating substantial uncertainty in P0 estimation. As the number of overlapping SNPs increases, the CV declines rapidly and stabilizes at low levels. Around 15,000 overlapping SNPs, the relative error becomes minimal and exhibits little variability across pairs.
+Figure 3 shows a noticeable inverse relationship between overlap size and relative estimation error. For pairs with fewer than approximately 1,000 overlapping SNPs, the CV is high and highly variable, indicating substantial uncertainty in P0 estimation. As the number of overlapping SNPs increases, the CV declines rapidly and stabilizes at low levels. Around 15,000 overlapping SNPs, the relative error becomes minimal and exhibits little variability across pairs.
 
 This empirical pattern closely mirrors the performance results reported in the methodological validation studies. Together, they indicate that overlap size is a primary determining factor of classification reliability. While READv2 defines degree-specific minimum thresholds, the convergence of both documented TPR/FPR behavior and empirical CV stabilization around 15,000 SNPs suggests that beyond this value, statistical precision improves markedly across all degrees of relatedness.
 For this reason, the 15,000 SNP threshold plays a central role in our subsequent filtering strategy and interpretation of relatedness patterns.
 
 ## Data Visualization
 ### DAG {#dag-section}
-To formalize the assumed data-generating mechanism underlying observed kinship classifications, we constructed a directed acyclic graph (DAG) representing the causal relationships among biological, archaeological, and technical variables (Figure 5). The DAG clarifies pathways of influence, identifies potential confounding structures, and differentiates between latent biological processes and measurement-related mechanisms.
+To formalize the assumed data-generating mechanism underlying observed kinship classifications, we constructed a directed acyclic graph (DAG) representing the causal relationships among biological, archaeological, and technical variables (Figure 4). The DAG clarifies pathways of influence, identifies potential confounding structures, and differentiates between latent biological processes and measurement-related mechanisms. [@Pearl2009]
 
 ```{r fig5, echo=FALSE, fig.cap="Directed Acyclic Graph (DAG)", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../images/DAG_2version.png")
 ```
 
-At the core of the structure lies true biological kinship, which is unobserved (latent). True kinship determines the ideal genetic mismatch rate (true P0), which would be observed in the absence of measurement error. The observed P0 value is then obtained through a measurement process that introduces variance depending on data quality and SNP overlap. A degree of relatedness is then assigned based on the observed P0 and the required overlap thresholds.
+At the core of the structure lies true biological kinship, which is unobserved (latent). True kinship determines the ideal genetic mismatch rate (true P0), which would be observed in the absence of measurement error. The observed P0 value is then obtained through a measurement process that introduces variance depending on data quality and SNP overlap. A degree of relatedness is then assigned based on the observed P0 and the required SNP overlap thresholds.[@MonroyKuhn2018]
 
 DNA preservation lies at the center of this structure. Preservation quality affects sample success and the number of overlapping SNPs available for comparison. Overlap size directly influences the variance of the P0 estimator and thus the reliability of kinship classification.
-Several factors influence DNA preservation. At the tomb level, the length of use may affect environmental exposure and long-term degradation processes. At the individual level, the sampled skeletal element affects DNA yield, as certain elements (e.g., petrous bone) are known to preserve DNA more effectively than others.
+Several factors influence DNA preservation.[@Orlando2021] At the tomb level, the length of use may affect environmental exposure and long-term degradation processes. At the individual level, the sampled skeletal element affects DNA yield, as certain elements (e.g., petrous bone) are known to preserve DNA more effectively than others. [@Pinhasi2015]
 
-Age and sex are included as biological characteristics potentially associated with burial patterns, kinship structure, and bone preservation [@bello2006age]. These variables are modeled as predictors of observed kinship patterns rather than determinants of DNA quality, although indirect pathways may exist.
+Age and sex are included as biological characteristics potentially associated with burial patterns, kinship structure, and bone preservation [@bello2006age], [@pohl2023can]. These variables are modeled as predictors of observed kinship patterns rather than determinants of DNA quality, although indirect pathways may exist.
 Importantly, the DAG distinguishes between:
 
 - Biological structure (true kinship),
 - Measurement processes (DNA preservation, Overlapping SNP, P0 variance),
-- And classification rules (overlap thresholds).
+- And classification rules (SNP overlap thresholds).
 
 This separation clarifies that observed kinship status is not a direct observation of biological relatedness, but the result of a multi-stage process involving biological, archaeological, and technical components.
 
@@ -180,13 +188,13 @@ The DAG provides a conceptual foundation for the modeling strategy adopted in fo
 ### Descriptive Plots
 To obtain an initial overview of kinship patterns across burial sites, we analysed both the absolute number and the proportion of within-tomb pairs by relationship category (realted, unrelated, uncertain) (Figures 1 and 2).
 
-The following descriptive results are based on the degree-specific overlap thresholds recommended in the READv2 documentation ($\ge500$ SNPs for first-degree, $\ge2,000$ for second-degree, and $\ge15,000$ for third-degree relationships).
+The following descriptive results are based on the degree-specific SNP overlap thresholds recommended in the READv2 documentation ($\ge500$ SNPs for first-degree, $\ge2,000$ for second-degree, and $\ge15,000$ for third-degree relationships).
 
 **Absolute Number of Within-Tomb Pairs**
 
-Figure 6 shows the absolute number of within-tomb pairs classified as related, unrelated, or uncertain. As expected, the total number of pairs varies substantially across tombs, reflecting differences in sample size.
+Figure 5 shows the absolute number of within-tomb pairs classified as related, unrelated, or uncertain. As expected, the total number of pairs varies substantially across tombs, reflecting differences in sample size.
 
-```{r fig6, echo=FALSE, fig.cap="Absolute Number of Within-Tomb Pairs by Relationship Category", fig.pos='H', out.width="100%"}
+```{r fig6, echo=FALSE, fig.cap="Absolute number of within-tomb Pairs by relationship category", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/p_within_abs.png")
 ```
 
@@ -198,9 +206,9 @@ Across all tombs, unrelated pairs constitute the majority of observations in abs
 
 **Proportion of Within-Tomb Pairs**
 
-To account for differences in tomb size, Figure 7 presents the proportion of within-tomb pairs by relationship category.
+To account for differences in tomb size, Figure 6 presents the proportion of within-tomb pairs by relationship category.
 
-```{r fig7, echo=FALSE, fig.cap="Proportion of Within-Tomb Pairs by Relationship Category", fig.pos='H', out.width="100%"}
+```{r fig7, echo=FALSE, fig.cap="Proportion of within-tomb pairs by relationship category", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/p_within_rel.png")
 ```
 
@@ -213,26 +221,32 @@ Overall, the descriptive patterns indicate that close biological relatedness rep
 ### Kinship Network
 To further explore the structure of biological relationships, kinship networks were constructed based on the READv2 classifications. Nodes represent individuals and edges represent first-, second-, or third-degree relationships.
 
+\clearpage
+
 **All Tombs Combined**
 
-```{r fig8, echo=FALSE, fig.cap="Network Representing All Relationships (Cross-Tomb and Within-Tomb) in All Tombs", fig.pos='H', out.width="100%"}
+```{r fig8, echo=FALSE, fig.cap="Network representing all relationships (Cross-tomb and within-tomb) in all tombs", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/All_Tombs_network.png")
 ```
 When all tombs are considered together, the network forms several larger connected components. Many of these clusters are centered around male individuals, who often occupy central positions and link multiple relatives. In several cases, a male individual connects otherwise separate subgroups, effectively holding clusters together.
 
 Cross-tomb relationships are frequent in the combined network. In contrast, dense within-tomb clusters are less common. This suggests that biological relatedness is not strictly confined to single burial contexts but extends across tomb boundaries.
 
+\clearpage
+
 **Amfissa Tholos**
 
-```{r fig9, echo=FALSE, fig.cap="Network Representing All Relationships (Cross-Tomb and Within-Tomb) in Amfissa Tholos", fig.pos='H', out.width="100%"}
+```{r fig9, echo=FALSE, fig.cap="Network representing all relationships (Cross-tomb and within-tomb) in Amfissa Tholos", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/Amfissa_Tholos_network.png")
 ```
 
 The Amfissa network shows one of the most cohesive structures. A large cluster is visible, again centered around a small number of male individuals. Several relatives connect to these central nodes across different degrees of relatedness, forming extended family structures rather than isolated pairs.
 
+\clearpage
+
 **Grouped Elateia Tombs (T46, T56, T62)**
 
-```{r fig10, echo=FALSE, fig.cap="Network Representing All Relationships (Cross-Tomb and Within-Tomb) in Grouped Elateia Tombs (T46, T56, T62)", fig.pos='H', out.width="100%"}
+```{r fig10, echo=FALSE, fig.cap="Network representing all relationships (Cross-tomb and within-tomb) in grouped Elateia Tombs (T46, T56, T62)", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/Elateia_T46_56_62_network.png")
 ```
 
@@ -243,9 +257,11 @@ This supports the earlier observation that these tombs are not independent units
 
 In the remaining tombs, the networks are generally smaller and more fragmented. Most consist of small clusters of related individuals connected by one or two ties. Cross-tomb links are again visible in several cases, while strong within-tomb clustering is limited.
 
+\clearpage
+
 **Interpretation**
 
-Across all visualizations, related individuals tend to cluster around male nodes, while female individuals more often appear at the periphery of clusters. This pattern is consistent with archaeogenetic interpretations of patrilocal social organization, in which males remain within their natal community and females more frequently marry outside the group [@moutafi2015towards; @boyd2016becoming]. While the present analysis does not formally test this hypothesis, the network structure aligns with such interpretations.
+Across all visualizations, related individuals tend to cluster around male nodes, while female individuals more often appear at the periphery of clusters. This pattern is consistent with archaeogenetic interpretations of patrilocal social organization, in which males remain within their natal community and females more frequently marry outside the group [@moutafi2015towards]; [@Boyd2016]. While the present analysis does not formally test this hypothesis, the network structure aligns with such interpretations.
 
 ## Limitations
 ### Tomb-level model not possible
@@ -339,6 +355,8 @@ Two distinct versions of the model are implemented
 
 1. Separated Tomb Model: Every tomb is treated as an individual level within the random effect $v_t$.
 2. Grouped Tomb Model: In this version, three specific tombs, Elateia Tomb 46, 56, and 62, are treated as a single combined tomb.
+
+\clearpage
 
 # Result
 Following the model specification, this chapter presents the findings from the Bayesian Multi-Membership Generalized Linear Mixed Model.
@@ -450,6 +468,21 @@ In addition, future research should further address the issue of missing data. I
 From a methodological perspective, future research could explore extensions of the multi-membership generalized linear mixed model. Relaxing assumptions such as equal random-effect weights or normally distributed random effects may allow for a more flexible representation of individual- and tomb-level heterogeneity. Furthermore, larger datasets would permit more stable estimation of variance components, particularly at the tomb level, thereby improving inference regarding contextual effects.
 
 Finally, future work should evaluate the potential impact of selection processes introduced by quality thresholds. Comparing results obtained from high-quality subsamples with those from broader inclusion criteria or alternative imputation strategies may help assess the generalizability of the findings to the wider population under study.
+
+# Literature Review
+Recent developments in archaeogenetics have made it possible to directly investigate biological relatedness in past populations using ancient DNA. Advances in sequencing techniques and computational methods allow researchers to infer kinship relationships from genome-wide data, providing new insights into the social organization of ancient communities. Methods such as READv2 estimate relatedness from patterns of allele mismatches across overlapping single nucleotide polymorphisms (SNPs) and classify pairs into degrees of biological relatedness based on statistical thresholds [@alaccamli2024readv2]. However, the reliability of such classifications depends strongly on data quality, particularly the number of overlapping SNPs available for comparison. Low genomic coverage increases uncertainty and may lead to misclassification of relationships, making careful filtering and statistical modeling essential in archaeogenetic studies.
+
+Several studies emphasize that genetic kinship reconstructed from DNA does not necessarily correspond directly to social kinship structures observed in archaeological contexts. Genetic relatedness represents biological relationships, while social kinship may reflect broader cultural practices such as household organization, inheritance systems, or burial traditions [@pohl2023can]. Consequently, interpreting genetic relationships requires integrating genetic evidence with archaeological and anthropological data.
+
+In the context of Bronze Age and Mycenaean societies, burial practices have been widely studied to understand social organization and group structure. Mycenaean collective tombs often contain multiple individuals deposited over long periods of time, sometimes involving secondary burial practices and reorganization of earlier remains. These practices complicate the interpretation of biological relationships within tombs, as individuals buried together may represent extended kin groups, broader community networks, or socially defined burial groups rather than nuclear families [@moutafi2015towards]; [@Moutafi2016]. Bioarchaeological studies suggest that patterns of burial, including age and sex distributions, may reflect social hierarchies, lineage structures, or residence patterns.
+
+Archaeogenetic studies have also identified recurring patterns of relatedness in prehistoric burial contexts. In several cases, kinship networks appear structured around male individuals, while female individuals are more often connected through marriage links across burial groups. Such patterns are consistent with interpretations of patrilocal residence systems, in which males remain within their natal community while females move between groups through marriage alliances [@moutafi2015towards]; [@Boyd2016]. Although interpretations vary across sites and periods, these findings highlight the importance of integrating demographic characteristics such as sex and age into the analysis of genetic relatedness.
+
+From a methodological perspective, analyzing kinship patterns in archaeological datasets presents several statistical challenges. Observations are often structured as pairwise comparisons between individuals, meaning that each individual appears in multiple observations. This creates dependencies that violate the independence assumptions of standard regression models. Multi-membership multilevel models provide a suitable framework for handling such structures because they allow each observation to belong to multiple higher-level units simultaneously, such as individuals and tombs [@browne2001multiple]. Bayesian approaches are particularly useful for estimating such models because they allow flexible specification of complex hierarchical structures and provide robust inference even with relatively small sample sizes [@burkner2017advanced]; [@maas2005sufficient].
+
+In addition to hierarchical dependencies, missing data and measurement uncertainty represent important challenges in ancient DNA research. Because kinship classification depends on the availability of sufficient SNP overlap, missing data may occur in a non-random way, potentially biasing statistical inference. Previous methodological research therefore emphasizes the importance of accounting for data quality and measurement processes when interpreting observed kinship patterns [@Seguin2021]; [@Vai2020]. Conceptual frameworks that distinguish between underlying biological relationships and measurement processes are therefore useful for clarifying how observed genetic relationships arise from both biological and technical factors.
+
+Overall, previous research demonstrates that genetic data can provide valuable insights into kinship structures in archaeological contexts, but also highlights several methodological and interpretative challenges. Biological relatedness reconstructed from ancient DNA must be interpreted carefully, as burial practices, social organization, and cultural traditions may not correspond directly to genetic family relationships. At the same time, the reliability of kinship inference depends strongly on data quality, sequencing coverage, and statistical modeling choices. These studies underline the importance of combining archaeogenetic data with appropriate statistical frameworks that account for measurement uncertainty, sampling bias, and the complex structure of pairwise kinship observations.
 
 \appendix
 
