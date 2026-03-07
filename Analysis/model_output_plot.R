@@ -1,10 +1,18 @@
+# This script extracts, organizes, and visualizes the estimated coefficients 
+# from the binary kinship models for both the separate-tomb and grouped-tomb 
+# analyses.
+# Coefficients are plotted on the log-odds scale. The output is intended to 
+# provide a direct visual comparison of parameter estimates between the two 
+# model specifications.
+
 # Load project environment
 source("environment_setup.R")
 
+# Load the models (separated and grouped)
 imp_binary_separate_nobone <- readRDS("Analysis/Saved models/imp_binary_separate_nobone.rds")
 imp_binary_group_nobone <- readRDS("Analysis/Saved models/imp_binary_group_nobone.rds")
 
-
+# Extract the coefficient from the separated tombs model
 coef_sep <- broom.mixed::tidy(
   imp_binary_separate_nobone,
   effects = c("fixed", "ran_pars"),
@@ -12,6 +20,7 @@ coef_sep <- broom.mixed::tidy(
 ) |>
   mutate(model = "Separated Model")
 
+# Extract the coefficient from the grouped tombs model
 coef_gr <- broom.mixed::tidy(
   imp_binary_group_nobone,
   effects = c("fixed", "ran_pars"),
@@ -19,8 +28,10 @@ coef_gr <- broom.mixed::tidy(
 ) |>
   mutate(model = "Grouped Model")
 
+# Combined the extracted coefficients from both models
 coef_all <- bind_rows(coef_sep, coef_gr)
 
+# Plots for visualization for all parameters
 p_coef <- ggplot(coef_all,
                  aes(x = estimate,
                      y = reorder(term, estimate),
@@ -41,7 +52,7 @@ p_coef <- ggplot(coef_all,
 
 p_coef
 
-
+# Make a neater plot to visualize
 # 1) format labels + set facet order
 coef_fmt <- coef_all %>%
   mutate(
@@ -114,6 +125,7 @@ p_coef_clean <- ggplot(coef_fmt, aes(x = estimate, y = term_plot, color = model)
 
 p_coef_clean
 
+# Save the model output plot
 ggsave(
   "Plots/model_coefficients_all.png",
   p_coef_clean,
