@@ -1,3 +1,10 @@
+# This script performs robustness checks for the binary kinship models by 
+# comparing the main model specification with several alternative model variants 
+# for both the separated-tomb and grouped-tomb analyses.
+# Coefficients are plotted on the log-odds scale. The main aim is to evaluate 
+# whether the conclusions of the main models remain stable across different 
+# assumptions, sample restrictions, and prior specifications.
+
 # Load project environment
 source("environment_setup.R")
 

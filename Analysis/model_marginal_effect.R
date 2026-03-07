@@ -1,13 +1,23 @@
+# This script computes and visualizes marginal effects 
+# (average predicted probabilities) from the binary kinship
+# models for both the separate-tomb and grouped-tomb analyses.
+
+# Notes:
+# - Predictions are calculated on the probability scale (type = "response").
+# - Population-level predictions are used (re_formula = NA),
+#   meaning that random effects are not included in the marginal
+#   effect estimates.
+
 # Load project environment
 source("environment_setup.R")
+source("Data/pairs_data.R")
 
 imp_binary_separate_nobone <- readRDS("Analysis/Saved models/imp_binary_separate_nobone.rds")
 imp_binary_group_nobone <- readRDS("Analysis/Saved models/imp_binary_group_nobone.rds")
 
-# Marginal effects for separate tomb
+# Marginal effects (Average Predicted Probability) for separate tomb
 
 # By sex group
-
 me_separate_sex <- avg_predictions(
   model = imp_binary_separate_nobone,
   by = "sex_pair",
@@ -20,7 +30,6 @@ me_separate_sex <- avg_predictions(
 me_separate_sex
 
 # By age group
-
 me_separate_age <- avg_predictions(
   model = imp_binary_separate_nobone,
   by = "age_pair",
@@ -44,7 +53,7 @@ me_separate_tomb <- avg_predictions(
 
 me_separate_tomb
 
-# For plotting
+# Preparation plotting
 me_sex_sep  <- me_separate_sex  |> 
   rename(term = sex_pair) |>
   mutate(group = "Sex pair")
@@ -67,6 +76,7 @@ me_tomb_sep <- me_separate_tomb |>
 
 me_all_sep <- bind_rows(me_sex_sep, me_age_sep, me_tomb_sep)
 
+# Plot the marginal effect for separated tombs for visualization of all parameters
 ggplot(me_all_sep,
        aes(x = estimate, y = term)) +
   geom_point() +
@@ -76,7 +86,8 @@ ggplot(me_all_sep,
   theme_minimal()
 
 
-# Marginal effect plots 
+# Marginal effect plots for separated tombs
+# By sex group
 p_sex_sep <- ggplot(me_sex_sep, aes(x = estimate, y = term)) +
   geom_point(size = 3) +
   geom_errorbarh(
@@ -90,7 +101,7 @@ p_sex_sep <- ggplot(me_sex_sep, aes(x = estimate, y = term)) +
   ) +
   theme_minimal(base_size = 14)
 
-
+# By age group
 p_age_sep <- ggplot(me_age_sep, aes(x = estimate, y = term)) +
   geom_point(size = 3) +
   geom_errorbarh(
@@ -104,7 +115,7 @@ p_age_sep <- ggplot(me_age_sep, aes(x = estimate, y = term)) +
   ) +
   theme_minimal(base_size = 14)
 
-
+# By same tomb
 p_tomb_sep <- ggplot(me_tomb_sep, aes(x = estimate, y = term)) +
   geom_point(size = 3) +
   geom_errorbarh(
@@ -123,7 +134,6 @@ p_tomb_sep <- ggplot(me_tomb_sep, aes(x = estimate, y = term)) +
 # Marginal effects for grouped tombs (Elateia T46, 56, 62)
 
 # By sex group
-
 me_group_sex <- avg_predictions(
   model = imp_binary_group_nobone,
   by = "sex_pair",
@@ -136,7 +146,6 @@ me_group_sex <- avg_predictions(
 me_group_sex
 
 # By age group
-
 me_group_age <- avg_predictions(
   model = imp_binary_group_nobone,
   by = "age_pair",
@@ -160,7 +169,7 @@ me_group_tomb <- avg_predictions(
 
 me_group_tomb
 
-# For plotting
+# Preparation for plotting
 
 me_sex_gr  <- me_group_sex  |> 
   rename(term = sex_pair) |>
@@ -184,6 +193,7 @@ me_tomb_gr <- me_group_tomb |>
 
 me_all_gr <- bind_rows(me_sex_gr, me_age_gr, me_tomb_gr)
 
+# Plot the marginal effect for grouped tombs for visualization of all parameters
 ggplot(me_all_gr,
        aes(x = estimate, y = term)) +
   geom_point() +
@@ -192,7 +202,8 @@ ggplot(me_all_gr,
   labs(x = "Predicted probability", y = NULL) +
   theme_minimal()
 
-# Marginal effect plots 
+# Marginal effect plots for grouped tombs
+# By sex group
 p_sex_gr <- ggplot(me_sex_gr, aes(x = estimate, y = term)) +
   geom_point(size = 3) +
   geom_errorbarh(
@@ -206,7 +217,7 @@ p_sex_gr <- ggplot(me_sex_gr, aes(x = estimate, y = term)) +
   ) +
   theme_minimal(base_size = 14)
 
-
+# By age group
 p_age_gr <- ggplot(me_age_gr, aes(x = estimate, y = term)) +
   geom_point(size = 3) +
   geom_errorbarh(
@@ -220,7 +231,7 @@ p_age_gr <- ggplot(me_age_gr, aes(x = estimate, y = term)) +
   ) +
   theme_minimal(base_size = 14)
 
-
+# By same tomb
 p_tomb_gr <- ggplot(me_tomb_gr, aes(x = estimate, y = term)) +
   geom_point(size = 3) +
   geom_errorbarh(
@@ -313,6 +324,7 @@ p_one <- ggplot(me_plot, aes(x = estimate, y = term, color = model)) +
 
 p_one
 
+# Save the combined marginal effect plot
 ggsave(filename = "Plots/marginal_effects_combined.png", 
        plot = p_one, 
        width = 10, 
