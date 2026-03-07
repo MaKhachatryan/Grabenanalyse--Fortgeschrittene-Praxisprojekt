@@ -501,42 +501,33 @@ if (!file.exists(out_file)) {
 
 
 #######################
+# Save plots function
+#######################
+
+save_plot_if_missing <- function(filename, plot, width = 8, height = 5, dpi = 300) {
+  if (!file.exists(filename)) {
+    ggsave(filename, plot = plot, width = width, height = height, dpi = dpi)
+  }
+}
+
+#######################
 # Save plots
 #######################
 
-if (!file.exists("Plots/plot_mni.png")) {
-  ggsave("Plots/plot_mni.png", plot = plot_mni, width = 8, height = 5, dpi = 300)
-}
+save_plot_if_missing("Plots/plot_mni.png", plot_mni)
 
-if (!file.exists("Plots/heatmap_sex.png")) {
-  ggsave("Plots/heatmap_sex.png", plot = plot_sex, width = 8, height = 6, dpi = 300)
-}
+save_plot_if_missing("Plots/heatmap_sex.png", plot_sex, height = 6)
 
-if (!file.exists("Plots/heatmap_age.png")) {
-  ggsave("Plots/heatmap_age.png", plot = plot_age, width = 8, height = 6, dpi = 300)
-}
+save_plot_if_missing("Plots/heatmap_age.png", plot_age, height = 6)
 
-if (!file.exists("Plots/plot_pairs_rel.png")) {
-  ggsave("Plots/plot_pairs_rel.png", plot = p_relative_rel, width = 8, height = 5, dpi = 300)
-}
+save_plot_if_missing("Plots/plot_pairs_rel.png", p_relative_rel)
 
-if (!file.exists("Plots/plot_pairs_abs.png")) {
-  ggsave("Plots/plot_pairs_abs.png", plot = p_absolute_rel, width = 8, height = 5, dpi = 300)
-}
+save_plot_if_missing("Plots/plot_pairs_abs.png", p_absolute_rel)
 
-if (!file.exists("Plots/plot_p0_overlap.png")) {
-  ggsave("Plots/plot_p0_overlap.png", plot = plot_p0_overlap, width = 8, height = 5, dpi = 300)
-}
+save_plot_if_missing("Plots/plot_p0_overlap.png", plot_p0_overlap)
 
-if (!file.exists("Plots/plot_p0_reldegree.png")) {
-  ggsave("Plots/plot_p0_reldegree.png", plot = plot_p0_reldegree, width = 8, height = 5, dpi = 300)
-}
+save_plot_if_missing("Plots/plot_p0_reldegree.png", plot_p0_reldegree)
 
+save_plot_if_missing("Plots/p_within_abs.png", p_within_abs)
 
-if (!file.exists("Plots/p_within_abs.png")) {
-  ggsave("Plots/p_within_abs.png", plot = p_within_abs, width = 8, height = 5, dpi = 300)
-}
-
-if (!file.exists("Plots/p_within_rel.png")) {
-  ggsave("Plots/p_within_rel.png", plot = p_within_rel, width = 8, height = 5, dpi = 300)
-}
+save_plot_if_missing("Plots/p_within_rel.png", p_within_rel)

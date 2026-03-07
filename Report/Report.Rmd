@@ -133,7 +133,7 @@ The reliability of READv2 classifications has been evaluated in the original met
 knitr::include_graphics("../images/READv2_FPR_and_Power.png")
 ```
 
-As shown in Figure 2, classification accuracy is strongly dependent on genome coverage. At low coverage levels, false positive rates increase substantially, particularly for third-degree relationships. On the contrary, the power to correctly identify true relatives rises sharply as the number of overlapping SNPs increases.
+As shown in Figure 3, classification accuracy is strongly dependent on genome coverage. At low coverage levels, false positive rates increase substantially, particularly for third-degree relationships. On the contrary, the power to correctly identify true relatives rises sharply as the number of overlapping SNPs increases.
 
 For all degrees of relatedness, performance stabilizes once overlap approaches approximately 15,000 SNPs. Beyond this level, both false positive rates decline toward zero and true positive rates approach one, indicating reliable differentiation between related and unrelated pairs. Below this range, however, classifications are noticeably less stable.
 
@@ -154,14 +154,14 @@ The coefficient of variation provides a scale-independent measure of relative es
 knitr::include_graphics("../Plots/plot_p0_overlap.png")
 ```
 
-Figure 3 shows a noticeable inverse relationship between overlap size and relative estimation error. For pairs with fewer than approximately 1,000 overlapping SNPs, the CV is high and highly variable, indicating substantial uncertainty in P0 estimation. As the number of overlapping SNPs increases, the CV declines rapidly and stabilizes at low levels. Around 15,000 overlapping SNPs, the relative error becomes minimal and exhibits little variability across pairs.
+Figure 4 shows a noticeable inverse relationship between overlap size and relative estimation error. For pairs with fewer than approximately 1,000 overlapping SNPs, the CV is high and highly variable, indicating substantial uncertainty in P0 estimation. As the number of overlapping SNPs increases, the CV declines rapidly and stabilizes at low levels. Around 15,000 overlapping SNPs, the relative error becomes minimal and exhibits little variability across pairs.
 
 This empirical pattern closely mirrors the performance results reported in the methodological validation studies. Together, they indicate that overlap size is a primary determining factor of classification reliability. While READv2 defines degree-specific minimum thresholds, the convergence of both documented TPR/FPR behavior and empirical CV stabilization around 15,000 SNPs suggests that beyond this value, statistical precision improves markedly across all degrees of relatedness.
 For this reason, the 15,000 SNP threshold plays a central role in our subsequent filtering strategy and interpretation of relatedness patterns.
 
 ## Data Visualization
 ### DAG {#dag-section}
-To formalize the assumed data-generating mechanism underlying observed kinship classifications, we constructed a directed acyclic graph (DAG) representing the causal relationships among biological, archaeological, and technical variables (Figure 4). The DAG clarifies pathways of influence, identifies potential confounding structures, and differentiates between latent biological processes and measurement-related mechanisms. [@Pearl2009]
+To formalize the assumed data-generating mechanism underlying observed kinship classifications, we constructed a directed acyclic graph (DAG) representing the causal relationships among biological, archaeological, and technical variables (Figure 5). The DAG clarifies pathways of influence, identifies potential confounding structures, and differentiates between latent biological processes and measurement-related mechanisms. [@Pearl2009]
 
 ```{r fig5, echo=FALSE, fig.cap="Directed Acyclic Graph (DAG)", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../images/DAG_2version.png")
@@ -184,13 +184,13 @@ This separation clarifies that observed kinship status is not a direct observati
 The DAG provides a conceptual foundation for the modeling strategy adopted in following sections by clearly separating biological structure from measurement processes. In particular, it highlights that tomb-level characteristics, such as length of use, and sampling-related factors influence observed kinship classifications primarily through their effect on DNA preservation and SNP overlap rather than directly on biological relatedness. This distinction is essential, as observed kinship status reflects both underlying biological relationships and the constraints imposed by data quality. The modelling approach presented later is based on this structure and accounts for the dependencies inherent in pairwise observations.
 
 ### Descriptive Plots
-To obtain an initial overview of kinship patterns across burial sites, we analysed both the absolute number and the proportion of within-tomb pairs by relationship category (realted, unrelated, uncertain) (Figures 1 and 2).
+To obtain an initial overview of kinship patterns across burial sites, we analysed both the absolute number and the proportion of within-tomb pairs by relationship category (realted, unrelated, uncertain) (Figures 6 and 7).
 
 The following descriptive results are based on the degree-specific SNP overlap thresholds recommended in the READv2 documentation ($\ge500$ SNPs for first-degree, $\ge2,000$ for second-degree, and $\ge15,000$ for third-degree relationships).
 
 **Absolute Number of Within-Tomb Pairs**
 
-Figure 5 shows the absolute number of within-tomb pairs classified as related, unrelated, or uncertain. As expected, the total number of pairs varies substantially across tombs, reflecting differences in sample size.
+Figure 6 shows the absolute number of within-tomb pairs classified as related, unrelated, or uncertain. As expected, the total number of pairs varies substantially across tombs, reflecting differences in sample size.
 
 ```{r fig6, echo=FALSE, fig.cap="Absolute number of within-tomb Pairs by relationship category", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/p_within_abs.png")
@@ -204,7 +204,7 @@ Across all tombs, unrelated pairs constitute the majority of observations in abs
 
 **Proportion of Within-Tomb Pairs**
 
-To account for differences in tomb size, Figure 6 presents the proportion of within-tomb pairs by relationship category.
+To account for differences in tomb size, Figure 7 presents the proportion of within-tomb pairs by relationship category.
 
 ```{r fig7, echo=FALSE, fig.cap="Proportion of within-tomb pairs by relationship category", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/p_within_rel.png")
