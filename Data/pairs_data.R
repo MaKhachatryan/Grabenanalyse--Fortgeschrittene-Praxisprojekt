@@ -47,6 +47,13 @@ tomb_parameter$MNI[8] <- 20
 tomb_parameter$MNI[4] <- 70
 tomb_parameter$MNI[6] <- 70
 
+# Absolute plot
+df_long <- pivot_longer(tomb_parameter, cols = c(MNI, `analysed individuals`),
+                        names_to = "Type", values_to = "Count")
+ggplot(df_long, aes(x = Tomb, y = Count, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip()
+
 ##Kinship Result
 
 kinship_result <- og_kinship_result |>
