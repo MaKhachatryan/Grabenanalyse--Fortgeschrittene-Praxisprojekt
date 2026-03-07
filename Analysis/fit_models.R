@@ -171,7 +171,7 @@ summary(imp_binary_group_withintomb)
 # Save fitted model
 saveRDS(
   imp_binary_group_withintomb,
-  file = "Analysis/Saved models/imp_binary_separate_withintomb.rds"
+  file = "Analysis/Saved models/imp_binary_group_withintomb.rds"
 )
 
 # 11. Robust check model (separated): within tomb pairs only and 3rd degree as unrelated ----
