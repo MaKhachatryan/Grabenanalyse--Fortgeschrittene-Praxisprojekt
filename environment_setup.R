@@ -35,9 +35,9 @@ for (pkg in packages) {
 }
 
 ## ----- Loading data sets----
-og_individual_metadata <- read_excel(here::here("Data/raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx"))
-og_tomb_parameter <- read_excel(here::here("Data/raw/Statistics project LMU_tomb parameters_Irene Hoegner_new.xlsx"), range = "A2:N12")
-og_kinship_result <- read_excel(here::here("Data/raw/Statistics project LMU_READv2 kinship results_Irene Hoegner_corr.xlsx"))
+og_individual_metadata <- read_excel(here::here("Data/Raw/Statistics project LMU_individuals metadata_Irene Hoegner.xlsx"))
+og_tomb_parameter <- read_excel(here::here("Data/Raw/Statistics project LMU_tomb parameters_Irene Hoegner_new.xlsx"), range = "A2:N12")
+og_kinship_result <- read_excel(here::here("Data/Raw/Statistics project LMU_READv2 kinship results_Irene Hoegner_corr.xlsx"))
 
 
 ## ----- cleaning names of variables -----

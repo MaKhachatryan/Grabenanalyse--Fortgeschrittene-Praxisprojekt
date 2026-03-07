@@ -5,7 +5,7 @@
 
 # Load project environment and processed data
 source("environment_setup.R")
-source("Analysis/pairs_data.R")
+source("Data/pairs_data.R")
 
 ######################################################
 ### Absolute relation of MNI and analysed individuals
