@@ -117,7 +117,7 @@ The third dataset reports pairwise genetic relationships between individuals bas
 
 ## READv2 Software
 ### Classification Procedure and Overlap Requirements
-Genetic relatedness between individuals was inferred using READv2 (Relationship Estimation from Ancient DNA) [[@alaccamli2024readv2]], which estimates pairwise relatedness from genome-wide patterns of allele mismatches. The method computes the proportion of non-matching alleles (P0) across overlapping SNPs between two individuals and classifies relationships based on normalized P0 thresholds. These thresholds split pairs into four categories: unrelated, third-degree, second-degree, and first-degree relatives.
+Genetic relatedness between individuals was inferred using READv2 (Relationship Estimation from Ancient DNA) [@alaccamli2024readv2], which estimates pairwise relatedness from genome-wide patterns of allele mismatches. The method computes the proportion of non-matching alleles (P0) across overlapping SNPs between two individuals and classifies relationships based on normalized P0 thresholds. These thresholds split pairs into four categories: unrelated, third-degree, second-degree, and first-degree relatives.
 
 ```{r fig1, echo=FALSE, fig.cap="READv2 classification process", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../images/READv2_process1.png")
@@ -184,7 +184,7 @@ This separation clarifies that observed kinship status is not a direct observati
 The DAG provides a conceptual foundation for the modeling strategy adopted in following sections by clearly separating biological structure from measurement processes. In particular, it highlights that tomb-level characteristics, such as length of use, and sampling-related factors influence observed kinship classifications primarily through their effect on DNA preservation and SNP overlap rather than directly on biological relatedness. This distinction is essential, as observed kinship status reflects both underlying biological relationships and the constraints imposed by data quality. The modelling approach presented later is based on this structure and accounts for the dependencies inherent in pairwise observations.
 
 ### Descriptive Plots
-To obtain an initial overview of kinship patterns across burial sites, we analysed both the absolute number and the proportion of within-tomb pairs by relationship category (realted, unrelated, uncertain) (Figures 6 and 7).
+To obtain an initial overview of kinship patterns across burial sites, we analysed both the absolute number and the proportion of within-tomb pairs by relationship category (related, unrelated, uncertain) (Figures 6 and 7).
 
 The following descriptive results are based on the degree-specific SNP overlap thresholds recommended in the READv2 documentation ($\ge500$ SNPs for first-degree, $\ge2,000$ for second-degree, and $\ge15,000$ for third-degree relationships).
 
@@ -282,7 +282,7 @@ $$
 R = \mathbb{I}\!\left(\mathrm{OSNP} \ge 15{,}000\right)
 $$
 
-This shift transforms the mechanism into Missing At Random (MAR), where missingness depends only on the observed overlap (X_O): 
+This shift transforms the mechanism into Missing At Random (MAR), where missingness depends only on the observed overlap ($X_O$): 
 
 $$P(R \mid X_O, X_M) = P(R \mid X_O)$$
 
@@ -307,8 +307,10 @@ To analyze the kinship patterns within the dataset, we require a modeling framew
 **Motivation: The Complexity of Pairwise Data**
 
 The data structure presents two primary challenges that traditional regression models cannot handle:
-Multiple Membership of Individuals: Each individual appears in multiple pairs. For example, if individual $i$ is compared to $j$, $k$, and $l$, the errors associated with those three observations will be correlated because they all share the unique genetic and environmental traits of individual $i$.
-Tomb-Level Dependencies: Pairs can exist both within the same tomb or across different tombs. Because individuals within a tomb may share common environmental or social factors, we must account for the random "tomb effect." A pair ${i,j}$ effectively "belongs" to the tombs $T(i)$ and $T(j)$.
+
+1. Multiple Membership of Individuals: Each individual appears in multiple pairs. For example, if individual $i$ is compared to $j$, $k$, and $l$, the errors associated with those three observations will be correlated because they all share the unique genetic and environmental traits of individual $i$.
+
+2. Tomb-Level Dependencies: Pairs can exist both within the same tomb or across different tombs. Because individuals within a tomb may share common environmental or social factors, we must account for the random "tomb effect." A pair ${i,j}$ effectively "belongs" to the tombs $T(i)$ and $T(j)$.
 
 To address this, we utilize a Multi-Membership Generalized Linear Mixed Model (MM-GLMM). This model is specifically designed for cases where an observation does not belong to a single cluster, but rather "members" multiple clusters (in our case, two individuals and two tombs) simultaneously [@browne2001multiple].
 
@@ -399,7 +401,7 @@ knitr::include_graphics("../Plots/marginal_effects_combined.png")
 
 The average predicted probabilities in the figure highlight several key patterns across sex pairings, age compositions, and burial contexts. Female–Female (XX-XX) pairs show relatively low average predicted probabilities of relatedness (0.21% in the separate tombs model and 0.31% in the grouped tombs model, ceteris paribus), while Male-Male (XY-XY) pairs exhibit higher probabilities compared to other sex combinations. 
 For age composition, pairs of two subadults show predicted probabilities of relatedness of 1.24% in the separated tombs model and 1.66% in the grouped-tombs model. Lower probabilities are observed for mixed adult–subadult pairs (0.65% and 0.89%), followed by pairs of two adults or undefined individuals (0.50% and 0.69%).
-The largest difference is observed for burial context: pairs buried in the same tomb have predicted probabilities of 2.20% and 2.40%, compared to 0.22% and 0.19% for pairs from different tombs.
+The largest difference is observed for burial context: pairs buried in the same tomb have predicted probabilities of 2.20% and 2.40%, compared to 0.22% and 0.19% for pairs from different tombs. Additionally the Grouped Model has much wider 95% credible intervals than the Separated Model across all predictors. This potentially reflects higher statistical uncertainty caused by reducing the number of independent tomb clusters from eight to six.
 
 
 ## Model Robustness Check
@@ -449,7 +451,7 @@ A standard assumption of GLMMs is that the random effects ($u$ and $v$) are inde
 knitr::include_graphics("../Plots/qq_separate.png")
 ```
 
-For individual random effect diagnostic plots, the distribution is somewhat skewed. Non-normality in random effects can potentially lead to a biased global intercept and an inaccurate estimation of the random effect distribution's shape. However, literature on mixed models @mcculloch2011misspecifying demonstrates that fixed-effect estimates and variance components are stable even when the normality assumption for random effects is violated.
+For individual random effect diagnostic plots, the distribution is somewhat skewed. Non-normality in random effects can potentially lead to a biased global intercept and an inaccurate estimation of the random effect distribution's shape. However, literature on mixed models [@mcculloch2011misspecifying] demonstrates that fixed-effect estimates and variance components are stable even when the normality assumption for random effects is violated.
 
 The diagnostic for the tomb-level effects is limited by the low number of levels. According to @maas2005sufficient, the estimation of the random effect variance ($\sigma^2_{tomb}$ can be biased or imprecise when the number of clusters is small (typically $<30$). However the fixed-effect regression coefficients remain unbiased. The model therefore remains a valid tool to interpret the influence of the fixed-effect variables.
 
