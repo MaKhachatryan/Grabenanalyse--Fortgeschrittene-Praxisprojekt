@@ -109,9 +109,9 @@ Overall, the study aims to evaluate how relatedness patterns vary across burial 
 ## Data Description 
 This project is based on genetic and osteological data from human remains recovered from Mycenaean collective burial contexts in Greece, dated to approximately 1500–1000 BCE. The material derives from two archaeological sites: Amfissa, which consists of a single tholos tomb, and Elateia, a large burial site containing 85 tombs. From Elateia, seven tombs were selected for detailed genetic investigation: tombs 31, 36, 46, 50, 56, 62, and 67. DNA preserved in skeletal material was extracted and analyzed to infer biological relationships among individuals buried within and between tombs.
 
-The analysis draws on three interconnected datasets that capture information at different levels. One dataset summarizes characteristics at the tomb level, including the minimum number of individuals identified, the number successfully analyzed genetically, the estimated duration of tomb use, the proportion of successful DNA samples, the total number of samples taken, and the distribution of sampled skeletal elements (such as petrous bones, teeth, talus or phalanx, and others). These variables highlight differences between tombs in preservation, sampling, and burial practices.
+The analysis draws on three interconnected datasets that capture information at different levels. The first dataset summarizes characteristics at the tomb level, including the minimum number of individuals identified, the number successfully analyzed genetically, the estimated duration of tomb use, the proportion of successful DNA samples, the total number of samples taken, and the distribution of sampled skeletal elements (such as petrous bones, teeth, talus or phalanx, and others). These variables highlight differences between tombs in preservation, sampling, and burial practices.
 
-A second dataset contains metadata describing the sampled individuals. Each entry represents a single individual and records the associated tomb, estimated biological sex, age category, and the skeletal element used for DNA extraction. This information provides the biological and contextual background needed to evaluate how individual characteristics relate to genetic data quality and inferred relationships.
+The second dataset contains metadata describing the sampled individuals. Each entry represents a single individual and records the associated tomb, estimated biological sex, age category, and the skeletal element used for DNA extraction. This information provides the biological and contextual background needed to evaluate how individual characteristics relate to genetic data quality and inferred relationships.
 
 The third dataset reports pairwise genetic relationships between individuals based on ancient DNA analyses. For each pair, it includes estimates of genetic relatedness, the number of overlapping single nucleotide polymorphisms (SNPs), and a categorical classification of relationship degree. Since individuals can appear in multiple pairwise comparisons, observations in this dataset are not independent, resulting in a complex relational structure.
 
@@ -161,7 +161,7 @@ For this reason, the 15,000 SNP threshold plays a central role in our subsequent
 
 ## Data Visualization
 ### DAG {#dag-section}
-To formalize the assumed data-generating mechanism underlying observed kinship classifications, we constructed a directed acyclic graph (DAG) representing the causal relationships among biological, archaeological, and technical variables (Figure 5). The DAG clarifies pathways of influence, identifies potential confounding structures, and differentiates between latent biological processes and measurement-related mechanisms. [@Pearl2009]
+To formalize the assumed data-generating mechanism underlying observed kinship classifications, we constructed a Directed Acyclic Graph (DAG) representing the causal relationships among biological, archaeological, and technical variables (Figure 5). The DAG clarifies pathways of influence, identifies potential confounding structures, and differentiates between latent biological processes and measurement-related mechanisms. [@Pearl2009]
 
 ```{r fig5, echo=FALSE, fig.cap="Directed Acyclic Graph (DAG)", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../images/DAG_2version.png")
@@ -253,7 +253,7 @@ This supports the earlier observation that these tombs are not independent units
 
 **Other Tombs**
 
-In the remaining tombs, the networks are generally smaller and more fragmented. Most consist of small clusters of related individuals connected by one or two ties. Cross-tomb links are again visible in several cases, while strong within-tomb clustering is limited.
+In the remaining tombs, the networks are generally smaller and more fragmented. Most consist of small clusters of related individuals connected by one or two ties. Cross-tomb links are again visible in several cases, while strong within-tomb clustering is limited. (see [Appendix](#appendix))
 
 \clearpage
 
@@ -487,6 +487,16 @@ Overall, previous research demonstrates that genetic data can provide valuable i
 \appendix
 
 # Appendix {#appendix}
+
+```{r ap network, echo=FALSE, fig.cap="Network plots of Elateia Tombs", fig.pos='H', out.width="100%"}
+knitr::include_graphics("../Plots/Elateia_T62_network.png")
+knitr::include_graphics("../Plots/Elateia_T56_network.png")
+knitr::include_graphics("../Plots/Elateia_T50_network.png")
+knitr::include_graphics("../Plots/Elateia_T46_network.png")
+knitr::include_graphics("../Plots/Elateia_T36_network.png")
+knitr::include_graphics("../Plots/Elateia_T31_network.png")
+knitr::include_graphics("../Plots/Elateia_T67_network.png")
+```
 
 ```{r a robust appendix, echo=FALSE, fig.cap="Robust check result plots for grouped models", fig.pos='H', out.width="100%"}
 knitr::include_graphics("../Plots/robust_flat_vs_weakprior_group_clean.png")
