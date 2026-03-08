@@ -163,7 +163,7 @@ For this reason, the 15,000 SNP threshold plays a central role in our subsequent
 ### DAG {#dag-section}
 To formalize the assumed data-generating mechanism underlying observed kinship classifications, we constructed a Directed Acyclic Graph (DAG) representing the causal relationships among biological, archaeological, and technical variables (Figure 5). The DAG clarifies pathways of influence, identifies potential confounding structures, and differentiates between latent biological processes and measurement-related mechanisms. [@Pearl2009]
 
-```{r fig5, echo=FALSE, fig.cap="Directed Acyclic Graph (DAG)", fig.pos='H', out.width="100%"}
+```{r fig5, echo=FALSE, fig.cap="Directed Acyclic Graph (DAG)", fig.pos='H', out.width="95%"}
 knitr::include_graphics("../images/DAG_2version.png")
 ```
 
@@ -218,8 +218,6 @@ Overall, the descriptive patterns indicate that close biological relatedness rep
 
 ### Kinship Network
 To further explore the structure of biological relationships, kinship networks were constructed based on the READv2 classifications. Nodes represent individuals and edges represent first-, second-, or third-degree relationships.
-
-\clearpage
 
 **All Tombs Combined**
 
